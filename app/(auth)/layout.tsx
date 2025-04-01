@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Gabarito } from 'next/font/google';
-import { Ubuntu } from 'next/font/google';
 import "../globals.css";
 import Image from 'next/image';
 
@@ -12,12 +11,7 @@ const gabarito = Gabarito({
   style: ["normal"],
 });
 
-const ubuntu = Ubuntu({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "700"],
-  variable: "--font-ubuntu",
-  style: ["normal"],
-});
+
 
 export const metadata: Metadata = {
   title: "TICK-hub - Authentication",
@@ -32,7 +26,7 @@ export default function AuthLayout({
   return (
     <html lang="en">
       <body
-        className={`${gabarito.variable} ${ubuntu.variable} font-sans antialiased`}
+        className={`${gabarito.variable}  font-sans antialiased`}
       >
         <div
           className="h-screen bg-[#272666]  text-white relative overflow-hidden flex items-center justify-center"

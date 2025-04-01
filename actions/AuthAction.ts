@@ -3,23 +3,40 @@ import { prisma } from "@/lib/prisma";
 import { loginSchema } from "@/lib/validationSchema";
 import { registerSchema } from "@/lib/validationSchema";
 import { z } from "zod";
-import *  as bcrypt from 'bcryptjs';
+import * as bcrypt from "bcryptjs";
+import { signIn,signOut } from "@/auth";
+import { AuthError } from "next-auth";
 
 export const loginAction = async (data: z.infer<typeof loginSchema>) => {
   const validation = loginSchema.safeParse(data);
   if (!validation.success) {
-    return { error: validation.error.errors[0].message };
+    return { success: false, message: "Invalid credentials" };
   }
 
-  // Simulate server-side login logic
+  const { email, password } = validation.data;
+
   try {
-    // Replace this with actual login logic (e.g., database query, API call)
-    return { success: "Logged in successfully" };
+    await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
   } catch (error) {
-    return { error: "An unexpected error occurred during login" };
+    if (error instanceof AuthError) { 
+      switch (error.type) {
+        case "CredentialsSignin":
+          return { success: false, message: "Invalid email or password" };
+        default:
+          return { success: false, message: "An unexpected error occurred" };
+      }
+    }
+    throw error;
   }
+  return { success: true, message: "Logged in successfully" };
 };
 
+
+// ------------------------registerAction------------------------
 export const registerAction = async (data: z.infer<typeof registerSchema>) => {
   const validation = registerSchema.safeParse(data);
   if (!validation.success) {
@@ -29,6 +46,7 @@ export const registerAction = async (data: z.infer<typeof registerSchema>) => {
   const { username, email, password } = validation.data;
 
   try {
+    // Check if the user already exists
     const user = await prisma.user.findUnique({
       where: { email },
     });
@@ -37,9 +55,11 @@ export const registerAction = async (data: z.infer<typeof registerSchema>) => {
       return { error: "Email already exists" };
     }
 
+    // Hash the password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    // Create the new user
     await prisma.user.create({
       data: {
         username,
@@ -48,9 +68,29 @@ export const registerAction = async (data: z.infer<typeof registerSchema>) => {
       },
     });
 
-    return { success: "Registered successfully" };
+    // ✅ Automatically sign in the user after registration
+    const loginResult = await signIn("credentials", {
+      email,
+      password,
+      redirect: false, // Prevents automatic redirection
+    });
+
+    if (loginResult?.error) {
+      return { error: "Registration successful, but login failed." };
+    }
+
+    return { success: "Registered and logged in successfully" };
   } catch (error) {
-    console.error("Registration error:", error); 
+    console.error("Registration error:", error);
     return { error: "An unexpected error occurred during registration" };
   }
 };
+
+
+//---------------------------------logoutAction---------------------------------
+
+export const logoutAction = async () => {
+  
+  await signOut();
+
+}

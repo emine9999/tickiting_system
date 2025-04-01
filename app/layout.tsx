@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Image from 'next/image';
+import NextAuthProvider from "@/contexts/NextAuthProvider";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,7 +32,7 @@ export default function RootLayout({
         <div
                   className="h-screen bg-[#272666]  relative overflow-hidden "
                 >
-                  <div className="absolute inset-0 w-full h-full ">
+                  {/* <div className="absolute inset-0 w-full h-full ">
                     <Image 
                       src="/data/cv.svg" 
                       alt="Auth Background" 
@@ -39,11 +40,11 @@ export default function RootLayout({
                       style={{ objectFit: 'cover' }}
                       priority
                     />
-                  </div>
+                  </div> */}
                     
                     <div className="bg-[#272666]"
                     >
-                      {children}
+                     <NextAuthProvider>{children}</NextAuthProvider>
                     </div>
                   </div>
       </body>

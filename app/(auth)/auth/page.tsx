@@ -1,8 +1,8 @@
 'use client';
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { motion, AnimatePresence } from 'framer-motion';
-import Link from 'next/link';
 import { signIn } from 'next-auth/react';
 import { FcGoogle } from "react-icons/fc";
 import { loginSchema } from '../../../lib/validationSchema';
@@ -14,12 +14,13 @@ import { loginAction } from '@/actions/AuthAction';
 import { registerAction } from '@/actions/AuthAction';
 
 const AuthComponent = () => {
+  const router = useRouter();
+
   // Login form states
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [loginClientError, setLoginClientError] = useState("");
   const [loginServerError, setLoginServerError] = useState("");
-  const [loginServerSuccess, setLoginServerSuccess] = useState("");
   const [loginLoading, setLoginLoading] = useState(false);
 
   // Signup form states
@@ -33,6 +34,9 @@ const AuthComponent = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoginClientError("");
+    setLoginServerError("");
+
     const validation = loginSchema.safeParse({ email: loginEmail, password: loginPassword });
     if (!validation.success) {
       return setLoginClientError(validation.error.errors[0].message);
@@ -41,12 +45,10 @@ const AuthComponent = () => {
     setLoginLoading(true);
     try {
       const result = await loginAction({ email: loginEmail, password: loginPassword });
-      if (result?.error) setLoginServerError(result.error);
       if (result?.success) {
-        setLoginServerSuccess(result.success);
-        setLoginEmail("");
-        setLoginPassword("");
-        setLoginClientError("");
+        router.push('/dashboard'); // Redirect to dashboard on success
+      } else {
+        setLoginServerError(result.message);
       }
     } finally {
       setLoginLoading(false);
@@ -55,6 +57,9 @@ const AuthComponent = () => {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSignupClientError("");
+    setSignupServerError("");
+
     const validation = registerSchema.safeParse({
       username: signupUsername,
       email: signupEmail,
@@ -71,13 +76,15 @@ const AuthComponent = () => {
         email: signupEmail,
         password: signupPassword,
       });
-      if (result?.error) setSignupServerError(result.error);
+      if (result?.error) {
+        setSignupServerError(result.error);
+      }
       if (result?.success) {
         setSignupServerSuccess(result.success);
         setSignupUsername("");
         setSignupEmail("");
         setSignupPassword("");
-        setSignupClientError("");
+        router.push("/dashboard");
       }
     } finally {
       setSignupLoading(false);
@@ -89,8 +96,8 @@ const AuthComponent = () => {
       <div className="flex flex-col items-center text-center">
         <h1 className="text-2xl sm:text-3xl font-bold">Welcome Back!</h1>
         <p className="text-sm text-gray-500 mt-2">Glad to see you again 👋</p>
-        <p className="text-sm text-gray-500">Login or Register if you don't have an Account</p>
-      </div>
+        <p className="text-sm text-gray-500">Login or Register if you don&apos;t have an Account</p>
+        </div>
 
       <div className="w-full py-2">
         <Tabs defaultValue="signin" className="w-full">
@@ -111,7 +118,7 @@ const AuthComponent = () => {
           <AnimatePresence mode="wait">
             <TabsContent value="signin" asChild>
               <motion.div
-                key="signin"
+                key="signin-tab"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
@@ -137,6 +144,7 @@ const AuthComponent = () => {
                       value={loginEmail}
                       onChange={(e) => setLoginEmail(e.target.value)}
                       required
+                      disabled={loginLoading}
                       className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-3"
                       placeholder="someone@example.com"
                     />
@@ -150,6 +158,7 @@ const AuthComponent = () => {
                       value={loginPassword}
                       onChange={(e) => setLoginPassword(e.target.value)}
                       required
+                      disabled={loginLoading}
                       className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-3"
                       placeholder="••••••••••••••"
                     />
@@ -158,7 +167,6 @@ const AuthComponent = () => {
                   {(loginClientError || loginServerError) && (
                     <Alert type="error" message={loginClientError || loginServerError} />
                   )}
-                  {loginServerSuccess && <Alert type="success" message={loginServerSuccess} />}
 
                   <button
                     type="submit"
@@ -168,18 +176,18 @@ const AuthComponent = () => {
                     {loginLoading ? <Spinner /> : "Login"}
                   </button>
                 </form>
-                <p className="text-center text-sm text-gray-500 mt-4">
+                {/* <p className="text-center text-sm text-gray-500 mt-4">
                   Forgot your password?{' '}
                   <Link href="/auth/reset" className="text-[#49176D] hover:underline">
                     Recover your account access now
                   </Link>
-                </p>
+                </p> */}
               </motion.div>
             </TabsContent>
 
             <TabsContent value="signup" asChild>
               <motion.div
-                key="signup"
+                key="signup-tab"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
