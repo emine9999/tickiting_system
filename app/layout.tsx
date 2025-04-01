@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Image from 'next/image';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,7 +28,24 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <div
+                  className="h-screen bg-[#272666]  relative overflow-hidden "
+                >
+                  <div className="absolute inset-0 w-full h-full ">
+                    <Image 
+                      src="/data/cv.svg" 
+                      alt="Auth Background" 
+                      fill
+                      style={{ objectFit: 'cover' }}
+                      priority
+                    />
+                  </div>
+                    
+                    <div className="bg-[#272666]"
+                    >
+                      {children}
+                    </div>
+                  </div>
       </body>
     </html>
   );

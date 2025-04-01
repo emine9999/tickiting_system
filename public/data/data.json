@@ -1,0 +1,94 @@
+[
+  {
+    "title": "Chat with amine",
+    "messages": [
+      {
+        "id": 1,
+        "user": "amine",
+        "message": "Building tools or features that help automate incident detection, provide better monitoring dashboards, optimize resource usage, and improve collaboration among teams can directly address many of these challenges. Also, integrating AI for predictive maintenance, anomaly detection, and automated incident remediation can help reduce the load on exploitation engineers and increase their efficiency in managing production environments."
+,
+        "timestamp": "2025-02-28T10:00:00Z"
+      },
+      {
+        "id": 2,
+        "user": "Alice",
+        "message": "I need help with my order.",
+        "timestamp": "2025-02-28T15:20:00Z"
+      },
+      {
+        "id": 3,
+        "user": "amine",
+        "message": "Sure, can you please provide your order number?",
+        "timestamp": "2025-02-28T15:22:00Z"
+      }
+    ]
+  },
+  {
+    "title": "Chat with Alice",
+    "messages": [
+      {
+        "id": 4,
+        "user": "Alice",
+        "message": "Hi! I have a question about my bill.",
+        "timestamp": "2025-02-26T11:00:00Z"
+      },
+      {
+        "id": 5,
+        "user": "Support",
+        "message": "Sure, what is your question?",
+        "timestamp": "2025-02-26T11:01:00Z"
+      }
+    ]
+  },
+  {
+    "title": "Chat with Bob",
+    "messages": [
+      {
+        "id": 6,
+        "user": "Bob",
+        "message": "Hey, I need assistance with my login issue.",
+        "timestamp": "2025-02-25T14:30:00Z"
+      },
+      {
+        "id": 7,
+        "user": "Support",
+        "message": "Of course! Can you describe the issue you're facing?",
+        "timestamp": "2025-02-25T14:32:00Z"
+      }
+    ]
+  },
+  {
+    "title": "Chat with Charlie",
+    "messages": [
+      {
+        "id": 8,
+        "user": "Charlie",
+        "message": "Hi! Is there any update on my refund?",
+        "timestamp": "2025-02-24T09:15:00Z"
+      },
+      {
+        "id": 9,
+        "user": "Support",
+        "message": "Your refund is currently being processed. It should reflect in your account within 3-5 business days.",
+        "timestamp": "2025-02-24T09:17:00Z"
+      }
+    ]
+  },
+  {
+    "title": "Chat with Daniel",
+    "messages": [
+      {
+        "id": 10,
+        "user": "Daniel",
+        "message": "Good morning! I need help setting up my new account.",
+        "timestamp": "2025-02-23T08:45:00Z"
+      },
+      {
+        "id": 11,
+        "user": "Support",
+        "message": "Good morning! I’d be happy to assist. Have you received the verification email?",
+        "timestamp": "2025-02-23T08:47:00Z"
+      }
+    ]
+  }
+]
