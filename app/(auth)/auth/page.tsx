@@ -1,6 +1,5 @@
 'use client';
 import React, { useState } from 'react';
-// import { useRouter } from 'next/navigation';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { motion, AnimatePresence } from 'framer-motion';
 import { signIn } from 'next-auth/react';
@@ -10,11 +9,10 @@ import { registerSchema } from '../../../lib/validationSchema';
 
 import Alert from '@/components/Alert';
 import Spinner from '@/components/Spinner';
-// import { loginAction } from '@/actions/AuthAction';
 import { registerAction } from '@/actions/AuthAction';
 
 const AuthComponent = () => {
-  // const router = useRouter();
+ 
 
   // Login form states
   const [loginEmail, setLoginEmail] = useState("");
@@ -43,16 +41,7 @@ const AuthComponent = () => {
     }
 
     setLoginLoading(true);
-    // try {
-    //   const result = await loginAction({ email: loginEmail, password: loginPassword });
-    //   // if (result?.success) {
-    //   //   router.push('/dashboard'); // Redirect to dashboard on success
-    //   // } else {
-    //   //   setLoginServerError(result.message);
-    //   // }
-    // } finally {
-    //   setLoginLoading(false);
-    // }
+
   };
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -84,7 +73,6 @@ const AuthComponent = () => {
         setSignupUsername("");
         setSignupEmail("");
         setSignupPassword("");
-        // router.push("/dashboard");
       }
     } finally {
       setSignupLoading(false);
@@ -128,7 +116,7 @@ const AuthComponent = () => {
                 <form onSubmit={handleSubmit} className="">
                   <button
                     type="button"
-                    onClick={() => signIn("github", { redirectTo: "/dashboard" })}
+                    onClick={() => signIn("google", { redirectTo: "/dashboard" })}
                     className="flex items-center justify-center gap-2 px-4 py-2.5 sm:py-3 mb-3 rounded-lg cursor-pointer border border-gray-200 dark:border-gray-700 shadow-sm w-full hover:shadow-md transition-shadow bg-white dark:bg-gray-800"
                   >
                     <FcGoogle size={24} />
