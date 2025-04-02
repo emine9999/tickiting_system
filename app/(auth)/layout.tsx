@@ -11,8 +11,6 @@ const gabarito = Gabarito({
   style: ["normal"],
 });
 
-
-
 export const metadata: Metadata = {
   title: "TICK-hub - Authentication",
   description: "Your New Ticketing System",
@@ -26,24 +24,23 @@ export default function AuthLayout({
   return (
     <html lang="en">
       <body
-        className={`${gabarito.variable}  font-sans antialiased`}
+        className={`${gabarito.variable} font-sans antialiased`}
       >
         <div
-          className="h-screen bg-[#272666]  text-white relative overflow-hidden flex items-center justify-center"
+          className="min-h-screen h-full bg-[#272666] text-white relative overflow-hidden flex items-center justify-center py-6 sm:py-10"
         >
-          <div className="absolute inset-0 w-full h-full ">
-            <Image 
-              src="/data/bg-pattern.svg" 
-              alt="Auth Background" 
+          <div className="absolute inset-0 w-full h-full">
+            <Image
+              src="/data/bg-pattern.svg"
+              alt="Auth Background"
               fill
               style={{ objectFit: 'cover' }}
               priority
             />
           </div>
-          <div className=" relative   z-10 p-15 flex flex-col items-center justify-center  w-full max-w-lg">
-            
+          <div className="relative z-10 flex flex-col items-center justify-center w-full max-w-xs sm:max-w-md md:max-w-lg px-4 sm:px-6">
             <div
-              className="flex flex-col items-center gap-8 bg-white rounded-2xl shadow-2xl p-8  w-full text-black"
+              className="flex flex-col items-center  bg-white  rounded-xl sm:rounded-2xl shadow-xl sm:shadow-2xl p-4   w-96 text-black"
             >
               {children}
             </div>

@@ -1,0 +1,86 @@
+import { Ticket } from "@/types/types";
+
+const data: Ticket[] = [
+  {
+    id: "tk001",
+    email: "john.doe@example.com",
+    category: "Billing",
+    status: "open",
+    priority: "high",
+    description: "Issue with incorrect charges on my invoice.",
+  },
+  {
+    id: "tk002",
+    email: "jane.smith@example.com",
+    category: "Technical Support",
+    status: "in progress",
+    priority: "medium",
+    description: "Unable to connect to the company VPN.",
+  },
+  {
+    id: "tk003",
+    email: "michael.brown@example.com",
+    category: "General Inquiry",
+    status: "closed",
+    priority: "low",
+    description: "Question about the new product features.",
+  },
+  {
+    id: "tk004",
+    email: "sarah.johnson@example.com",
+    category: "Account Management",
+    status: "open",
+    priority: "high",
+    description: "Need to update my billing address.",
+  },
+  {
+    id: "tk005",
+    email: "david.lee@example.com",
+    category: "Bug Report",
+    status: "pending",
+    priority: "critical",
+    description: "The website crashes when submitting a form.",
+  },
+  {
+    id: "tk006",
+    email: "emily.white@example.com",
+    category: "Technical Support",
+    status: "resolved",
+    priority: "medium",
+    description: "Printer not responding after latest update.",
+  },
+  {
+    id: "tk007",
+    email: "robert.jones@example.com",
+    category: "Billing",
+    status: "open",
+    priority: "high",
+    description: "Refund request for duplicate charges.",
+  },
+  {
+    id: "tk008",
+    email: "lisa.martin@example.com",
+    category: "Bug Report",
+    status: "in progress",
+    priority: "critical",
+    description: "Mobile app crashes when opening the dashboard.",
+  },
+  {
+    id: "tk009",
+    email: "steven.clark@example.com",
+    category: "Feature Request",
+    status: "pending",
+    priority: "low",
+    description: "Requesting dark mode for the application.",
+  },
+  {
+    id: "tk010",
+    email: "olivia.harris@example.com",
+    category: "Account Management",
+    status: "closed",
+    priority: "medium",
+    description: "Assistance needed in resetting the password.",
+  },
+];
+
+export default data;

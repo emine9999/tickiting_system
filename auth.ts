@@ -5,6 +5,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter"
 import { loginSchema } from "@/lib/validationSchema";
 import * as bcrypt from "bcryptjs";
 import GoogleProvider from "next-auth/providers/google";
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
   trustHost: true,
@@ -27,14 +28,32 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           const user = await prisma.user.findUnique({
             where: { email },
           });
+
           if (user && bcrypt.compareSync(password, user.password ?? "")) {
-            return user;
-          } else {
-            return null;
+            return {
+              id: user.id,
+              name: user.username, 
+              email: user.email,
+              image: user.image,
+            };
           }
         }
         return null;
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.name = user.name; 
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (token) {
+        session.user.name = token.name; 
+      }
+      return session;
+    },
+  },
 });

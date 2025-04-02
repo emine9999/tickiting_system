@@ -92,25 +92,25 @@ const AuthComponent = () => {
   };
 
   return (
-    <div className="w-full">
-      <div className="flex flex-col items-center text-center">
-        <h1 className="text-2xl sm:text-3xl font-bold">Welcome Back!</h1>
-        <p className="text-sm text-gray-500 mt-2">Glad to see you again 👋</p>
-        <p className="text-sm text-gray-500">Login or Register if you don&apos;t have an Account</p>
-        </div>
+    <div className="w-full max-w-md mx-auto px-4 sm:px-0 ">
+      <div className="flex flex-col items-center text-center mb-6">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">Welcome Back!</h1>
+        <p className="text-sm md:text-base text-gray-500 dark:text-gray-400 mt-2">Glad to see you again 👋</p>
+        <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Login or Register if you don&apos;t have an Account</p>
+      </div>
 
-      <div className="w-full py-2">
+      <div className="w-full ">
         <Tabs defaultValue="signin" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 bg-gray-100 rounded-lg p-1 h-full">
+          <TabsList className="grid w-full grid-cols-2 bg-gray-100 dark:bg-gray-800 rounded-lg p-1 h-full ">
             <TabsTrigger
               value="signin"
-              className="rounded-md py-2 px-4 data-[state=active]:bg-white data-[state=active]:shadow-sm transition-all"
+              className="rounded-md py-2.5 px-4 text-sm sm:text-base data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm transition-all"
             >
               Login
             </TabsTrigger>
             <TabsTrigger
               value="signup"
-              className="rounded-md py-2 px-4 data-[state=active]:bg-white data-[state=active]:shadow-sm transition-all"
+              className="rounded-md py-2.5 px-4 text-sm sm:text-base data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm transition-all"
             >
               Sign Up
             </TabsTrigger>
@@ -123,20 +123,29 @@ const AuthComponent = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.3 }}
+                className="space-y-5"
               >
-                <form onSubmit={handleSubmit}>
-                  <div>
-                    <button
-                      type="button"
-                      onClick={() => signIn("google")}
-                      className="flex items-center justify-center gap-2 px-2 py-2 mb-3 rounded-md cursor-pointer border-gray-200 border shadow-sm w-full hover:shadow-lg"
-                    >
-                      <FcGoogle size={32} />
-                      <span>Continue with Google</span>
-                    </button>
+                <form onSubmit={handleSubmit} className="">
+                  <button
+                    type="button"
+                    onClick={() => signIn("google")}
+                    className="flex items-center justify-center gap-2 px-4 py-2.5 sm:py-3 mb-3 rounded-lg cursor-pointer border border-gray-200 dark:border-gray-700 shadow-sm w-full hover:shadow-md transition-shadow bg-white dark:bg-gray-800"
+                  >
+                    <FcGoogle size={24} />
+                    <span className="text-sm sm:text-base font-medium">Continue with Google</span>
+                  </button>
 
-                    <p className="text-gray-500 text-center text-xl">or</p>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+                  <div className="relative flex items-center justify-center my-3">
+                    <div className="absolute inset-0 flex items-center">
+                      <div className="w-full border-t border-gray-200 dark:border-gray-700"></div>
+                    </div>
+                    <div className="relative px-4 bg-white dark:bg-gray-900 text-sm text-gray-500 dark:text-gray-400">
+                      or
+                    </div>
+                  </div>
+
+                  <div className="space-y-1  mb-2">
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
                     <input
                       type="email"
                       id="email"
@@ -145,12 +154,16 @@ const AuthComponent = () => {
                       onChange={(e) => setLoginEmail(e.target.value)}
                       required
                       disabled={loginLoading}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-3"
+                      className="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 p-2.5 sm:p-3 dark:bg-gray-800 dark:text-white"
                       placeholder="someone@example.com"
                     />
                   </div>
-                  <div>
-                    <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
+                  
+                  <div className="space-y-1">
+                    <div className="flex justify-between items-center">
+                      <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
+                      <a href="#" className="text-xs sm:text-sm text-blue-600 dark:text-blue-400 hover:underline">Forgot password?</a>
+                    </div>
                     <input
                       type="password"
                       id="password"
@@ -159,7 +172,7 @@ const AuthComponent = () => {
                       onChange={(e) => setLoginPassword(e.target.value)}
                       required
                       disabled={loginLoading}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-3"
+                      className="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 p-2.5 sm:p-3 dark:bg-gray-800 dark:text-white"
                       placeholder="••••••••••••••"
                     />
                   </div>
@@ -171,17 +184,11 @@ const AuthComponent = () => {
                   <button
                     type="submit"
                     disabled={loginLoading}
-                    className="w-full disabled:bg-blue-300 bg-blue-600 text-white rounded-md py-3 px-4 hover:bg-[#4861DD] transition-colors"
+                    className="w-full mt-6 disabled:bg-blue-300 dark:disabled:bg-blue-800 bg-blue-600 dark:bg-blue-500 text-white rounded-lg py-2.5 sm:py-3 px-4 hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors font-medium text-sm sm:text-base shadow-sm"
                   >
                     {loginLoading ? <Spinner /> : "Login"}
                   </button>
                 </form>
-                {/* <p className="text-center text-sm text-gray-500 mt-4">
-                  Forgot your password?{' '}
-                  <Link href="/auth/reset" className="text-[#49176D] hover:underline">
-                    Recover your account access now
-                  </Link>
-                </p> */}
               </motion.div>
             </TabsContent>
 
@@ -193,9 +200,9 @@ const AuthComponent = () => {
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.3 }}
               >
-                <form onSubmit={handleRegister} className="space-y-4 mt-6">
-                  <div>
-                    <label htmlFor="username" className="block text-sm font-medium text-gray-700">Username</label>
+                <form onSubmit={handleRegister} className="space-y-4">
+                  <div className="space-y-1">
+                    <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Username</label>
                     <input
                       type="text"
                       id="username"
@@ -203,12 +210,13 @@ const AuthComponent = () => {
                       value={signupUsername}
                       onChange={(e) => setSignupUsername(e.target.value)}
                       required
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-3"
+                      className="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 p-2.5 sm:p-3 dark:bg-gray-800 dark:text-white"
                       placeholder="Username"
                     />
                   </div>
-                  <div>
-                    <label htmlFor="signup-email" className="block text-sm font-medium text-gray-700">Email</label>
+                  
+                  <div className="space-y-1">
+                    <label htmlFor="signup-email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
                     <input
                       type="email"
                       id="signup-email"
@@ -216,12 +224,13 @@ const AuthComponent = () => {
                       value={signupEmail}
                       onChange={(e) => setSignupEmail(e.target.value)}
                       required
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-3"
+                      className="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 p-2.5 sm:p-3 dark:bg-gray-800 dark:text-white"
                       placeholder="john@example.com"
                     />
                   </div>
-                  <div>
-                    <label htmlFor="signup-password" className="block text-sm font-medium text-gray-700">Password</label>
+                  
+                  <div className="space-y-1">
+                    <label htmlFor="signup-password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
                     <input
                       type="password"
                       id="signup-password"
@@ -229,7 +238,7 @@ const AuthComponent = () => {
                       value={signupPassword}
                       onChange={(e) => setSignupPassword(e.target.value)}
                       required
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-3"
+                      className="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 p-2.5 sm:p-3 dark:bg-gray-800 dark:text-white"
                       placeholder="••••••••••••••"
                     />
                   </div>
@@ -242,7 +251,7 @@ const AuthComponent = () => {
                   <button
                     type="submit"
                     disabled={signupLoading}
-                    className="w-full disabled:bg-blue-300 bg-blue-600 text-white rounded-md py-3 px-4 hover:bg-[#4861DD] transition-colors"
+                    className="w-full mt-6 disabled:bg-blue-300 dark:disabled:bg-blue-800 bg-blue-600 dark:bg-blue-500 text-white rounded-lg py-2.5 sm:py-3 px-4 hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors font-medium text-sm sm:text-base shadow-sm"
                   >
                     {signupLoading ? <Spinner /> : "Sign Up"}
                   </button>

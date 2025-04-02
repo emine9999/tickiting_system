@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import NextAuthProvider from "@/contexts/NextAuthProvider";
+import { SessionProvider } from "next-auth/react"
 
 
 const geistSans = Geist({
@@ -27,26 +28,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <div
-                  className="h-screen bg-[#272666]  relative overflow-hidden "
-                >
-                  {/* <div className="absolute inset-0 w-full h-full ">
-                    <Image 
-                      src="/data/cv.svg" 
-                      alt="Auth Background" 
-                      fill
-                      style={{ objectFit: 'cover' }}
-                      priority
-                    />
-                  </div> */}
-                    
-                    <div className="bg-[#272666]"
-                    >
-                     <NextAuthProvider>{children}</NextAuthProvider>
-                    </div>
-                  </div>
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}  >  
+
+         
+             <SessionProvider>
+      
+  
+             <NextAuthProvider>{children}</NextAuthProvider> 
+               </SessionProvider>
+                      
       </body>
     </html>
   );
