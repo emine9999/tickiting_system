@@ -12,17 +12,17 @@ export const loginAction = async (data: z.infer<typeof loginSchema>) => {
   if (!validation.success) {
     return { success: false, message: "Invalid credentials" };
   }
-
+  
   const { email, password } = validation.data;
-
+  
   try {
     await signIn("credentials", {
       email,
       password,
-      redirect: false,
+      redirectTo: "/dashboard"
     });
   } catch (error) {
-    if (error instanceof AuthError) { 
+    if (error instanceof AuthError) {
       switch (error.type) {
         case "CredentialsSignin":
           return { success: false, message: "Invalid email or password" };
@@ -35,12 +35,10 @@ export const loginAction = async (data: z.infer<typeof loginSchema>) => {
   return { success: true, message: "Logged in successfully" };
 };
 
-
-// ------------------------registerAction------------------------
 export const registerAction = async (data: z.infer<typeof registerSchema>) => {
   const validation = registerSchema.safeParse(data);
   if (!validation.success) {
-    return { error: validation.error.errors[0].message };
+    return { success: false, message: validation.error.errors[0].message };
   }
 
   const { username, email, password } = validation.data;
@@ -52,7 +50,7 @@ export const registerAction = async (data: z.infer<typeof registerSchema>) => {
     });
 
     if (user) {
-      return { error: "Email already exists" };
+      return { success: false, message: "Email already exists" };
     }
 
     // Hash the password
@@ -68,21 +66,26 @@ export const registerAction = async (data: z.infer<typeof registerSchema>) => {
       },
     });
 
-    
-    const loginResult = await signIn("credentials", {
+try {
+    await signIn("credentials", {
       email,
       password,
-      redirect: false, 
+      redirectTo: "/dashboard"
     });
-
-    if (loginResult?.error) {
-      return { error: "Registration successful, but login failed." };
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case "CredentialsSignin":
+          return { success: false, message: "Invalid email or password" };
+        default:
+          return { success: false, message: "An unexpected error occurred" };
+      }
     }
-
-    return { success: "Registered and logged in successfully" };
+    throw error;
+  }
   } catch (error) {
     console.error("Registration error:", error);
-    return { error: "An unexpected error occurred during registration" };
+    return { success: false, message: "An unexpected error occurred during registration" };
   }
 };
 
