@@ -16,7 +16,7 @@ import {
 
 const SHEET_SIDES = [ "right"] as const
 
-type SheetSide = (typeof SHEET_SIDES)[number]
+
 
 export default function Notification() {
   return (
@@ -30,7 +30,7 @@ export default function Notification() {
             <SheetHeader>
               <SheetTitle>Edit profile</SheetTitle>
               <SheetDescription>
-                Make changes to your profile here. Click save when you're done.
+                Make changes to your profile here. Click save when your&apose; done.
               </SheetDescription>
             </SheetHeader>
             <div className="grid gap-4 py-4">

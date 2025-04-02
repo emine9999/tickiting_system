@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
-const protectedRoutes = ["/dashboard", "/profile", "/settings"];
+const protectedRoutes = ["/dashboard"];
 
 export async function middleware(request: NextRequest) {
   const { nextUrl } = request;
   const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+  console.log("token", token);
   const isAuthenticated = !!token;
+  console.log("isAuthenticated", isAuthenticated);
 
   const isProtected = protectedRoutes.includes(nextUrl.pathname);
 
@@ -21,5 +23,5 @@ export async function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 export const config = {
-  matcher: ["/auth", "/dashboard", "/profile", ],
+  matcher: ["/auth", "/dashboard",],
 };

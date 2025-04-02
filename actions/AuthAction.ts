@@ -68,11 +68,11 @@ export const registerAction = async (data: z.infer<typeof registerSchema>) => {
       },
     });
 
-    // ✅ Automatically sign in the user after registration
+    
     const loginResult = await signIn("credentials", {
       email,
       password,
-      redirect: false, // Prevents automatic redirection
+      redirect: false, 
     });
 
     if (loginResult?.error) {
