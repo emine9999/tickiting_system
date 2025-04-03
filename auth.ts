@@ -19,6 +19,25 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      // add this to the provider options
+      async profile(profile) {
+        const user = await prisma.user.findUnique({
+          where: { email: profile.email },
+        });
+        if (!user) {
+          // Create a new user in your database
+          const newUser = await prisma.user.create({
+            data: {
+              email: profile.email,
+              username: profile.name,
+              image: profile.picture,
+            },
+          });
+          return newUser;
+        }
+        console.log("OAuth User Profile:", profile);
+        return user;
+      }
     }),
     Credentials({
       async authorize(data) {
@@ -37,8 +56,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               image: user.image,
             };
           }
+
         }
         return null;
+        
       },
     }),
   ],
