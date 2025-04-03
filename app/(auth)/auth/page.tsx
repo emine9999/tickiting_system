@@ -6,11 +6,10 @@ import { signIn } from 'next-auth/react';
 import { FcGoogle } from "react-icons/fc";
 import { loginSchema } from '../../../lib/validationSchema';
 import { registerSchema } from '../../../lib/validationSchema';
-
+import { loginAction } from '@/actions/AuthAction';
 import Alert from '@/components/Alert';
 import Spinner from '@/components/Spinner';
 import { registerAction } from '@/actions/AuthAction';
-
 const AuthComponent = () => {
  
 
@@ -41,6 +40,16 @@ const AuthComponent = () => {
     }
 
     setLoginLoading(true);
+    try {
+      const result = await loginAction({ email: loginEmail, password: loginPassword });
+        if (result?.success){
+          console.log("User logged in successfully", result.success);
+        } else {
+          setLoginServerError(result.message);
+        } 
+    } finally {
+      setLoginLoading(false);
+    }
 
   };
 
@@ -54,6 +63,7 @@ const AuthComponent = () => {
       email: signupEmail,
       password: signupPassword,
     });
+    
     if (!validation.success) {
       return setSignupClientError(validation.error.errors[0].message);
     }
@@ -70,6 +80,7 @@ const AuthComponent = () => {
       }
       if (result?.success) {
         setSignupServerSuccess(result.success);
+        console.log("User registered successfully", result.success);
         setSignupUsername("");
         setSignupEmail("");
         setSignupPassword("");

@@ -7,22 +7,23 @@ import * as bcrypt from "bcryptjs";
 import { signIn,signOut } from "@/auth";
 import { AuthError } from "next-auth";
 
+
 export const loginAction = async (data: z.infer<typeof loginSchema>) => {
   const validation = loginSchema.safeParse(data);
   if (!validation.success) {
     return { success: false, message: "Invalid credentials" };
   }
-  
+
   const { email, password } = validation.data;
-  
+
   try {
     await signIn("credentials", {
       email,
       password,
-      redirectTo: "/dashboard"
+      redirect : false,
     });
   } catch (error) {
-    if (error instanceof AuthError) {
+    if (error instanceof AuthError) { 
       switch (error.type) {
         case "CredentialsSignin":
           return { success: false, message: "Invalid email or password" };
@@ -35,29 +36,31 @@ export const loginAction = async (data: z.infer<typeof loginSchema>) => {
   return { success: true, message: "Logged in successfully" };
 };
 
+
+// ------------------------registerAction------------------------
 export const registerAction = async (data: z.infer<typeof registerSchema>) => {
   const validation = registerSchema.safeParse(data);
   if (!validation.success) {
-    return { success: false, message: validation.error.errors[0].message };
+    return { error: validation.error.errors[0].message };
   }
 
   const { username, email, password } = validation.data;
 
   try {
-    // Check if the user already exists
+    // Vérifier si l'utilisateur existe déjà
     const user = await prisma.user.findUnique({
       where: { email },
     });
 
     if (user) {
-      return { success: false, message: "Email already exists" };
+      return { error: "Email already exists" };
     }
 
-    // Hash the password
+    // Hacher le mot de passe
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Create the new user
+    // Créer l'utilisateur
     await prisma.user.create({
       data: {
         username,
@@ -66,28 +69,26 @@ export const registerAction = async (data: z.infer<typeof registerSchema>) => {
       },
     });
 
-try {
-    await signIn("credentials", {
+    // Connexion après l'inscription (DÉSACTIVER la redirection)
+    const loginResult = await signIn("credentials", {
       email,
       password,
-      redirectTo: "/dashboard"
+      redirect: false, // Désactiver la redirection automatique
     });
-  } catch (error) {
-    if (error instanceof AuthError) {
-      switch (error.type) {
-        case "CredentialsSignin":
-          return { success: false, message: "Invalid email or password" };
-        default:
-          return { success: false, message: "An unexpected error occurred" };
-      }
+
+    if (loginResult?.error) {
+      return { error: "Registration successful, but login failed." };
     }
-    throw error;
-  }
+
+    // Retourner une indication de succès et rediriger côté client
+    return { success: "Registered and logged in successfully"};
+
   } catch (error) {
     console.error("Registration error:", error);
-    return { success: false, message: "An unexpected error occurred during registration" };
+    return { error: "An unexpected error occurred during registration" };
   }
 };
+
 
 
 //---------------------------------logoutAction---------------------------------
