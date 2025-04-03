@@ -127,7 +127,7 @@ const AuthComponent = () => {
                 <form onSubmit={handleSubmit} className="">
                   <button
                     type="button"
-                    onClick={() => signIn("google", { redirectTo: "/dashboard" })}
+                    onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
                     className="flex items-center justify-center gap-2 px-4 py-2.5 sm:py-3 mb-3 rounded-lg cursor-pointer border border-gray-200 dark:border-gray-700 shadow-sm w-full hover:shadow-md transition-shadow bg-white dark:bg-gray-800"
                   >
                     <FcGoogle size={24} />
