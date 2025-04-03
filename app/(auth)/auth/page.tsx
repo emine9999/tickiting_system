@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { motion, AnimatePresence } from 'framer-motion';
 import { signIn } from 'next-auth/react';
@@ -12,7 +13,7 @@ import Spinner from '@/components/Spinner';
 import { registerAction } from '@/actions/AuthAction';
 const AuthComponent = () => {
  
-
+  const router = useRouter();
   // Login form states
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
@@ -48,7 +49,9 @@ const AuthComponent = () => {
           setLoginServerError(result.message);
         } 
     } finally {
+      router.push('/dashboard');
       setLoginLoading(false);
+      
     }
 
   };
@@ -86,6 +89,7 @@ const AuthComponent = () => {
         setSignupPassword("");
       }
     } finally {
+      router.push('/dashboard');
       setSignupLoading(false);
     }
   };

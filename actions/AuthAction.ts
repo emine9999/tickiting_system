@@ -73,7 +73,7 @@ export const registerAction = async (data: z.infer<typeof registerSchema>) => {
     const loginResult = await signIn("credentials", {
       email,
       password,
-      redirect: false, // Désactiver la redirection automatique
+      redirect: false,
     });
 
     if (loginResult?.error) {
