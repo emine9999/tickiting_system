@@ -53,7 +53,7 @@ export const columns: ColumnDef<Ticket>[] = [
         )}
       </Button>
     ),
-    cell: ({ row }) => <div className="w-fit ml-3">{row.getValue("id")}</div>,
+    cell: ({ row }) => <div className="bg-slate-200 rounded-full px-2 text-center dark:text-red-900">{row.getValue("id")}</div>,
   },
   {
     accessorKey: "clientName", 
@@ -79,7 +79,7 @@ export const columns: ColumnDef<Ticket>[] = [
     header: "Category",
     cell: ({ row }) => 
     
-    <div>{row.getValue("category")}</div>,
+    <div >{row.getValue("category")}</div>,
   },
   {
     accessorKey: "status",

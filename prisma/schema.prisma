@@ -8,18 +8,70 @@ generator client {
 }
  
 model User {
-  id            String          @id @default(auto()) @map("_id") @db.ObjectId
-  username      String?
-  name          String?
-  email         String?         @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  password      String?
- 
+  id             String      @id @default(auto()) @map("_id") @db.ObjectId
+  username       String?
+  name           String?
+  email          String?     @unique
+  emailVerified  DateTime?
+  image          String?
+  password       String?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  // Relations
+  accounts       Account[]   
+  tickets        Ticket[]    @relation("UserTickets") // Tickets created by the user
+  assignedTickets Ticket[]   @relation("UserAssignedTickets") // Tickets assigned to the user
+  comments       Comment[]   @relation("UserComments") // Comments made by the user
+}
+
+enum Status {
+  OPEN
+  IN_PROGRESS
+  CLOSED
+  PENDING
+  REJECTED
+}
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+model Ticket {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String
+  priority    String   @default("LOW")
+  status      String   @default("OPEN") 
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  type        String   @default("TASK") 
+  // Foreign Keys
+  userId      String   @db.ObjectId // Creator of the ticket
+  assignedToId String? @db.ObjectId // Assigned user (nullable)
+
+  // Relations
+  createdBy   User    @relation("UserTickets", fields: [userId], references: [id])
+  assignedTo  User?   @relation("UserAssignedTickets", fields: [assignedToId], references: [id], onDelete: SetNull) //If an assigned user is deleted, the ticket remains but becomes unassigned.
+  comments    Comment[] @relation("TicketComments")
+}
+
+model Comment {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  content   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // Foreign Keys
+  userId    String?  @db.ObjectId
+  ticketId  String   @db.ObjectId
+
+  // Relations
+  user      User?    @relation("UserComments", fields: [userId], references: [id], onDelete: SetNull) // If a user is deleted, the comment remains but becomes null 
+  ticket    Ticket   @relation("TicketComments", fields: [ticketId], references: [id], onDelete: Cascade)
 }
+
  
 model Account {
   id                String  @id @default(auto()) @map("_id") @db.ObjectId

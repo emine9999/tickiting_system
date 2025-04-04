@@ -12,7 +12,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               >
     <SidebarProvider>
       <AppSidebar />
-      <main className='w-full h-screen'>
+      <main className='w-full h-screen overflow-x-hidden'>
         <SidebarTrigger />
         {children}
                   

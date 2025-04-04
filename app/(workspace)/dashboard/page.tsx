@@ -5,7 +5,7 @@ import { ChannelsChart } from '@/components/charts/ChannelsChart';
 import {auth} from '@/auth'
 export default async function Dashboard() {
   const session = await auth()
-  console.log(session)
+  console.log("session",session)
   const data = [
     {
       title: 'Created Tickets',

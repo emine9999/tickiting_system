@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
-const protectedRoutes = ["/dashboard"];
+const protectedRoutes = ["/dashboard","/tickets"];
 
 export async function middleware(request: NextRequest) {
   const { nextUrl } = request;
@@ -33,6 +33,7 @@ export const config = {
   matcher: [
     "/auth", 
     "/dashboard",
+    "/tickets",
     // Exclude all API auth routes from middleware
     "/((?!api/auth).*)"
   ],
