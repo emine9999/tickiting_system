@@ -10,13 +10,9 @@ export const ticketSchema = z.object({
         .max(500, { message: 'Description cannot exceed 500 characters' })
         .regex(/^(?!\s*$).+/, { message: 'Description must contain at least one sentence' }),
 
-    status: z.enum(['open', 'in-progress', 'closed', 'pending', 'rejected'], {
-        errorMap: () => ({ message: 'Status is required' }),
-    }),
+    status: z.enum(['open', 'in-progress', 'closed', 'pending', 'rejected']),
     type: z.enum(['bug', 'feature', 'task'] ).optional(),
-    priority: z.enum(['low', 'medium', 'high', 'urgent'], {
-        errorMap: () => ({ message: 'Priority is required' }),
-    }),
+    priority: z.enum(['low', 'medium', 'high', 'urgent']),
 
     assignedTo: z.string().email({ message: 'AssignedTo must be a valid email address' }).optional(),
 
