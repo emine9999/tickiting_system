@@ -7,7 +7,7 @@ import Notification from '@/components/Notification'
 import Ticket from '@/components/Ticket'
 import UserProfile from '@/components/UserProfile'
 import { useSession,signOut } from "next-auth/react";
-
+import AdminNav from '@/components/AdminNav'
 
 import {
   Sidebar,
@@ -49,11 +49,12 @@ const items = [
     url: '/documentation',
     icon: FileSearch,
   },
-  {
-    title: 'Report',
-    url: '/report',
-    icon: ChartNoAxesCombined,
-  },
+  // {
+  //   title: 'Report',
+  //   url: '/report',
+  //   icon: ChartNoAxesCombined,
+  // },
+
 ];
 
 
@@ -136,7 +137,7 @@ export function AppSidebar() {
 
           <SidebarGroup>
             <SidebarGroupContent>
-              <SidebarMenu className="space-y-3">
+              <SidebarMenu className="space-y-3 ">
                 {items.map((item) => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild>
@@ -149,10 +150,15 @@ export function AppSidebar() {
                    
                   </SidebarMenuItem>
                 ))}
+             
                  <div className='w-full  gap-2 flex justify-start px-2 py-1 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg items-center'>
                       <BellRing/>
                     <Notification />
+                   
                     </div>
+                   
+                    <AdminNav/>
+                   
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
@@ -170,7 +176,10 @@ export function AppSidebar() {
                         <span>{ticket.title}</span>
                         <Pin size={17} />
                     </SidebarMenuButton>
+                   
+                   
                   </SidebarMenuItem>
+
                 ))}
               
               </SidebarMenu>

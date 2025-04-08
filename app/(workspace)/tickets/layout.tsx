@@ -50,7 +50,7 @@ export default function TicketLayout({ children }: { children: ReactNode }) {
 
       <main>{children}</main>
       <AddTicket isOpen={showModal} onClose={() => setShowModal(false)} />
-      <footer>Custom Footer</footer>
+      <footer></footer>
     </div>
   );
 }

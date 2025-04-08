@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 const Page = () => {
   return (
-    <div className="container px-4 sm:px-8 lg:px-16 h-screen  relative bg-[#272666]  z-10 ">
+    <div className=" px-4 sm:px-8 lg:px-16 h-screen  relative bg-[#272666]  z-10 ">
 
       <div className=" p-5 flex justify-between items-center">
         <div className=" w-48 flex justify-evenly items-center text-white">
