@@ -4,6 +4,7 @@ import { Home, Bot, TicketCheck, FileSearch } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useSession } from "next-auth/react";
 import Link from 'next/link';
+import { UserCog,Wrench } from 'lucide-react';
 
 const navItems = [
   {
@@ -15,8 +16,13 @@ const navItems = [
     icon: Bot,
   },
   {
-    url: '/tickets',
-    icon: TicketCheck,
+    url: '/users',
+    icon: UserCog 
+    ,
+  },
+  {
+    url: '/roles',
+    icon: Wrench,
   },
   {
     url: '/documentation',
@@ -28,12 +34,13 @@ export default function UserSideBar() {
   const { data: session } = useSession();
   
   return (
-    <div className="h-screen w-20 flex flex-col py-6 bg-white border-r border-gray-100">
+    <div className="min-h-screen w-20 flex flex-col py-6 bg-[#272666] border-r border-gray-100">
       {/* Logo section */}
-      <div className="px-4 mb-10 flex flex-col items-center justify-center">
-        <h1 className="font-bold text-2xl text-indigo-600">TICK</h1>
-        <span className="font-bold text-xl text-indigo-600 text-center">hub</span>
-      </div>
+ <Link href='/'>
+<div className="px-4 mb-10 flex flex-col items-center justify-center">
+        <h1 className="font-bold text-2xl text-slate-200 underline">TICK</h1>
+        <span className="font-bold text-xl text-slate-200 text-center underline">hub</span>
+      </div></Link>
 
       {/* Navigation section */}
       <div className="flex-1 flex flex-col items-center space-y-8">
@@ -41,13 +48,12 @@ export default function UserSideBar() {
           <Link
             key={item.url}
             href={item.url}
-            className="text-gray-500 hover:text-gray-800"
+            className="text-white hover:bg-blue-500 bg-slate-500 rounded-xl p-1"
           >
             <item.icon className="w-6 h-6" />
           </Link>
         ))}
       </div>
-
       {/* User profile section */}
       <div className="flex justify-center mt-auto">
         <Avatar className="w-12 h-12">

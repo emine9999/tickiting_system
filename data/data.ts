@@ -1,5 +1,4 @@
 import { Ticket } from "@/types/types";
-
 const data: Ticket[] = [
   {
     id: "tk001",
@@ -121,3 +120,8 @@ const data: Ticket[] = [
 ];
 
 export default data;
+
+
+
+
+
