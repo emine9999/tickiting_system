@@ -3,7 +3,6 @@ import { Home, Bot, TicketCheck } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Search ,UsersRound,Pin,BellRing,FileSearch,ChartNoAxesCombined,LogOut  } from 'lucide-react';
 import ModeToggle  from './ModeToggle';
-import Notification from '@/components/Notification'
 import Ticket from '@/components/Ticket'
 import UserProfile from '@/components/UserProfile'
 import { useSession,signOut } from "next-auth/react";
@@ -97,7 +96,7 @@ const tickets = [
   },
 ];
 
-export function AppSidebar() {
+export function AppSidebar({ onButtonClick }: { onButtonClick: () => void }) {
   const { data: session } = useSession();
   
   return (
@@ -153,8 +152,9 @@ export function AppSidebar() {
              
                  <div className='w-full  gap-2 flex justify-start px-2 py-1 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg items-center'>
                       <BellRing/>
-                    <Notification />
-                   
+                    <button className='cursor-pointer' onClick={ onButtonClick }>
+                      Notification
+                    </button>
                     </div>
                    
                     <AdminNav/>

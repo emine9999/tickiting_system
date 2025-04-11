@@ -1,60 +1,81 @@
-"use client"
+import { BellRing, Check } from "lucide-react"
 
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet"
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Switch } from "@/components/ui/switch"
+import { boolean } from "zod"
 
-const SHEET_SIDES = [ "right"] as const
+const notifications = [
+  {
+    title: "Your call has been confirmed.",
+    description: "1 hour ago",
+  },
+  {
+    title: "You have a new message!",
+    description: "1 hour ago",
+  },
+  {
+    title: "Your subscription is expiring soon!",
+    description: "2 hours ago",
+  },
+]
 
+type CardProps = React.ComponentProps<typeof Card>
 
-
-export default function Notification() {
+export default function Notification({ className, ...props }: CardProps) {
   return (
-    <div className="grid grid-cols-2 gap-2">
-      {SHEET_SIDES.map((side) => (
-        <Sheet key={side}>
-          <SheetTrigger asChild>
-            <button >Notification</button>
-          </SheetTrigger>
-          <SheetContent side={side}>
-            <SheetHeader>
-              <SheetTitle>Edit profile</SheetTitle>
-              <SheetDescription>
-                Make changes to your profile here. Click save when your&apose; done.
-              </SheetDescription>
-            </SheetHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="name" className="text-right">
-                  Name
-                </Label>
-                <Input id="name" value="Pedro Duarte" className="col-span-3" />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="username" className="text-right">
-                  Username
-                </Label>
-                <Input id="username" value="@peduarte" className="col-span-3" />
+<div className="w-full h-full inset-0 fixed  backdrop-blur-sm ">
+<Card className={cn("w-[380px] fixed left-72 top-5 ", className)} {...props} >
+      <CardHeader>
+        <CardTitle>Notifications</CardTitle>
+        <CardDescription>You have 3 unread messages.</CardDescription>
+      </CardHeader>
+      <CardContent className="grid gap-4">
+        <div className=" flex items-center space-x-4 rounded-md border p-4">
+          <BellRing />
+          <div className="flex-1 space-y-1">
+            <p className="text-sm font-medium leading-none">
+              Push Notifications
+            </p>
+            <p className="text-sm text-muted-foreground">
+              Send notifications to device.
+            </p>
+          </div>
+          <Switch />
+        </div>
+        <div>
+          {notifications.map((notification, index) => (
+            <div
+              key={index}
+              className="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0"
+            >
+              <span className="flex h-2 w-2 translate-y-1 rounded-full bg-sky-500" />
+              <div className="space-y-1">
+                <p className="text-sm font-medium leading-none">
+                  {notification.title}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  {notification.description}
+                </p>
               </div>
             </div>
-            <SheetFooter>
-              <SheetClose asChild>
-                <Button type="submit">Save changes</Button>
-              </SheetClose>
-            </SheetFooter>
-          </SheetContent>
-        </Sheet>
-      ))}
-    </div>
+          ))}
+        </div>
+      </CardContent>
+      <CardFooter>
+        <Button className="w-full">
+          <Check /> Mark all as read
+        </Button>
+      </CardFooter>
+    </Card>
+</div>
   )
 }

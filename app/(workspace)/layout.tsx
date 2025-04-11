@@ -1,8 +1,15 @@
+"use client"
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/App-sidebar"
 import { ThemeProvider } from "@/components/theme-provider"
+import { useState } from 'react';
+import Notification from '@/components/Notification'
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default function Layout({ children  }: { children: React.ReactNode }) {
+  const [isToggle,setToggle] = useState(false)
+  const handleclick =()=>{
+    setToggle(!isToggle)
+  }
   return (
      <ThemeProvider
                 attribute="class"
@@ -11,9 +18,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 disableTransitionOnChange
               >
     <SidebarProvider>
-      <AppSidebar />
+      <AppSidebar onButtonClick={handleclick}/>
       <main className='w-full h-screen overflow-x-hidden'>
         <SidebarTrigger />
+        {isToggle && <Notification/>}
         {children}
                   
         

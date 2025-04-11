@@ -4,6 +4,8 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal, ArrowUp, ArrowDown,PencilLine,Trash2,Dot } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import {Delete} from '@/components/Delete'
+import {EditUser} from '@/components/EditUser'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,7 +15,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-export const columns: ColumnDef<User>[] = [
+interface ColumnsProps {
+  toggleVisibility: (show: boolean) => void;
+  showProfile: boolean;
+}
+
+export const columns = ({ toggleVisibility, showProfile }: ColumnsProps): ColumnDef<User>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -111,27 +118,19 @@ export const columns: ColumnDef<User>[] = [
     cell: ({ row }) => {
       const { reset_password , delete: deleteUrl } = row.original.actions;
 
+
+
+      
       return (
         <div className="flex gap-5">
           {reset_password && (
-                <><PencilLine color="#BCCCDC"/><a
-              href={reset_password}
-              className="text-blue-500 hover:underline"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Reset Password
-            </a></>
+<div className="flex items-center gap-1"><PencilLine color="#BCCCDC"/>
+<EditUser/></div>
           )}
           {deleteUrl && (
-                <><Trash2 color="#BCCCDC"/><a
-              href={deleteUrl}
-              className="text-red-500 hover:underline"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Delete
-            </a></>
+               <div className="flex items-center gap-1"><Trash2 color="#BCCCDC"/>
+              <Delete/>
+              </div>
           )}
         </div>
       );
@@ -142,6 +141,7 @@ export const columns: ColumnDef<User>[] = [
     enableHiding: false,
     cell: ({ row }) => {
       const user = row.original;
+
 
       return (
         <DropdownMenu>
@@ -159,7 +159,14 @@ export const columns: ColumnDef<User>[] = [
               Copy User ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View User details</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                window.location.href = '/users/1';
+              }}
+            >
+              View details
+            </DropdownMenuItem>
+          
             <DropdownMenuItem>Assign Role</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

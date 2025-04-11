@@ -1,47 +1,66 @@
-import React from 'react'
-import Image from 'next/image'
+import React from 'react';
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+
+
 
 const Profile = () => {
-  return (
-    <div className="p-4 max-w-4xl mx-auto">
-      {/* Profile Image Section */}
-      <div className="flex justify-center items-center h-64 bg-gray-900 rounded-lg">
-        <Image
-          src={'/data/glx.jpg'}
-          width={200}
-          height={200}
-          alt="Profile"
-          className="rounded-full object-cover"
-        />
-      </div>
+ 
+  return(
+    <div>
+      <div className="px-10 shadow-lg  container mx-auto h-screen  flex flex-col justify-center bg-gradient-to-r from-green-100 to-zinc-400 ">
+        {/* Header Section */}
+        <div className="flex justify-between items-center mx-2 sm:mx-4 lg:mx-8 xl:mx-12 2xl:mx-16">
+          <h3 className="text-2xl font-bold text-slate-600">Profile</h3>
 
-      {/* Profile Details Section */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-        {/* Labels */}
-        <div className="space-y-6">
-          <p className="text-lg font-semibold text-gray-700 border-b pb-2">Email</p>
-          <p className="text-lg font-semibold text-gray-700 border-b pb-2">Password</p>
-          <p className="text-lg font-semibold text-gray-700 border-b pb-2">Group</p>
-          <p className="text-lg font-semibold text-gray-700 border-b pb-2">Bio</p>
         </div>
-
-        {/* Values */}
-        <div className="space-y-6">
-          <p className="text-lg text-gray-600 border-b pb-2">amineelhasbi@gmail.com</p>
-          <p className="text-lg text-gray-600 border-b pb-2">**********</p>
-          <p className="text-lg text-gray-600 border-b pb-2">SIR</p>
-          <p className="text-lg text-gray-600 border-b pb-2">I'm an engineering student</p>
-        </div>
-
-        <div className="space-y-6">
-<a>Edit</a>
-<a>Edit</a>
-<a>Edit</a>
-<a>Edit</a>
+        {/* body section */}
+        <div className=' flex  justify-center  gap-10  mt-8 '>
+        
+          <div className='w-full '>
+                <Card className='' >
+            <CardHeader>
+              <CardTitle>Edit your Profile</CardTitle>
+              <CardDescription>Personal Information.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form>
+                <div className="grid w-full items-center gap-4">
+                  
+                  <div className="flex flex-col space-y-1.5">
+                    <Label htmlFor="name">Username</Label>
+                    <Input id="name" placeholder="Your Username" />
+                  </div>
+                  <div className="flex flex-col space-y-1.5">
+                    <Label htmlFor="name">Password</Label>
+                    <Input id="name" placeholder="Your Password" />
+                  </div>
+                  <div className="flex flex-col space-y-1.5">
+                    <Label htmlFor="name">Bio</Label>
+                    <Input id="name" placeholder="Your Bio" />
+                  </div>
+                 
+                </div>
+              </form>
+            </CardContent>
+            <CardFooter className="flex justify-between">
+              <Button className='bg-blue-600 hover:bg-blue-500 cursor-pointer'>Saved</Button>
+            </CardFooter>
+          </Card>
+          </div>
         </div>
       </div>
     </div>
   )
-}
+};
 
-export default Profile
+export default Profile;

@@ -34,12 +34,12 @@ export default function UserSideBar() {
   const { data: session } = useSession();
   
   return (
-    <div className="min-h-screen w-20 flex flex-col py-6 bg-[#272666] border-r border-gray-100">
+    <div className="min-h-screen w-20 flex flex-col py-6 bg-gradient-to-r from-green-100 to-zinc-400 border-r border-gray-100">
       {/* Logo section */}
  <Link href='/'>
 <div className="px-4 mb-10 flex flex-col items-center justify-center">
-        <h1 className="font-bold text-2xl text-slate-200 underline">TICK</h1>
-        <span className="font-bold text-xl text-slate-200 text-center underline">hub</span>
+        <h1 className="font-bold text-2xl text-slate-400 underline">TICK</h1>
+        <span className="font-bold text-xl text-slate-400 text-center underline">hub</span>
       </div></Link>
 
       {/* Navigation section */}
