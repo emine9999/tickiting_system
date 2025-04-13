@@ -19,7 +19,7 @@ export default function AddTicket({ isOpen, onClose }: { isOpen: boolean; onClos
   const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState(''); // Search input for email
-  const [suggestions, setSuggestions] = useState<any[]>([]); // Suggestions for email
+  const [suggestions, setSuggestions] = useState<{ id: string; name: string; email: string }[]>([]); // Suggestions for email
   const [selectedAssignee, setSelectedAssignee] = useState<string | null>(null); // Selected email
 
   // Fetch emails from the database based on query
@@ -103,7 +103,7 @@ export default function AddTicket({ isOpen, onClose }: { isOpen: boolean; onClos
         setSuccess(null);
         onClose();
       }, 2000);
-    } catch (error: any) {
+    } catch (error) {
       setError(error.message || 'An unexpected error occurred');
     } finally {
       setLoading(false); // Reset loading state

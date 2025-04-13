@@ -28,14 +28,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased `}  >  
+        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen `}  >  
 
          
-             <SessionProvider>
-      
-  
-             <NextAuthProvider>{children}</NextAuthProvider> 
-               </SessionProvider>
+           <main className='w-full bg-gradient-to-b from-[#0a0a1a] to-[#272666] flex-1'>
+            <SessionProvider>
+              <NextAuthProvider>{children}</NextAuthProvider>
+            </SessionProvider>
+
+            </main>
                       
       </body>
     </html>

@@ -6,6 +6,7 @@ import { loginSchema } from "@/lib/validationSchema";
 import * as bcrypt from "bcryptjs";
 import GoogleProvider from "next-auth/providers/google";
 
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
   trustHost: true,
@@ -42,6 +43,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
     Credentials({
       async authorize(data) {
+        // this function is called when the user submits the login form
+        // to check if the user exists in the database
+        // and if the password is correct
+        // data is the form data from the login form
         const validation = loginSchema.safeParse(data);
         if (validation.success) {
           const { email, password } = validation.data;
@@ -66,16 +71,27 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
   callbacks: {
     async jwt({ token, user }) {
+      // First time sign in: fetch user's role from DB
       if (user) {
-        token.name = user.name; 
+        const dbUser = await prisma.user.findUnique({
+          where: { email: user.email! },
+          select: { role: true, name: true }, // only fetch needed fields
+        });
+  
+        token.role = dbUser?.role;
+        token.name = dbUser?.name ?? token.name;
       }
+  
       return token;
     },
     async session({ session, token }) {
-      if (token) {
-        session.user.name = token.name; 
+      if (token && session.user) {
+        session.user.name = token.name;
+        session.user.role = token.role; // Pass the role to the session
       }
+  
       return session;
-    },
-  },
+    }
+  }
+  
 });

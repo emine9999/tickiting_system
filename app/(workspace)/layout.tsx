@@ -19,7 +19,7 @@ export default function Layout({ children  }: { children: React.ReactNode }) {
               >
     <SidebarProvider>
       <AppSidebar onButtonClick={handleclick}/>
-      <main className='w-full h-screen overflow-x-hidden'>
+      <main className='w-full h-screen overflow-x-hidden bg-white dark:bg-slate-900'>
         <SidebarTrigger />
         {isToggle && <Notification/>}
         {children}

@@ -1,7 +1,7 @@
 'use client'
 import { Home, Bot, TicketCheck } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Search ,UsersRound,Pin,BellRing,FileSearch,ChartNoAxesCombined,LogOut  } from 'lucide-react';
+import { Search ,UsersRound,Pin,BellRing,FileSearch,LogOut  } from 'lucide-react';
 import ModeToggle  from './ModeToggle';
 import Ticket from '@/components/Ticket'
 import UserProfile from '@/components/UserProfile'
@@ -157,7 +157,7 @@ export function AppSidebar({ onButtonClick }: { onButtonClick: () => void }) {
                     </button>
                     </div>
                    
-                    <AdminNav/>
+                   {session?.user?.role === "ADMIN" && <AdminNav />}
                    
               </SidebarMenu>
             </SidebarGroupContent>

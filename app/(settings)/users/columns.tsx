@@ -1,7 +1,7 @@
 "use client";
 import { User } from "@/types/types";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal, ArrowUp, ArrowDown,PencilLine,Trash2,Dot } from "lucide-react";
+import { ArrowUpDown, MoreHorizontal, ArrowUp, ArrowDown,PencilLine,Trash2} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {Delete} from '@/components/Delete'
@@ -15,12 +15,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-interface ColumnsProps {
-  toggleVisibility: (show: boolean) => void;
-  showProfile: boolean;
-}
 
-export const columns = ({ toggleVisibility, showProfile }: ColumnsProps): ColumnDef<User>[] => [
+
+export const columns = (): ColumnDef<User>[] => [
   {
     id: "select",
     header: ({ table }) => (

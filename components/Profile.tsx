@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -7,60 +7,105 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-
-
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 const Profile = () => {
- 
-  return(
-    <div>
-      <div className="px-10 shadow-lg  container mx-auto h-screen  flex flex-col justify-center bg-gradient-to-r from-green-100 to-zinc-400 ">
-        {/* Header Section */}
-        <div className="flex justify-between items-center mx-2 sm:mx-4 lg:mx-8 xl:mx-12 2xl:mx-16">
-          <h3 className="text-2xl font-bold text-slate-600">Profile</h3>
-
-        </div>
-        {/* body section */}
-        <div className=' flex  justify-center  gap-10  mt-8 '>
-        
-          <div className='w-full '>
-                <Card className='' >
-            <CardHeader>
-              <CardTitle>Edit your Profile</CardTitle>
-              <CardDescription>Personal Information.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form>
-                <div className="grid w-full items-center gap-4">
-                  
+  return (
+    <div className="h-screen overflow-y-auto w-full px-4 md:px-6 lg:pb-15 b">
+      {/* <div className="mb-6">
+        <h3 className="text-2xl md:text-3xl font-bold text-slate-800 dark:text-slate-200">Profile</h3>
+        <p className="text-slate-500 dark:text-slate-400 mt-1">Update your personal information</p>
+      </div> */}
+      
+      {/* Body section */}
+      <div className="w-full max-w-3xl mx-auto">
+        <Card className="border-gray-50 dark:border-slate-700 shadow-sm">
+          <CardHeader className="border-b border-gray-50 dark:border-slate-700 pb-4">
+            <CardTitle className="text-xl text-slate-800 dark:text-slate-200">Edit your Profile</CardTitle>
+            <CardDescription className="text-slate-500 dark:text-slate-400">Update your personal information and credentials.</CardDescription>
+          </CardHeader>
+          
+          <CardContent className="pt-6">
+            <form>
+              <div className="grid w-full items-center gap-6">
+                <div className="grid md:grid-cols-2 gap-4">
                   <div className="flex flex-col space-y-1.5">
-                    <Label htmlFor="name">Username</Label>
-                    <Input id="name" placeholder="Your Username" />
+                    <Label htmlFor="username" className="text-slate-700 dark:text-slate-300">Username</Label>
+                    <Input 
+                      id="username" 
+                      placeholder="Your Username" 
+                      className="border-gray-100 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600"
+                    />
                   </div>
                   <div className="flex flex-col space-y-1.5">
-                    <Label htmlFor="name">Password</Label>
-                    <Input id="name" placeholder="Your Password" />
+                    <Label htmlFor="email" className="text-slate-700 dark:text-slate-300">Email</Label>
+                    <Input 
+                      id="email" 
+                      type="email" 
+                      placeholder="Your Email" 
+                      className="border-gray-100 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600"
+                    />
                   </div>
-                  <div className="flex flex-col space-y-1.5">
-                    <Label htmlFor="name">Bio</Label>
-                    <Input id="name" placeholder="Your Bio" />
-                  </div>
-                 
                 </div>
-              </form>
-            </CardContent>
-            <CardFooter className="flex justify-between">
-              <Button className='bg-blue-600 hover:bg-blue-500 cursor-pointer'>Saved</Button>
-            </CardFooter>
-          </Card>
-          </div>
-        </div>
+                
+                <div className="flex flex-col space-y-1.5">
+                  <Label htmlFor="password" className="text-slate-700 dark:text-slate-300">Password</Label>
+                  <Input 
+                    id="password" 
+                    type="password" 
+                    placeholder="Your Password" 
+                    className="border-gray-100 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600"
+                  />
+                </div>
+                
+                <div className="flex flex-col space-y-1.5">
+                  <Label htmlFor="bio" className="text-slate-700 dark:text-slate-300">Bio</Label>
+                  <Textarea 
+                    id="bio" 
+                    placeholder="Tell us a little about yourself" 
+                    className="min-h-[120px] border-gray-100 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600"
+                  />
+                </div>
+                
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="flex flex-col space-y-1.5">
+                    <Label htmlFor="group" className="text-slate-700 dark:text-slate-300">Group</Label>
+                    <Input 
+                      id="group" 
+                      placeholder="Your Group" 
+                      defaultValue="SIR"
+                      className="border-gray-100 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600"
+                    />
+                  </div>
+                  <div className="flex flex-col space-y-1.5">
+                    <Label htmlFor="position" className="text-slate-700 dark:text-slate-300">Position</Label>
+                    <Input 
+                      id="position" 
+                      placeholder="Your Position" 
+                      defaultValue="Student" 
+                      className="border-gray-100 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600"
+                    />
+                  </div>
+                </div>
+              </div>
+            </form>
+          </CardContent>
+          
+          <CardFooter className="flex justify-end gap-3 border-t border-gray-50 dark:border-slate-700 pt-4">
+            <Button variant="outline" className="border-gray-100 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700">
+              Cancel
+            </Button>
+            <Button className="bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700">
+              Save Changes
+            </Button>
+          </CardFooter>
+        </Card>
       </div>
     </div>
-  )
+  );
 };
 
 export default Profile;

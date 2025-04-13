@@ -48,7 +48,7 @@ export default function TicketLayout({ children }: { children: ReactNode }) {
         {!pathname.startsWith('/tickets') && <div>Default Header</div>}
       </header>
 
-      <main>{children}</main>
+      <main >{children}</main>
       <AddTicket isOpen={showModal} onClose={() => setShowModal(false)} />
       <footer></footer>
     </div>

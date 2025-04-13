@@ -23,6 +23,13 @@ model User {
   tickets        Ticket[]    @relation("UserTickets") // Tickets created by the user
   assignedTickets Ticket[]   @relation("UserAssignedTickets") // Tickets assigned to the user
   comments       Comment[]   @relation("UserComments") // Comments made by the user
+  role           Role      @default(USER) // Default role is USER     
+}
+
+enum Role {
+  USER
+  ADMIN
+  MANAGER
 }
 
 enum Status {
