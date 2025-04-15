@@ -1,4 +1,4 @@
-import NextAuth from "next-auth";
+import NextAuth ,{ DefaultSession } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { prisma } from "@/lib/prisma";
 import { PrismaAdapter } from "@auth/prisma-adapter"
@@ -6,6 +6,15 @@ import { loginSchema } from "@/lib/validationSchema";
 import * as bcrypt from "bcryptjs";
 import GoogleProvider from "next-auth/providers/google";
 
+
+declare module "next-auth" {
+    interface User {
+        role?: string;
+    }
+    interface Session extends DefaultSession {
+        user?: User;
+    }
+}
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,

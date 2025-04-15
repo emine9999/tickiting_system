@@ -14,7 +14,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <UserSideBar />
           
         {/* Main content */}
-        <div className="flex-1">
+        <div className="flex-1 px-10 ">
           
             {children}
           

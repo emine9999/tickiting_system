@@ -11,7 +11,7 @@ export default function Users() {
   return (
     <div className="h-screen w-full py-3 pl-24">
       {/* Header Section */}
-      <div className="flex justify-between items-center mx-2 sm:mx-4 lg:mx-8 xl:mx-12 2xl:mx-16">
+      <div className="flex justify-between items-center mx-2  ">
         <h3 className="text-2xl font-bold">Users</h3>
         <div className="hidden md:flex items-center space-x-2">
           <AddUser/>
@@ -20,7 +20,7 @@ export default function Users() {
       </div>
 
       {/* Data Table Section */}
-      <div className="container mx-auto md:px-2 lg:p-4 ">
+      <div className="container mx-auto ">
         <DataTableDemo columns={columns()} data={users} />
         
       </div>

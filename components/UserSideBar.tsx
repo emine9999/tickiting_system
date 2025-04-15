@@ -122,7 +122,7 @@ export default function UserSideBar() {
       {/* Add button at bottom */}
       <div className="mt-auto flex justify-center pt-6">
         <Link
-          href="/new-ticket"
+          href="/groups"
           className="w-12 h-12 flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white rounded-xl transition-colors duration-200"
         >
           <PlusCircle className="w-5 h-5" />

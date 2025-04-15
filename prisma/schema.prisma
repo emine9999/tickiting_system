@@ -6,25 +6,6 @@ datasource db {
 generator client {
   provider = "prisma-client-js"
 }
- 
-model User {
-  id             String      @id @default(auto()) @map("_id") @db.ObjectId
-  username       String?
-  name           String?
-  email          String?     @unique
-  emailVerified  DateTime?
-  image          String?
-  password       String?
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
-
-  // Relations
-  accounts       Account[]   
-  tickets        Ticket[]    @relation("UserTickets") // Tickets created by the user
-  assignedTickets Ticket[]   @relation("UserAssignedTickets") // Tickets assigned to the user
-  comments       Comment[]   @relation("UserComments") // Comments made by the user
-  role           Role      @default(USER) // Default role is USER     
-}
 
 enum Role {
   USER
@@ -45,22 +26,65 @@ enum Priority {
   HIGH
   URGENT
 }
+ 
+model User {
+  id             String      @id @default(auto()) @map("_id") @db.ObjectId
+  username       String?
+  name           String?
+  email          String?     @unique
+  emailVerified  DateTime?
+  image          String?
+  password       String?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  // Relations
+  accounts       Account[]
+  tickets        Ticket[]    @relation("UserTickets") // Tickets created by the user
+  assignedTickets Ticket[]   @relation("UserAssignedTickets") // Tickets assigned to the user
+  comments       Comment[]   @relation("UserComments") // Comments made by the user
+  role           Role        @default(USER) // Default role is USER
+  memberships    UserGroup[] // Many-to-Many relationship with Group through UserGroup
+}
+
+model Group {
+  id             String      @id @default(auto()) @map("_id") @db.ObjectId
+  name           String      @unique
+  memberships    UserGroup[] // Many-to-Many relationship with User through UserGroup
+  tickets        Ticket[]    // Tickets associated with the group
+  description    String
+}
+
+//links users to groups
+model UserGroup {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String @db.ObjectId
+  groupId   String @db.ObjectId
+
+  // Relations
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade) // if a group is deleted their memberships in all grouo is deleted
+  group     Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, groupId]) // Ensure a user cannot join the same group multiple times
+}
+
 model Ticket {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   title       String
   description String
-  priority    String   @default("LOW")
-  status      String   @default("OPEN") 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  type        String   @default("TASK") 
+  priority    Priority  @default(LOW)
+  status      Status    @default(OPEN)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  type        String    @default("TASK")
   // Foreign Keys
-  userId      String   @db.ObjectId // Creator of the ticket
-  assignedToId String? @db.ObjectId // Assigned user (nullable)
+  userId      String    @db.ObjectId // Creator of the ticket
+  assignedToId String?  @db.ObjectId // Assigned user (nullable)
+  groupId     String    @db.ObjectId // Foreign key to Group model
 
   // Relations
-  createdBy   User    @relation("UserTickets", fields: [userId], references: [id])
-  assignedTo  User?   @relation("UserAssignedTickets", fields: [assignedToId], references: [id], onDelete: SetNull) //If an assigned user is deleted, the ticket remains but becomes unassigned.
+  createdBy   User      @relation("UserTickets", fields: [userId], references: [id])
+  assignedTo  User?     @relation("UserAssignedTickets", fields: [assignedToId], references: [id], onDelete: SetNull) // If an assigned user is deleted, the ticket remains but becomes unassigned.
+  group       Group     @relation(fields: [groupId], references: [id]) // Ticket is attached to a group
   comments    Comment[] @relation("TicketComments")
 }
 
@@ -75,7 +99,7 @@ model Comment {
   ticketId  String   @db.ObjectId
 
   // Relations
-  user      User?    @relation("UserComments", fields: [userId], references: [id], onDelete: SetNull) // If a user is deleted, the comment remains but becomes null 
+  user      User?    @relation("UserComments", fields: [userId], references: [id], onDelete: SetNull) // If a user is deleted, the comment remains but becomes null
   ticket    Ticket   @relation("TicketComments", fields: [ticketId], references: [id], onDelete: Cascade)
 }
 

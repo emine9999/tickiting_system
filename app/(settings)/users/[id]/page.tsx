@@ -11,7 +11,7 @@ const AccountSettingsPage = () => {
   ];
   
   return (
-    <div className='h-full  p-4 md:p-6 dark:bg-slate-900 w-full  flex flex-col lg:flex-row gap-6 transition-colors duration-200'>
+    <div className='h-full  p-4 md:p-6 dark:bg-slate-900 w-full  flex flex-col lg:flex-row gap-6 transition-colors duration-200 ml-24 3xl:ml-0'>
       {/* Sidebar profile card */}
       <div className='w-full lg:w-auto lg:min-w-[350px]'>
         <h1 className='text-2xl md:text-3xl font-bold mb-4 text-slate-800 dark:text-white'>Account Settings</h1>
