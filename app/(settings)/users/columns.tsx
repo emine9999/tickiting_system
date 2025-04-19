@@ -120,13 +120,14 @@ export const columns = (): ColumnDef<User>[] => [
       
       return (
         <div className="flex gap-5">
-          {reset_password && (
+          
+{reset_password && (
 <div className="flex items-center gap-1"><PencilLine color="#BCCCDC"/>
-<EditUser/></div>
+<EditUser userid={row.original.id.toString()}/></div>
           )}
           {deleteUrl && (
                <div className="flex items-center gap-1"><Trash2 color="#BCCCDC"/>
-              <Delete/>
+              <Delete userid={row.original.id.toString()}/>
               </div>
           )}
         </div>
@@ -161,7 +162,7 @@ export const columns = (): ColumnDef<User>[] => [
                 window.location.href = '/users/1';
               }}
             >
-              View details
+              View User details
             </DropdownMenuItem>
           
             <DropdownMenuItem>Assign Role</DropdownMenuItem>

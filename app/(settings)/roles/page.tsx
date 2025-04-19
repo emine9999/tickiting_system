@@ -1,9 +1,9 @@
-// page.jsx ou page.tsx dans votre dossier app de Next.js
 "use client";
-
+import AddRole from '@/components/AddRole'
 import { useState, useEffect } from 'react';
 import { Sun, Moon, MoreVertical, Plus } from 'lucide-react';
-
+import AssignRole from '@/components/AssignRole'
+import ShowManagers from '@/components/ShowManagers'
 export default function RolesPermissionsPage() {
   const [theme, setTheme] = useState('light');
 
@@ -114,12 +114,9 @@ export default function RolesPermissionsPage() {
               </p>
               <p className="text-sm mb-5">{role.description}</p>
               <div className="flex flex-wrap gap-3">
-                <button className="text-sm px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 flex-1">
-                  Voir les Managers
-                </button>
-                <button className="text-sm px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md flex-1">
-                  {role.addButtonText}
-                </button>
+                
+               <ShowManagers/>
+                <AssignRole/>
               </div>
             </div>
           ))}
@@ -127,7 +124,7 @@ export default function RolesPermissionsPage() {
           {/* Create New Role Card */}
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-5 border-2 border-dashed border-gray-200 dark:border-gray-700 flex flex-col items-center justify-center cursor-pointer hover:border-indigo-300 dark:hover:border-indigo-600 h-52">
             <div className="w-12 h-12 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-4">
-              <Plus size={24} className="text-gray-500 dark:text-gray-400" />
+              <AddRole/>
             </div>
             <p className="text-sm text-gray-500 dark:text-gray-400">Créer Nouveau Rôle</p>
           </div>

@@ -6,7 +6,7 @@ import { auth } from '@/auth';
 import * as bcrypt from "bcryptjs";
 
 // GET all users
-export async function GET() {
+export async function GET(req: Request, { params }: { params: { id: string } }) {
     // const session = await auth();
     // if (!session || !session.user) {
     //     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
@@ -15,9 +15,6 @@ export async function GET() {
     // if (!session.user.role || session.user.role !== 'admin') {
     //     return NextResponse.json({ message: 'Forbidden' }, { status: 403 });
     // }
-
-
-
     try {
         const users = await prisma.user.findMany();
         return NextResponse.json(users, { status: 200 });
@@ -25,7 +22,10 @@ export async function GET() {
         console.error('Error fetching users:', error);
         return NextResponse.json({ message: 'Error fetching users' }, { status: 500 });
     }
+
+    
 }
+
 
 
 // POST create a user
@@ -65,7 +65,7 @@ export async function POST(req: Request){
         data: {
             name,
             email,
-            role: role as 'ADMIN' | 'USER' | 'MANAGER', // Cast the role to the enum values
+            role: role as 'ADMIN' | 'USER' | 'MANAGER', 
             password: hashedPassword,
         },
     });
@@ -92,5 +92,46 @@ export async function POST(req: Request){
     } catch (error) {
         console.error('Error creating ticket:', error);
         return NextResponse.json({ message: 'Error creating ticket' }, { status: 500 });
+    }
+}
+
+
+
+// PATCH update a user's password
+export async function PATCH(req: Request) {
+    const session = await auth();
+    if (!session || !session.user) {
+        return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
+
+    const body = await req.json();
+    const { id, password } = body;
+
+    if (!id || !password) {
+        return NextResponse.json({ message: 'User ID and password are required' }, { status: 400 });
+    }
+
+    if (password.length < 6) {
+        return NextResponse.json({ message: 'Password must be at least 6 characters long' }, { status: 400 });
+    }
+
+    try {
+        // Hash the new password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        const user = await prisma.user.update({
+            where: { id },
+            data: { password: hashedPassword },
+        });
+
+        if (!user) {
+            return NextResponse.json({ message: 'User not found' }, { status: 404 });
+        }
+
+        return NextResponse.json({ message: 'Password updated successfully' }, { status: 200 });
+    } catch (error) {
+        console.error('Error updating password:', error);
+        return NextResponse.json({ message: 'Error updating password' }, { status: 500 });
     }
 }

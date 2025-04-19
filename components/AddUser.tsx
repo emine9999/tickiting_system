@@ -10,6 +10,15 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 export function AddUser() {
   return (
@@ -38,6 +47,47 @@ export function AddUser() {
             </Label>
             <Input id="name" value="" placeholder="user@gmail.com" className="col-span-3" />
           </div>
+
+          {/* select menu */}
+          <div className="grid grid-cols-4 items-center gap-4">
+          <Label htmlFor="name" className="text-right">
+              Role
+            </Label>
+          <Select>
+      <SelectTrigger className="w-[180px]">
+        <SelectValue placeholder="Select a Role" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup>
+          <SelectLabel>Role</SelectLabel>
+          <SelectItem value="admin">Admin</SelectItem>
+          <SelectItem value="manager">Manager</SelectItem>
+          <SelectItem value="User">User</SelectItem>
+        </SelectGroup>
+      </SelectContent>
+    </Select>
+    </div>
+    {/* end of select */}
+
+    {/* group */}
+    <div className="grid grid-cols-4 items-center gap-4">
+          <Label htmlFor="name" className="text-right">
+              Group
+            </Label>
+          <Select>
+      <SelectTrigger className="w-[180px]">
+        <SelectValue placeholder="Select a Group" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup>
+          <SelectLabel>Group</SelectLabel>
+          <SelectItem value="SIR">SIR</SelectItem>
+          <SelectItem value="QOD">QOD</SelectItem>
+          <SelectItem value="Couverture">Couverture</SelectItem>
+        </SelectGroup>
+      </SelectContent>
+    </Select>
+    </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="name" className="text-right">
               Password
