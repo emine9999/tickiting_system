@@ -6,25 +6,45 @@ import { auth } from '@/auth';
 import * as bcrypt from "bcryptjs";
 
 // GET all users
-export async function GET(req: Request, { params }: { params: { id: string } }) {
-    // const session = await auth();
-    // if (!session || !session.user) {
-    //     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
-    // }
-
-    // if (!session.user.role || session.user.role !== 'admin') {
-    //     return NextResponse.json({ message: 'Forbidden' }, { status: 403 });
-    // }
+export async function GET() {
     try {
-        const users = await prisma.user.findMany();
-        return NextResponse.json(users, { status: 200 });
+      const users = await prisma.user.findMany({
+        include: {
+          role: {
+            select: { name: true },
+          },
+          memberships: {
+            include: {
+              group: {
+                select: { name: true },
+              },
+            },
+          },
+        },
+      });
+  
+      const usersFormatted = users.map((user) => ({
+        id: user.id,
+        username: user.username,
+        name: user.name,
+        email: user.email,
+        emailVerified: user.emailVerified,
+        image: user.image,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+        role: user.role?.name || null,
+        groups: user.memberships.map((m) => m.group.name), // list of group names
+      }));
+  
+      return NextResponse.json(usersFormatted, { status: 200 });
     } catch (error) {
-        console.error('Error fetching users:', error);
-        return NextResponse.json({ message: 'Error fetching users' }, { status: 500 });
+      console.error('Error fetching users:', error);
+      return NextResponse.json({ message: 'Error fetching users' }, { status: 500 });
     }
-
-    
-}
+  }
+  
+  
+  
 
 
 
@@ -135,3 +155,5 @@ export async function PATCH(req: Request) {
         return NextResponse.json({ message: 'Error updating password' }, { status: 500 });
     }
 }
+
+

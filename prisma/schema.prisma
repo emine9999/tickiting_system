@@ -7,11 +7,7 @@ generator client {
   provider = "prisma-client-js"
 }
 
-enum Role {
-  USER
-  ADMIN
-  MANAGER
-}
+
 
 enum Status {
   OPEN
@@ -26,7 +22,12 @@ enum Priority {
   HIGH
   URGENT
 }
- 
+enum Role {
+  USER
+  ADMIN
+  MANAGER
+}
+
 model User {
   id             String      @id @default(auto()) @map("_id") @db.ObjectId
   username       String?
@@ -42,9 +43,19 @@ model User {
   tickets        Ticket[]    @relation("UserTickets") // Tickets created by the user
   assignedTickets Ticket[]   @relation("UserAssignedTickets") // Tickets assigned to the user
   comments       Comment[]   @relation("UserComments") // Comments made by the user
-  role           Role        @default(USER) // Default role is USER
+  roleId         String?      @db.ObjectId // Foreign key to UserRole
+  role           UserRole?   @relation(fields: [roleId], references: [id])
   memberships    UserGroup[] // Many-to-Many relationship with Group through UserGroup
 }
+
+model UserRole {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        Role  @unique// Directly use the enum here for the role (USER, ADMIN, etc.)
+  portee      String
+  description String
+  users       User[]  // One role can have many users
+}
+
 
 model Group {
   id             String      @id @default(auto()) @map("_id") @db.ObjectId
@@ -66,6 +77,8 @@ model UserGroup {
 
   @@unique([userId, groupId]) // Ensure a user cannot join the same group multiple times
 }
+
+
 
 model Ticket {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId

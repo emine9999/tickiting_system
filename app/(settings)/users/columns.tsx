@@ -4,8 +4,8 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal, ArrowUp, ArrowDown,PencilLine,Trash2} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import {Delete} from '@/components/Delete'
-import {EditUser} from '@/components/EditUser'
+// import {Delete} from '@/components/Delete'
+// import {EditUser} from '@/components/EditUser'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -105,35 +105,47 @@ export const columns = (): ColumnDef<User>[] => [
   },
   },
   {
-    accessorKey: "group",
+    accessorKey: "groups",
     header: "Group",
-    cell: ({ row }) => <div>{row.getValue("group")}</div>,
-  },
-  {
-    id: "actions", // Custom column for actions
-    header: "Actions",
     cell: ({ row }) => {
-      const { reset_password , delete: deleteUrl } = row.original.actions;
+      const groups = row.getValue("groups") as string[];
+      return (
+        <div className="flex gap-3 p-2">
+          {groups.map((group, idx) => (
+            <span key={idx} className="bg-white text-black rounded px-2 py-1 text-xs font-semibold">
+              {group}
+            </span>
+          ))}
+        </div>
+      );
+    }
+  }
+,  
+//   {
+//     id: "actions", // Custom column for actions
+//     header: "Actions",
+//     cell: ({ row }) => {
+//       const { reset_password , delete: deleteUrl } = row.original.actions;
 
 
 
       
-      return (
-        <div className="flex gap-5">
+//       return (
+//         <div className="flex gap-5">
           
-{reset_password && (
-<div className="flex items-center gap-1"><PencilLine color="#BCCCDC"/>
-<EditUser userid={row.original.id.toString()}/></div>
-          )}
-          {deleteUrl && (
-               <div className="flex items-center gap-1"><Trash2 color="#BCCCDC"/>
-              <Delete userid={row.original.id.toString()}/>
-              </div>
-          )}
-        </div>
-      );
-    },
-  },
+// {reset_password && (
+// <div className="flex items-center gap-1"><PencilLine color="#BCCCDC"/>
+// <EditUser userid={row.original.id.toString()}/></div>
+//           )}
+//           {deleteUrl && (
+//                <div className="flex items-center gap-1"><Trash2 color="#BCCCDC"/>
+//               <Delete userid={row.original.id.toString()}/>
+//               </div>
+//           )}
+//         </div>
+//       );
+//     },
+//   },
   {
     id: "actions",
     enableHiding: false,

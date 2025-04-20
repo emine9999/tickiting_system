@@ -4,9 +4,20 @@ import { Sun, Moon, MoreVertical, } from "lucide-react";
 import Popup from '@/components/Popup'
 import AddMember from '@/components/AddMember'
 import AddTeam from '@/components/AddTeam'
+import SkeletonCard from '@/components/SkeletonCard';
+
 
 const Groups = () => {
   const [theme, setTheme] = useState("light");
+  interface Group {
+    name: string;
+    members: number;
+    description: string;
+  }
+
+  const [groups, setGroups] = useState<Group[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     // Vérifie les préférences sauvegardées ou système
@@ -36,78 +47,40 @@ const Groups = () => {
     }
   };
 
-  const groups = [
-    {
-      title: "Développement IT",
-      members: 10,
-      scope: "Organisation",
-      description:
-        "Groupe responsable du développement et de la maintenance des systèmes informatiques.",
-      addButtonText: "Ajouter Nouveau Membre",
-    },
-    {
-      title: "Marketing",
-      members: 8,
-      scope: "Organisation",
-      description:
-        "Groupe chargé des campagnes marketing et de la communication.",
-      addButtonText: "Ajouter Nouveau Membre",
-    },
-    {
-      title: "Comptabilité",
-      members: 5,
-      scope: "Équipe",
-      description:
-        "Groupe en charge des finances, de la facturation et des rapports financiers.",
-      addButtonText: "Ajouter Nouveau Membre",
-    },
-    {
-      title: "Support Client",
-      members: 12,
-      scope: "Équipe",
-      description:
-        "Groupe dédié à l'assistance des clients et à la gestion des tickets de support.",
-      addButtonText: "Ajouter Nouveau Membre",
-    },
-    {
-      title: "Ressources Humaines",
-      members: 6,
-      scope: "Organisation",
-      description:
-        "Groupe responsable de la gestion des employés et des processus RH.",
-      addButtonText: "Ajouter Nouveau Membre",
-    },
-  ];
 
-  const team = [
-    {
-      id: "1",
-      name: "amine",
-      email: "amine@gmail.com"
-    },
-    {
-      id: "2",
-      name: "soufiane",
-      email: "soufiane@gmail.com"
-    },
-    {
-      id: "3",
-      name: "admin",
-      email: "admin@gmail.com"
-    },
-    {
-      id: "4",
-      name: "sarah",
-      email: "sarah@gmail.com"
-    },
-    {
-      id: "5",
-      name: "mohamed",
-      email: "mohamed@gmail.com"
-    }
-  ];
+  //Récupérer les utilisateurs depuis l'API
+  useEffect(() => {
+    const fetchGroups = async () => {
+      setLoading(true);
+      setError(null);
 
-  
+      try {
+        const res = await fetch('/api/group', {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        });
+
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(data.message || 'Failed to fetch groups');
+        }
+
+        const data = await res.json();
+        setGroups(data.group); // Mettre à jour l'état avec les utilisateurs récupérés
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message || 'An unexpected error occurred');
+        } else {
+          setError('An unexpected error occurred');
+        }
+      } finally {
+        setLoading(false); // Désactiver l'état de chargement
+      }
+    };
+
+    fetchGroups();
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 p-4 md:p-6 overflow-y-auto ml-24">
       <div className="max-w-7xl mx-auto ">
@@ -136,42 +109,49 @@ const Groups = () => {
 
       {/* Cards Grid */}
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2">
-        <form className="grid grid-cols-1 gap-4 mt-3 max-w-7xl mx-auto">
-          {groups.map((group) => (
-            <div className="" key={group.title}>
-              <div className="flex justify-start p-4 gap-4 bg-white dark:bg-gray-800 dark:text-white text-gray-800 shadow-lg rounded-md">
-                <div className="w-12 h-12 rounded-full dark:bg-white bg-gray-800 flex items-center justify-center"></div>
-                <div className="p-2 flex-1 relative">
-                  <div>
-                    <div className="flex gap-2 items-center">
-                      <p className="font-semibold text-gray-800 text-xl dark:text-gray-200">
-                        {group.title}
+        <form className="grid grid-cols-1 gap-4 mt-3 min-w-full mx-auto">
+          {loading && (
+            <>
+              <SkeletonCard />
+              <SkeletonCard />
+              <SkeletonCard />
+            </>
+          )} {/* Afficher un message de chargement */}
+          {error && <p className="text-red-500">{error}</p>} {/* Afficher un message d'erreur */}
+          {!loading && !error &&
+            groups.map((group) => (
+              <div className="" key={group.name}>
+                <div className="flex  min-w-full justify-start p-4 gap-4 bg-white dark:bg-gray-800 dark:text-white text-gray-800 shadow-lg rounded-md">
+                  <div className="w-12 h-12 rounded-full dark:bg-white bg-gray-800 flex items-center justify-center"></div>
+                  <div className="p-2 flex-1 relative">
+                    <div>
+                      <div className="flex gap-2 items-center">
+                        <p className="font-semibold text-gray-800 text-xl dark:text-gray-200">
+                          {group.name}
+                        </p>
+                        <span className="bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full flex items-center h-fit text-xs">
+                          {group.members} members
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                        {group.description}
                       </p>
-                      <span className="bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full flex items-center h-fit text-xs">
-                        {group.members} members
-                      </span>
                     </div>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                      {group.description}
-                    </p>
-                  </div>
-                  <div className="flex justify-end items-end gap-3 mt-3 ">
-                    {/* <button type="button" className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium cursor-pointer">
-                      Add member
-                    </button> */}
-                    <AddMember GroupName={group.title}/>
-                  </div>
-                  <div className="absolute top-0 right-0 ">
-                    <Popup title={"delete"} icon={<MoreVertical />} />
+                    <div className="flex justify-end items-end gap-3 mt-3 ">
+                      <AddMember GroupName={group.name} />
+                    </div>
+                    <div className="absolute top-0 right-0 ">
+                      <Popup title={"delete"} groupename={group.name} icon={<MoreVertical />} />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))
+          }
         </form>
 
         <div className="hidden sm:inline md:block p-3">
-        <AddTeam/>
+          <AddTeam />
         </div>
       </div>
     </div>

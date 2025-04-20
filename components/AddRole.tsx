@@ -12,14 +12,14 @@ import Alert from "@/components/Alert";
 import Spinner from "@/components/Spinner";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus, X } from "lucide-react"; // Import missing icons
+import { Plus} from "lucide-react"; // Import missing icons
 import { useState} from "react";
 import { Textarea } from "./ui/textarea";
 
 export default function AddRole() {
      const [formData, setFormData] = useState({
         name: "",
-        porte: "",
+        portee: "",
         description: "",
       });
   const [error, setError] = useState<string | null>(null);
@@ -38,17 +38,15 @@ export default function AddRole() {
     setSuccess(null);
     setLoading(true);
 
-    if (!formData.name || !formData.description || !formData.porte) {
+    if (!formData.name || !formData.description || !formData.portee) {
       setError("Please add role name ,portee and description");
       setLoading(false);
       return;
     }
 
     try {
-    //   const memberemail = selectedMembers.map((member) => member.email);
-    //   const dataToSend = { members: memberemail, GroupName };
-
-      const res = await fetch("/api/group", {
+  
+      const res = await fetch("/api/role", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -64,7 +62,7 @@ export default function AddRole() {
        setFormData({
         name: '',
         description: '',
-        porte :''
+        portee :''
       });
 
       setTimeout(() => setSuccess(null), 2000);
@@ -107,9 +105,9 @@ export default function AddRole() {
                Portee
             </Label>
             <Input
-              id="porte"
-              value={formData.porte}
-              name="porte"
+              id="portee"
+              value={formData.portee}
+              name="portee"
               placeholder="Portee de Role"
               onChange={handleChange}
               autoComplete="off"

@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import NextAuthProvider from "@/contexts/NextAuthProvider";
 import { SessionProvider } from "next-auth/react"
+import { StatusProvider } from '@/contexts/StatusContext';
 
 
 const geistSans = Geist({
@@ -33,7 +34,11 @@ export default function RootLayout({
          
            <main className='w-full bg-gradient-to-b from-[#0a0a1a] to-[#272666] flex-1'>
             <SessionProvider>
-              <NextAuthProvider>{children}</NextAuthProvider>
+              <NextAuthProvider>
+              <StatusProvider>
+                {children}
+                </StatusProvider>
+                </NextAuthProvider>
             </SessionProvider>
 
             </main>

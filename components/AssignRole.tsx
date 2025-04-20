@@ -12,10 +12,10 @@ import Alert from "@/components/Alert";
 import Spinner from "@/components/Spinner";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus, X } from "lucide-react"; // Import missing icons
+import { Plus, X, Search } from "lucide-react";
 import { useState, useEffect } from "react";
 
-export default function AddUser({ GroupName }: { GroupName: string }) {
+export default function AssignRole({ roleName }: { roleName: string }) {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -24,29 +24,46 @@ export default function AddUser({ GroupName }: { GroupName: string }) {
     { id: string; name: string; email: string }[]
   >([]);
   const [selectedMembers, setSelectedMembers] = useState<
-    Array<{ id: string;name: string; email: string }>
+    Array<{ id: string; name: string; email: string }>
   >([]);
-
-  // Simulated team data (replace with actual API call)
-  const team = [
-    { id: "1", name: "John Doe", email: "john@example.com" },
-    { id: "2", name: "Jane Smith", email: "jane@example.com" },
-  ];
+  const [fetchingUsers, setFetchingUsers] = useState(false);
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (query.length > 1) {
-        const filteredTeam = team.filter((member) =>
-          member.email.toLowerCase().includes(query.toLowerCase())
+    if (!query || query.length < 2) {
+      setSuggestions([]);
+      return;
+    }
+
+    const fetchUsers = async () => {
+      setFetchingUsers(true);
+      try {
+        const res = await fetch(`/api/users?query=${encodeURIComponent(query)}`);
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(data.message || "Failed to fetch users");
+        }
+
+        const users = await res.json();
+        const filteredUsers = users.filter(
+          (user) => !selectedMembers.some((member) => member.id === user.id)
         );
-        setSuggestions(filteredTeam);
-      } else {
+        setSuggestions(filteredUsers);
+      } catch (err) {
+        if (err instanceof Error) {
+          console.error("Error fetching users:", err.message);
+        }
         setSuggestions([]);
+      } finally {
+        setFetchingUsers(false);
       }
+    };
+
+    const timeoutId = setTimeout(() => {
+      fetchUsers();
     }, 300);
 
-    return () => clearTimeout(timeout);
-  }, [query]);
+    return () => clearTimeout(timeoutId);
+  }, [query, selectedMembers]);
 
   const addMember = (member: { id: string; name: string; email: string }) => {
     if (!selectedMembers.some((selected) => selected.id === member.id)) {
@@ -68,6 +85,12 @@ export default function AddUser({ GroupName }: { GroupName: string }) {
     setSuccess(null);
     setLoading(true);
 
+    if (!roleName) {
+      setError("Role name is required.");
+      setLoading(false);
+      return;
+    }
+
     if (selectedMembers.length === 0) {
       setError("Please add at least one member to the team.");
       setLoading(false);
@@ -75,23 +98,22 @@ export default function AddUser({ GroupName }: { GroupName: string }) {
     }
 
     try {
-      const memberemail = selectedMembers.map((member) => member.email);
-      const dataToSend = { members: memberemail, GroupName };
+      const memberEmails = selectedMembers.map((member) => member.email);
+      const dataToSend = { members: memberEmails, roleName };
 
-      const res = await fetch("/api/group", {
-        method: "POST",
+      const res = await fetch("/api/role", {
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(dataToSend),
       });
 
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.message || "Failed to create team");
+        throw new Error(data.message || "Failed to assign role to users");
       }
 
-      setSuccess("Team created successfully!");
+      setSuccess("Role assigned successfully!");
       setSelectedMembers([]);
-      setTimeout(() => setSuccess(null), 2000);
     } catch (error) {
       setError((error as Error).message || "An unexpected error occurred");
     } finally {
@@ -99,24 +121,23 @@ export default function AddUser({ GroupName }: { GroupName: string }) {
     }
   };
 
-
   return (
     <Dialog>
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className="bg-indigo-600 text-white cursor-pointer hover:bg-indigo-500 hover:text-gray-300"
+          className="bg-indigo-600 text-white cursor-pointer hover:bg-indigo-500 hover:text-gray-800"
         >
-          Assign Role
+          Assing Role
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Assign This Role to a Member</DialogTitle>
-          <DialogDescription>User Role</DialogDescription>
+          <DialogTitle>Assing Role</DialogTitle>
+          <DialogDescription>User info</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
+          <div className="grid grid-cols-4 items-center gap-4 relative">
             <Label htmlFor="name" className="text-right">
               Email
             </Label>
@@ -126,18 +147,27 @@ export default function AddUser({ GroupName }: { GroupName: string }) {
               placeholder="Search by Email"
               onChange={(e) => setQuery(e.target.value)}
               autoComplete="off"
-              className="col-span-4"
+              className="col-span-4 pl-10"
+              disabled={fetchingUsers}
             />
+            <div className="absolute top-9 left-3 text-gray-400">
+              {fetchingUsers ? <Spinner /> : <Search size={19} />}
+            </div>
           </div>
 
-          {/* Suggestions dropdown */}
           {suggestions.length > 0 && (
-            <ul className="bg-gray-300 dark:bg-gray-700 border border-gray-300 right-0 top-12 dark:border-gray-600 rounded-lg mt-2 mb-4 max-h-40 overflow-y-auto absolute z-10 w-full  shadow-lg">
+            <ul
+              className="bg-gray-300 dark:bg-gray-700 border border-gray-300 right-0 top-12 dark:border-gray-600 rounded-lg mt-2 mb-4 max-h-40 overflow-y-auto absolute z-10 w-full shadow-lg"
+              role="listbox"
+              aria-label="User suggestions"
+            >
               {suggestions.map((user) => (
                 <li
                   key={user.id}
                   onClick={() => addMember(user)}
                   className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer flex justify-between items-center"
+                  role="option"
+                  aria-selected="false"
                 >
                   <span>
                     {user.name} ({user.email})
@@ -148,7 +178,6 @@ export default function AddUser({ GroupName }: { GroupName: string }) {
             </ul>
           )}
 
-          {/* Selected members display */}
           {selectedMembers.length > 0 && (
             <div className="mt-4 border dark:border-gray-700 rounded-lg p-2 mb-4">
               <h2 className="text-gray-700 dark:text-gray-300 font-medium mb-2">
@@ -161,7 +190,6 @@ export default function AddUser({ GroupName }: { GroupName: string }) {
                     className="flex items-center justify-between bg-gray-50 dark:bg-gray-700 p-2 rounded-lg"
                   >
                     <div className="flex items-center space-x-2">
-                     
                       <div>
                         <p className="font-medium text-gray-800 dark:text-gray-200">
                           {member.name}
@@ -183,13 +211,12 @@ export default function AddUser({ GroupName }: { GroupName: string }) {
               </div>
             </div>
           )}
-           <Button type="submit" className="bg-indigo-500 hover:bg-indigo-700">
-          {loading ? <Spinner /> : 'Assign'}
+          <Button type="submit" className="bg-blue-500 hover:bg-blue-700">
+            {loading ? <Spinner /> : "Add Members"}
           </Button>
         </form>
         {error && <Alert type="error" message={error} />}
         {success && <Alert type="success" message={success} />}
-
       </DialogContent>
     </Dialog>
   );

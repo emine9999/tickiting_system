@@ -12,7 +12,7 @@ import Alert from "@/components/Alert";
 import Spinner from "@/components/Spinner";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus, X } from "lucide-react"; // Import missing icons
+import { Plus, X ,Search} from "lucide-react"; // Import missing icons
 import { useState, useEffect } from "react";
 
 export default function AddUser({ GroupName }: { GroupName: string }) {
@@ -26,27 +26,54 @@ export default function AddUser({ GroupName }: { GroupName: string }) {
   const [selectedMembers, setSelectedMembers] = useState<
     Array<{ id: string;name: string; email: string }>
   >([]);
+  const [fetchingUsers, setFetchingUsers] = useState(false);
+  
 
-  // Simulated team data (replace with actual API call)
-  const team = [
-    { id: "1", name: "John Doe", email: "john@example.com" },
-    { id: "2", name: "Jane Smith", email: "jane@example.com" },
-  ];
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (query.length > 1) {
-        const filteredTeam = team.filter((member) =>
-          member.email.toLowerCase().includes(query.toLowerCase())
-        );
-        setSuggestions(filteredTeam);
-      } else {
+    useEffect(() => {
+      // Clear suggestions if query is empty
+      if (!query || query.length < 2) {
         setSuggestions([]);
+        return;
       }
-    }, 300);
+  
+      const fetchUsers = async () => {
+        setFetchingUsers(true);
+        try {
+          // Fetch users from API based on search query
+          const res = await fetch(`/api/users?query=${encodeURIComponent(query)}`);
+          
+          if (!res.ok) {
+            const data = await res.json();
+            throw new Error(data.message || 'Failed to fetch users');
+          }
+  
+          const users = await res.json();
+          
+          // Filter out users that are already selected
+          const filteredUsers = users.filter(user => 
+            !selectedMembers.some(member => member.id === user.id)
+          );
+          
+          setSuggestions(filteredUsers);
+        } catch (err) {
+          if (err instanceof Error) {
+            console.error("Error fetching users:", err.message);
+          }
+          setSuggestions([]);
+        } finally {
+          setFetchingUsers(false);
+        }
+      };
+  
+      // Debounce search to avoid excessive API calls
+      const timeoutId = setTimeout(() => {
+        fetchUsers();
+      }, 300);
+  
+      return () => clearTimeout(timeoutId);
+    }, [query, selectedMembers]);
 
-    return () => clearTimeout(timeout);
-  }, [query]);
 
   const addMember = (member: { id: string; name: string; email: string }) => {
     if (!selectedMembers.some((selected) => selected.id === member.id)) {
@@ -79,17 +106,17 @@ export default function AddUser({ GroupName }: { GroupName: string }) {
       const dataToSend = { members: memberemail, GroupName };
 
       const res = await fetch("/api/group", {
-        method: "POST",
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(dataToSend),
       });
 
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.message || "Failed to create team");
+        throw new Error(data.message || "Failed to add members to the Group");
       }
 
-      setSuccess("Team created successfully!");
+      setSuccess("Members added successfully!");
       setSelectedMembers([]);
       setTimeout(() => setSuccess(null), 2000);
     } catch (error) {
@@ -116,7 +143,7 @@ export default function AddUser({ GroupName }: { GroupName: string }) {
           <DialogDescription>User info</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
+          <div className="grid grid-cols-4 items-center gap-4 relative">
             <Label htmlFor="name" className="text-right">
               Email
             </Label>
@@ -126,8 +153,11 @@ export default function AddUser({ GroupName }: { GroupName: string }) {
               placeholder="Search by Email"
               onChange={(e) => setQuery(e.target.value)}
               autoComplete="off"
-              className="col-span-4"
+              className="col-span-4 pl-10"
             />
+                      <div className="absolute top-9 left-3 text-gray-400">
+                        {fetchingUsers ? <Spinner /> : <Search size={19} />}
+                      </div>
           </div>
 
           {/* Suggestions dropdown */}
