@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* @import '@liveblocks/react-ui/styles.css';
+@import '@liveblocks/react-lexical/styles.css'; */
+@import '../styles/dark-theme.css';
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -41,6 +44,7 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
 }
 
 :root {
@@ -118,5 +122,11 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .header {
+    @apply min-h-[92px] min-w-full flex-nowrap  flex w-full items-center justify-between gap-2 px-4;
   }
 }
