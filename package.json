@@ -13,6 +13,7 @@
     "@auth/prisma-adapter": "^2.8.0",
     "@lexical/react": "^0.30.0",
     "@liveblocks/client": "^2.24.0",
+    "@liveblocks/node": "^2.24.0",
     "@liveblocks/react": "^2.24.0",
     "@liveblocks/react-lexical": "^2.24.0",
     "@liveblocks/react-ui": "^2.24.0",
