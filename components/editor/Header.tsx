@@ -1,11 +1,12 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { cn } from '@/lib/utils';
 
 
-const Header = ({ children }: HeaderProps) => {
+const Header = ({ children,className }: HeaderProps) => {
   return (
-    <div className="header">
-      <Link href="/" className="flex items-center">
+    <div className={cn("header", className)}>
+      <Link href="/documents" className="flex items-center">
         <Image
           src="/assets/icons/logo.svg"
           alt="logo with name"

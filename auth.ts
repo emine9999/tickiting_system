@@ -84,7 +84,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (user) {
         const dbUser = await prisma.user.findUnique({
           where: { email: user.email! },
-          select: { role: true, name: true }, // only fetch needed fields
+          select: { role: true, name: true,id : true }, // only fetch needed fields
         });
   
         token.role = dbUser?.role;
@@ -97,6 +97,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (token && session.user) {
         session.user.name = token.name;
         session.user.role = token.role; // Pass the role to the session
+        session.user.id = token.sub; // Pass the user ID to the session
       }
   
       return session;

@@ -1,7 +1,6 @@
 // create a new group
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { auth } from '@/auth';
 import { groupSchema } from '@/lib/groupSchema';
 
 

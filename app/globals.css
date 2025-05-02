@@ -7,6 +7,14 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  --bg-doc: url('/assets/images/doc.png');
+  --bg-modal: url('/assets/images/modal.png');
+  --color-dark-100: #09111F;
+  --color-dark-200: #0B1527;
+  --color-dark-300: #0F1C34;
+  --color-dark-350: #12213B;
+  --color-dark-400: #27344D;
+  --color-dark-500: #2E3D5B;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
@@ -129,4 +137,30 @@
   .header {
     @apply min-h-[92px] min-w-full flex-nowrap  flex w-full items-center justify-between gap-2 px-4;
   }
+  .collaborative-room {
+    @apply flex size-full max-h-screen flex-1 flex-col items-center overflow-hidden;
+  }
+  .home-container {
+    @apply relative flex min-h-screen w-full flex-col items-center gap-5 sm:gap-10;
+  }
+  .collaborators-list {
+    @apply hidden items-center justify-end -space-x-3 overflow-hidden sm:flex;
+  }
+  .document-title-input {
+    @apply min-w-[78px] flex-1 border-none bg-transparent px-0 text-left text-base font-semibold leading-[24px] focus-visible:ring-0 focus-visible:ring-offset-0 disabled:text-white sm:text-xl md:text-center ;
+  }
+
+  .document-title {
+    @apply line-clamp-1 border-dark-400 text-base font-semibold leading-[24px] sm:pl-0 sm:text-xl;
+  }
+  .view-only-tag {
+    @apply rounded-md bg-dark-400/50 px-2 py-0.5 text-xs text-blue-100/50;
+  }
+  .toolbar-wrapper {
+    @apply z-50  w-screen overflow-auto border-y border-dark-300 bg-dark-100 pl-3 pr-4 shadow-sm;
+  }
+  .editor-wrapper {
+    @apply h-[calc(100vh-140px)] gap-5 overflow-auto px-5 pt-5 lg:flex-row lg:items-start lg:justify-center  xl:gap-10 xl:pt-10;
+  }
+
 }

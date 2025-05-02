@@ -21,7 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <html lang="en" suppressHydrationWarning>
         <body
           className={cn(
-            "min-h-screen font-sans antialiased",
+            "min-h-screen font-sans antialiased bg-blue-200",
             fontSans.variable
           )}
         >
