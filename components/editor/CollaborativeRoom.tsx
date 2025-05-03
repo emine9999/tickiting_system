@@ -10,6 +10,7 @@ import {
 } from "@liveblocks/react/suspense";
 import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
+import ShareModal from "./ShareModal";
 
 const CollaborativeRoom = ({ roomId, roomMetadata ,users,currentUserType}: CollaborativeRoomProps) => {
   
@@ -108,7 +109,14 @@ const CollaborativeRoom = ({ roomId, roomMetadata ,users,currentUserType}: Colla
 
             <div className="flex w-fit justify-end gap-2">
               <UserAvatar />
-              <ActiveCollaborators />
+              <ShareModal 
+              roomId={roomId} // in order to know which room to share
+              collaborators={users}  // this is the list of users in the room
+              currentUserType={currentUserType} // this is the type of the current user
+              creatorId={roomMetadata.creatorId}  // this is the id of the user who created the room
+              />
+
+                            <ActiveCollaborators />
             </div>
           </Header>
           <Editor 

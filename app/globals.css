@@ -163,4 +163,40 @@
     @apply h-[calc(100vh-140px)] gap-5 overflow-auto px-5 pt-5 lg:flex-row lg:items-start lg:justify-center  xl:gap-10 xl:pt-10;
   }
 
+  .comments-container {
+    @apply mb-10 space-y-4 lg:w-fit flex w-full flex-col items-center justify-center;
+  }
+
+  .comment-composer {
+    @apply w-full max-w-[800px] border border-dark-300 bg-dark-200 shadow-sm lg:w-[350px];
+  }
+
+  .comment-thread {
+    @apply w-full max-w-[800px] border  shadow-sm lg:w-[350px] transition-all;
+  }
+
+  /* .shad-dialog {
+    @apply w-full max-w-[400px] rounded-xl border-none  bg-cover px-5 py-7 shadow-xl sm:min-w-[500px] ;
+  }
+
+  .shad-dialog button {
+    @apply focus:ring-0 focus:ring-offset-0 focus-visible:border-none focus-visible:outline-none focus-visible:ring-transparent focus-visible:ring-offset-0 ;
+  }
+
+  .shad-select {
+    @apply w-fit border-none bg-transparent text-blue-100 ;
+  }
+
+  .shad-select svg {
+    @apply ml-1 mt-1;
+  }
+
+  .shad-select-item {
+    @apply cursor-pointer bg-dark-200 text-blue-100 focus:bg-dark-300 hover:bg-dark-300 focus:text-blue-100 ;
+  }
+
+  .shad-popover {
+    @apply w-[460px] border-none bg-dark-200 shadow-lg ;
+  } */
+
 }
