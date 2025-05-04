@@ -9,6 +9,7 @@ import { getDocuments } from '@/actions/room.actions'
 import { dateConverter } from '@/lib/utils'
 import Link from 'next/link'
 import { Bell } from 'lucide-react'
+import { DeleteModal } from '@/components/editor/DeleteModal'
 
 const Docs = async() => {
   const session = await auth();
@@ -53,30 +54,34 @@ const Docs = async() => {
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {roomDocuments.data.map(({ id, metadata, createdAt }: any) => (
-                <Link 
-                  href={`/documents/${id}`} 
-                  key={id}
-                  className="group flex flex-col p-4 bg-slate-800 rounded-xl border border-slate-700 hover:border-blue-600 hover:shadow-lg hover:shadow-blue-900/20 transition-all duration-200"
-                >
-                  <div className="flex items-start gap-3">
-                    <div className="rounded-md bg-slate-700 p-2">
-                      <Image 
-                        src="/assets/icons/doc.svg"
-                        alt="file"
-                        width={32}
-                        height={32}
-                      />
+                <div key={id} className="relative">
+                  <Link 
+                    href={`/documents/${id}`} 
+                    className="group flex flex-col p-4 bg-slate-800 rounded-xl border border-slate-700 hover:border-blue-600 hover:shadow-lg hover:shadow-blue-900/20 transition-all duration-200"
+                  >
+                    <div className="flex items-start  gap-3">
+                      <div className="rounded-md bg-slate-700 p-2">
+                        <Image 
+                          src="/assets/icons/doc.svg"
+                          alt="file"
+                          width={32}
+                          height={32}
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-lg font-medium line-clamp-1 group-hover:text-blue-400 transition-colors">
+                          {metadata.title}
+                        </p>
+                        <p className="text-sm text-slate-400 mt-1">
+                          Created {dateConverter(createdAt)}
+                        </p>
+                       
+                      </div>
+                      <DeleteModal roomId={id}/>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-lg font-medium line-clamp-1 group-hover:text-blue-400 transition-colors">
-                        {metadata.title}
-                      </p>
-                      <p className="text-sm text-slate-400 mt-1">
-                        Created {dateConverter(createdAt)}
-                      </p>
-                    </div>
-                  </div>
-                </Link>
+                  </Link>
+                  
+                </div>
               ))}
             </div>
           </div>

@@ -6,7 +6,7 @@ import {
 } from "@liveblocks/react/suspense";
 import { ReactNode } from "react";
 import Loader from "@/components/editor/Loader";
-import { getUsers } from "@/actions/getUsers";
+import { getUsers,getDocumentUsers } from "@/actions/user.actions";
 import { useSession} from "next-auth/react";
 const Provider = ({ children }: { children: ReactNode }) => {
   const { data: session } = useSession();

@@ -23,9 +23,9 @@ declare type SearchParamProps = {
   
   declare type User = {
     id: string;
-    name: string;
+    username: string;
     email: string;
-    avatar: string;
+    image: string;
     color: string;
     userType?: UserType;
   };

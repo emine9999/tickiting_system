@@ -1,9 +1,8 @@
-// filepath: c:\Users\AELHASBI\Documents\tickiting_system\next.config.ts
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ["i.pinimg.com"], // Ajoutez ici les domaines autorisés
+    domains: ["i.pinimg.com", "lh3.googleusercontent.com"], 
   },
 };
 

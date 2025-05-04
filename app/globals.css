@@ -175,10 +175,10 @@
     @apply w-full max-w-[800px] border  shadow-sm lg:w-[350px] transition-all;
   }
 
-  /* .shad-dialog {
-    @apply w-full max-w-[400px] rounded-xl border-none  bg-cover px-5 py-7 shadow-xl sm:min-w-[500px] ;
+   .shad-dialog {
+    @apply w-full max-w-[400px] bg-dark-300 rounded-xl border-none  bg-cover px-5 py-7 shadow-xl sm:min-w-[500px] ;
   }
-
+/*
   .shad-dialog button {
     @apply focus:ring-0 focus:ring-offset-0 focus-visible:border-none focus-visible:outline-none focus-visible:ring-transparent focus-visible:ring-offset-0 ;
   }

@@ -1,7 +1,7 @@
 import CollaborativeRoom from '@/components/editor/CollaborativeRoom'
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
-import { getUsers } from '@/actions/getUsers';
+import { getUsers } from '@/actions/user.actions';
 import { getDocument } from '@/actions/room.actions';
 
 const Docuemts = async (props: SearchParamProps) => {
@@ -10,14 +10,14 @@ const Docuemts = async (props: SearchParamProps) => {
   const session = await auth();
   if (!session) redirect("/auth");
 
-  const room = await getDocument({ roomId: id, userId: session.user?.email });
+  const room = await getDocument({ roomId: id, userId: session.user?.email as string});
   if (!room) redirect("/documents");
   // this return the email of the user who created the room
   const userIds = Object.keys(room.usersAccesses);
-  const response = await getUsers({ userIds });
-  const user = await response.json();
-  console.log("userInfoo", user);
-  const usersData = user.map((user) => ({
+  const users = await getUsers({ userIds });
+  
+  console.log("userInfoo docu id page", users);
+  const usersData = users.map((user:User) => ({
     ...user,
     userType: room.usersAccesses[user.email]?.includes('room:write') ? 'editor' : 'viewer',
   }));

@@ -10,7 +10,7 @@ import {
 } from "@liveblocks/react/suspense";
 import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
-import ShareModal from "./ShareModal";
+import ShareModal from "@/components/editor/ShareModal";
 
 const CollaborativeRoom = ({ roomId, roomMetadata ,users,currentUserType}: CollaborativeRoomProps) => {
   

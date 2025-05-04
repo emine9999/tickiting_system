@@ -12,9 +12,9 @@ export async function middleware(request: NextRequest) {
   }
   
   const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
-  console.log("token", token);
+  // console.log("token", token);
   const isAuthenticated = !!token;
-  console.log("isAuthenticated", isAuthenticated);
+  // console.log("isAuthenticated", isAuthenticated);
   
   const isProtected = protectedRoutes.includes(nextUrl.pathname);
   

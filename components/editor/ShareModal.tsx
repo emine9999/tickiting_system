@@ -15,6 +15,8 @@ import {
   } from "@/components/ui/dialog"
   import UserTypeSelector from "@/components/editor/UserTypeSelector";
   import Collaborator from "@/components/editor/Collaborator";
+  import { updateDocumentAccess } from "@/actions/room.actions"
+
   const ShareModal = ({roomId, collaborators ,currentUserType ,creatorId} :ShareDocumentDialogProps) => {
     const user = useSelf(); // this used to know which user wants to change the permissions
     const [open, setOpen] = useState(false);
@@ -22,11 +24,23 @@ import {
     const [email, setEmail] = useState(''); // this used to store the email of the user that wants to be invited
     const [userType, setUserType] = useState<UserType>('viewer'); // this used to store the type of user that wants to be invited
     // handle the share logic
-    const shareDocumentHandler = async () => {}
+    const shareDocumentHandler = async () => {
+      setLoading(true);
+  
+      await updateDocumentAccess({ 
+        roomId, 
+        email, 
+        userType: userType as UserType, 
+        updatedBy: user.info,
+      });
+  
+      setLoading(false);
+    }
+    console.log("collaborators",collaborators);
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog open={open} onOpenChange={setOpen} >
           <DialogTrigger>
-            <Button className="bg-blue-500 flex h-9 gap-1 px-4" disabled={currentUserType !== 'editor'}>
+            <Button className="bg-blue-500 hover:bg-blue-600 flex h-9 gap-1 px-4" disabled={currentUserType !== 'editor'}>
               <Image
                 src="/assets/icons/share.svg"
                 alt="share"
@@ -41,11 +55,11 @@ import {
           </DialogTrigger>
           <DialogContent className="shad-dialog">
             <DialogHeader>
-              <DialogTitle>Manage who can view this project</DialogTitle>
-              <DialogDescription>Select which users can view and edit this document</DialogDescription>
+              <DialogTitle className='text-gray-200'>Manage who can view this project</DialogTitle>
+              <DialogDescription className='text-gray-500'>Select which users can view and edit this document</DialogDescription>
             </DialogHeader>
     
-            <Label htmlFor="email" className="mt-6 text-blue-100">
+            <Label htmlFor="email" className="mt-6 text-gray-200">
               Email address
             </Label>
             <div className="flex items-center gap-3">
@@ -55,14 +69,14 @@ import {
                   placeholder="Enter email address"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="share-input"
+                  className="border-none bg-transparent text-blue-100 placeholder:text-blue-100 "
                 />
                 <UserTypeSelector 
                   userType={userType}
                   setUserType={setUserType}
                 />
               </div>
-              <Button type="submit" onClick={shareDocumentHandler} className="gradient-blue flex h-full gap-1 px-5" disabled={loading}>
+              <Button type="submit" onClick={shareDocumentHandler} className="bg-blue-600 cursor-pointer hover:bg-blue-500 flex h-full gap-1 px-5" disabled={loading}>
                 {loading ? 'Sending...' : 'Invite'}
               </Button>
             </div>
