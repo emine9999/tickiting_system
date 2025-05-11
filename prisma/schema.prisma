@@ -42,7 +42,7 @@ model User {
   accounts       Account[]
   tickets        Ticket[]    @relation("UserTickets") // Tickets created by the user
   assignedTickets Ticket[]   @relation("UserAssignedTickets") // Tickets assigned to the user
-  comments       Comment[]   @relation("UserComments") // Comments made by the user
+  comments       Comment[]   @relation("UserComments") // a user can have many comments
   roleId         String?      @db.ObjectId // Foreign key to UserRole
   role           UserRole?   @relation(fields: [roleId], references: [id])
   memberships    UserGroup[] // Many-to-Many relationship with Group through UserGroup
@@ -98,7 +98,7 @@ model Ticket {
   createdBy   User      @relation("UserTickets", fields: [userId], references: [id])
   assignedTo  User?     @relation("UserAssignedTickets", fields: [assignedToId], references: [id], onDelete: SetNull) // If an assigned user is deleted, the ticket remains but becomes unassigned.
   group       Group     @relation(fields: [groupId], references: [id]) // Ticket is attached to a group
-  comments    Comment[] @relation("TicketComments")
+  comments    Comment[] @relation("TicketComments") // A ticket can have many comments
 }
 
 model Comment {
@@ -114,6 +114,14 @@ model Comment {
   // Relations
   user      User?    @relation("UserComments", fields: [userId], references: [id], onDelete: SetNull) // If a user is deleted, the comment remains but becomes null
   ticket    Ticket   @relation("TicketComments", fields: [ticketId], references: [id], onDelete: Cascade)
+
+   // Reply logic
+  parentId   String?   // null for top-level comments
+  parent     Comment?  @relation("ReplyTo", fields: [parentId], references: [id])
+  replies    Comment[] @relation("ReplyTo")
+
+  // Optional: Soft delete
+  deleted    Boolean   @default(false)
 }
 
  

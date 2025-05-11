@@ -6,6 +6,13 @@ export type Ticket = {
     priority: "low" | "medium" | "high" | "critical";
     description: string;
     requestDate: string; 
+    createdAt: string;
+    updatedAt: string;
+    userId: string;
+    assignedToId: string;
+    title: string;
+    type: string;
+    comments: Comment[];
   };
 
 
