@@ -9,7 +9,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       enableSystem
       disableTransitionOnChange
     >
-      <main className="flex w-full min-h-screen bg-gray-50 dark:bg-slate-900 ">
+      <main className="flex w-full min-h-screen bg-gray-50 dark:bg-slate-900 overflow-x-hidden ">
         {/* Sidebar */}
         <UserSideBar />
           

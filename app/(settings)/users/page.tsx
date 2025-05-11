@@ -4,20 +4,21 @@ import { Plus } from 'lucide-react';
 import { columns } from '@/app/(settings)/users/columns';
 import { DataTableDemo } from '@/app/(settings)/users/data-table';
 import { AddUser } from '@/components/AddUser';
+import Loader from '@/components/Loader';
 // import user from '@/data/users'
 export default function Users() {
-  const [users, setUsers] = useState([]); // État pour stocker les utilisateurs
-  const [loading, setLoading] = useState(true); // État pour le chargement
-  const [error, setError] = useState<string | null>(null); // État pour les erreurs
+  const [users, setUsers] = useState([]); 
+  const [loading, setLoading] = useState(true); 
+  const [error, setError] = useState<string | null>(null); 
 
-  // Récupérer les utilisateurs depuis l'API
+  
   useEffect(() => {
     const fetchUsers = async () => {
       setLoading(true);
       setError(null);
 
       try {
-        const res = await fetch('/api/users', {
+        const res = await fetch('/api/users',{
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
         });
@@ -28,16 +29,16 @@ export default function Users() {
         }
 
         const data = await res.json();
-        setUsers(data); // Mettre à jour l'état avec les utilisateurs récupérés
+        setUsers(data); 
       } catch (err: any) {
         setError(err.message || 'An unexpected error occurred');
       } finally {
-        setLoading(false); // Désactiver l'état de chargement
+        setLoading(false); 
       }
     };
 
     fetchUsers();
-  }, []); // Exécuter une seule fois au montage du composant
+  }, []); 
 
   return (
     <div className="h-screen w-full py-3 pl-24">
@@ -52,8 +53,8 @@ export default function Users() {
 
       {/* Data Table Section */}
       <div className="container mx-auto">
-        {loading && <p>Loading...</p>} {/* Afficher un message de chargement */}
-        {error && <p className="text-red-500">{error}</p>} {/* Afficher un message d'erreur */}
+        {loading && <Loader/>} 
+        {error && <p className="text-red-500">{error}</p>} 
         {!loading && !error && (
           <DataTableDemo columns={columns()} data={users} />
         )}

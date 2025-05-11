@@ -12,6 +12,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { redirect } from "next/navigation";
+
 
 export const columns: ColumnDef<Ticket>[] = [
   {
@@ -37,13 +39,13 @@ export const columns: ColumnDef<Ticket>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "id",
+    accessorKey: "title",
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Ticket ID
+        Ticket title
         {column.getIsSorted() === "asc" ? (
           <ArrowUp />
         ) : column.getIsSorted() === "desc" ? (
@@ -53,16 +55,16 @@ export const columns: ColumnDef<Ticket>[] = [
         )}
       </Button>
     ),
-    cell: ({ row }) => <div className="bg-slate-200 rounded-full px-2 text-center dark:text-red-900">{row.getValue("id")}</div>,
+    cell: ({ row }) => <div className="bg-slate-200 rounded-full px-2 text-center dark:text-red-900">{row.getValue("title")}</div>,
   },
   {
-    accessorKey: "clientName", 
+    accessorKey: "createdBy.username", 
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Client Name
+        Created By
         {column.getIsSorted() === "asc" ? (
           <ArrowUp />
         ) : column.getIsSorted() === "desc" ? (
@@ -72,14 +74,14 @@ export const columns: ColumnDef<Ticket>[] = [
         )}
       </Button>
     ),
-    cell: ({ row }) => <div>{row.getValue("clientName")}</div>,
+    cell: ({ row }) => <div className="ml-5">{row.original.createdBy?.username}</div>,
   },
   {
-    accessorKey: "category",
-    header: "Category",
+    accessorKey: "type",
+    header: "type",
     cell: ({ row }) => 
     
-    <div >{row.getValue("category")}</div>,
+    <div >{row.getValue("type")}</div>,
   },
   {
     accessorKey: "status",
@@ -97,11 +99,11 @@ export const columns: ColumnDef<Ticket>[] = [
       const bgColor =
         category === "critical"
           ? "bg-red-200 text-red-500"
-          : category === "high"
+          : category === "HIGH"
           ? "bg-yellow-200 text-yellow-500"
-          : category === "medium"
+          : category === "MEDIUM"
           ? "bg-blue-200 text-blue-500"
-          : category === "low"
+          : category === "LOW"
           ? "bg-green-200 text-green-500"
           : "bg-gray-200";
   
@@ -114,7 +116,7 @@ export const columns: ColumnDef<Ticket>[] = [
   },
 
   {
-    accessorKey: "requestDate",
+    accessorKey: "createdAt",
     header: ({ column }) => (
       <Button
         variant="ghost"
@@ -132,7 +134,7 @@ export const columns: ColumnDef<Ticket>[] = [
     ),
     cell: ({ row }) => (
       <div>
-        {row.getValue("requestDate")}
+        {row.getValue("createdAt")}
       </div>
     ),
   },
@@ -163,7 +165,9 @@ export const columns: ColumnDef<Ticket>[] = [
               Copy ticket ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View ticket details</DropdownMenuItem>
+            <DropdownMenuItem
+            onClick={()=> redirect(`/tickets/${ticket.id}`)}
+            >View ticket details</DropdownMenuItem>
             <DropdownMenuItem>Assign ticket</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

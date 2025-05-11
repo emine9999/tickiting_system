@@ -1,11 +1,18 @@
 "use client";
 import { User } from "@/types/types";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal, ArrowUp, ArrowDown,PencilLine,Trash2} from "lucide-react";
+import {
+  ArrowUpDown,
+  MoreHorizontal,
+  ArrowUp,
+  ArrowDown,
+  PencilLine,
+  Trash2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-// import {Delete} from '@/components/Delete'
-// import {EditUser} from '@/components/EditUser'
+import { Delete } from "@/components/Delete";
+import { EditUser } from "@/components/EditUser";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,8 +21,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-
 
 export const columns = (): ColumnDef<User>[] => [
   {
@@ -60,7 +65,7 @@ export const columns = (): ColumnDef<User>[] => [
     cell: ({ row }) => <div className="ml-3">{row.getValue("username")}</div>,
   },
   {
-    accessorKey: "email", 
+    accessorKey: "email",
     header: ({ column }) => (
       <Button
         variant="ghost"
@@ -81,29 +86,9 @@ export const columns = (): ColumnDef<User>[] => [
   {
     accessorKey: "role",
     header: "Role",
-    cell: ({ row }) => 
-    
-    <div >{row.getValue("role")}</div>,
+    cell: ({ row }) => <div>{row.getValue("role")}</div>,
   },
-  {
-    accessorKey: "status",
-    header: "Status",
-    cell: ({ row }) => {
-      const status = row.getValue("status") as string;
-      const bgColor =
-        status === "Active"
-          ? "bg-green-200 text-green-500"
-          : status === "Inactive"
-          ? "bg-red-200 text-red-500"
-          : "bg-blue-200";
-      return (  
-        <div className={`capitalize font-medium flex items-center justify-center ${bgColor} w-24  rounded-full  p-1`}>
-              
 
-          {status}
-        </div>)
-  },
-  },
   {
     accessorKey: "groups",
     header: "Group",
@@ -112,46 +97,41 @@ export const columns = (): ColumnDef<User>[] => [
       return (
         <div className="flex gap-3 p-2">
           {groups.map((group, idx) => (
-            <span key={idx} className="bg-white text-black rounded px-2 py-1 text-xs font-semibold">
+            <span
+              key={idx}
+              className="bg-blue-300 text-black rounded-full px-2 py-1 text-xs font-semibold"
+            >
               {group}
             </span>
           ))}
         </div>
       );
-    }
-  }
-,  
-//   {
-//     id: "actions", // Custom column for actions
-//     header: "Actions",
-//     cell: ({ row }) => {
-//       const { reset_password , delete: deleteUrl } = row.original.actions;
+    },
+  },
+  {
+    id: "actions",
+    header: "Actions",
+    cell: ({ row }) => {
+      return (
+        <div className="flex gap-5">
+          <div className="flex items-center gap-1">
+            <PencilLine color="#BCCCDC" size={19}/>
+            <EditUser id={row.original.id.toString()} />
+          </div>
 
-
-
-      
-//       return (
-//         <div className="flex gap-5">
-          
-// {reset_password && (
-// <div className="flex items-center gap-1"><PencilLine color="#BCCCDC"/>
-// <EditUser userid={row.original.id.toString()}/></div>
-//           )}
-//           {deleteUrl && (
-//                <div className="flex items-center gap-1"><Trash2 color="#BCCCDC"/>
-//               <Delete userid={row.original.id.toString()}/>
-//               </div>
-//           )}
-//         </div>
-//       );
-//     },
-//   },
+          <div className="flex items-center gap-1">
+            <Trash2 color="#BCCCDC" size={18}/>
+            <Delete userid={row.original.id.toString()} />
+          </div>
+        </div>
+      );
+    },
+  },
   {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
       const user = row.original;
-
 
       return (
         <DropdownMenu>
@@ -171,12 +151,12 @@ export const columns = (): ColumnDef<User>[] => [
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={() => {
-                window.location.href = '/users/1';
+                window.location.href = "/profile";
               }}
             >
               View User details
             </DropdownMenuItem>
-          
+
             <DropdownMenuItem>Assign Role</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

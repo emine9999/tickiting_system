@@ -6,7 +6,7 @@ import { ticketSchema } from '@/lib/ticketSchema';
 type RouteParams = { params: { id: string } };
 
 export async function GET(req: NextRequest, { params }: RouteParams) {
-  const id = params.id;
+  const id = await  params.id;
 
   try {
     const ticket = await prisma.ticket.findUnique({

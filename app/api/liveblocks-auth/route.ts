@@ -7,6 +7,8 @@ export async function POST() {
   // Get the current user from your database
   const session = await auth();
   if (!session) redirect("/auth")
+
+    
   const {email ,name ,image,id} = session.user || {}
   console.log("sessionnnn",session)
   const user = {

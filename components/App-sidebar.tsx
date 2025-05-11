@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Search ,UsersRound,Pin,BellRing,FileSearch,LogOut  } from 'lucide-react';
 import ModeToggle  from './ModeToggle';
 import Ticket from '@/components/Ticket'
-import UserProfile from '@/components/UserProfile'
+import Link from 'next/link'
 import { useSession,signOut } from "next-auth/react";
 import AdminNav from '@/components/AdminNav'
 
@@ -102,18 +102,21 @@ export function AppSidebar({ onButtonClick }: { onButtonClick: () => void }) {
   return (
     <Sidebar>
      <SidebarHeader>
-      <div className="flex items-center w-fit gap-3 justify-start ml-3 py-3">
+    <Link href='/profile'>
+    <div className="flex items-center w-fit gap-3 justify-start ml-3 py-3">
         <Avatar className="lg:w-14 lg:h-14 rounded-full">
           <AvatarImage src={session?.user?.image || "https://github.com/shadcn.png"} />
           <AvatarFallback>{session?.user?.name?.charAt(0) || "CN"}</AvatarFallback>
         </Avatar>
         <div>
-          <button className="w-full">
-            <UserProfile />
-          </button>
-          <h2 className="text-sm text-gray-400">{session?.user?.name || "Agent Admin"}</h2>
+          <p className="w-full">
+            
+            {session?.user?.name}
+          </p>
+          <h2 className="text-sm text-gray-400">{session?.user?.role?.name || "Agent Admin"}</h2>
         </div>
       </div>
+    </Link>
       <hr />
     </SidebarHeader>
       <SidebarContent >
@@ -157,7 +160,7 @@ export function AppSidebar({ onButtonClick }: { onButtonClick: () => void }) {
                     </button>
                     </div>
                    
-                   {session?.user?.role === "ADMIN" && <AdminNav />}
+                   {session?.user?.role?.name === "ADMIN" && <AdminNav />}
                    
               </SidebarMenu>
             </SidebarGroupContent>

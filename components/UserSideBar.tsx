@@ -1,12 +1,12 @@
 'use client'
 
-import { Home, Bot, FileSearch, UserCog, Wrench, PlusCircle, Settings, Calendar, LayoutDashboard } from 'lucide-react';
+import { Users, Wrench, PlusCircle, Settings, ArrowLeft, LayoutDashboard, LogOut,Boxes } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useSession } from "next-auth/react";
+import { useSession,signOut } from "next-auth/react";
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
-
+import ModeToggle  from './ModeToggle';
 const mainNavItems = [
   {
     url: '/dashboard',
@@ -20,7 +20,7 @@ const mainNavItems = [
 const serviceNavItems = [
   {
     url: '/users',
-    icon: UserCog,
+    icon: Users,
     label: 'Users',
   },
   {
@@ -28,15 +28,20 @@ const serviceNavItems = [
     icon: Wrench,
     label: 'Roles',
   },
+  {
+    url: '/groups',
+    icon: Boxes,
+    label: 'Groupes',
+  },
 
 ];
 
 const settingsNavItems = [
-  {
-    url: '/settings/profile',
-    icon: Settings,
-    label: 'Settings',
-  },
+  // {
+  //   url: '/settings/profile',
+  //   icon: Settings,
+  //   label: 'Settings',
+  // },
   {
     url: '/settings/integrations',
     icon: PlusCircle,
@@ -73,7 +78,9 @@ export default function UserSideBar() {
     );
   };
   
-  return (
+return (
+  <>
+  {session?.user?.role?.name === "ADMIN" ?
     <div className="min-h-screen w-24 flex flex-col py-6 bg-white fixed dark:bg-slate-800 border-r border-gray-100 dark:border-slate-700 shadow-sm ">
       {/* Top traffic light dots */}
       <div className="flex justify-center space-x-1 mb-6">
@@ -84,10 +91,12 @@ export default function UserSideBar() {
       
       {/* User Avatar */}
       <div className="flex justify-center mb-8">
-        <Avatar className="w-12 h-12 border-2 border-white shadow-sm">
+      <Link href="/profile">
+      <Avatar className="w-12 h-12 border-2 border-white shadow-sm">
           <AvatarImage src={session?.user?.image || "https://github.com/shadcn.png"} />
           <AvatarFallback>{session?.user?.name?.charAt(0) || "U"}</AvatarFallback>
         </Avatar>
+        </Link>
       </div>
       
       {/* Main menu section */}
@@ -110,24 +119,32 @@ export default function UserSideBar() {
       
       {/* Settings section */}
       <div className="px-4  ">
-        <div className="bg-gray-100 dark:bg-slate-700 rounded-xl p-3 mt-2">
+        <div className="mt-4">
           <div className="flex flex-col space-y-4 items-center">
             {settingsNavItems.map((item) => (
               <NavItem key={item.url} item={item} />
             ))}
+             <div className='px-4 flex items-center justify-center flex-col gap-5  bg-gray-100 dark:bg-slate-700 rounded-xl p-2 max-w-16 mt-2'>
+      <button onClick={() => signOut()} className="   cursor-pointer ">
+         <LogOut size={23} />                 
+      </button>
+      
+      </div>
+      
           </div>
         </div>
       </div>
-      
+     
       {/* Add button at bottom */}
-      <div className="mt-auto flex justify-center pt-6">
-        <Link
-          href="/groups"
-          className="w-12 h-12 flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white rounded-xl transition-colors duration-200"
-        >
-          <PlusCircle className="w-5 h-5" />
-        </Link>
-      </div>
-    </div>
-  );
-}
+     
+
+    
+  </div>:
+<Link href='/dashboard'>
+
+<ArrowLeft className='absolute top-8 left-10 cursor-pointer'/>
+</Link>
+
+  }
+  </>
+);

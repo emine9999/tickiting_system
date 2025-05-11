@@ -1,14 +1,14 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-// import { auth } from "@/auth";
+import { auth } from "@/auth";
 import { ticketSchema } from '@/lib/ticketSchema';
 
 export async function POST(req: Request) {
-    // const session = await auth();
-    // console.log('Session:', session); // Log the session for debugging
-    // if (!session || !session.user) {
-    //     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
-    // }
+    const session = await auth();
+    console.log('Session:', session); // Log the session for debugging
+    if (!session || !session.user) {
+        return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
 
     const body = await req.json();
     const validation = ticketSchema.safeParse(body);
@@ -16,7 +16,7 @@ export async function POST(req: Request) {
         return NextResponse.json({ message: validation.error.errors[0].message }, { status: 400 });
     }
 
-    const { title, description, priority, status, assignedTo, type } = body;
+    const { title, description, priority, status, assignee, type } = body;
 
     // Check for duplicate ticket title
     const checkDuplicate = await prisma.ticket.findFirst({
@@ -29,27 +29,35 @@ export async function POST(req: Request) {
     try {
         // Validate assignedTo email if provided
         let assignedUser = null;
-        if (assignedTo) {
+        if (assignee) {
             assignedUser = await prisma.user.findUnique({
-                where: { email: assignedTo },
+                where: { email: assignee },
             });
             if (!assignedUser) {
                 return NextResponse.json({ message: 'Assigned user not found' }, { status: 404 });
             }
         }
 
-        // Create a new ticket
-        await prisma.ticket.create({
-            data: {
-                title,
-                description,
-                priority,
-                status,
-                type,
-                userId: '67eb5a558e2fc983efc1da39', //session.user.id, // Creator's ID
-                assignedToId: assignedUser ? assignedUser.id : null, // Assign if exists we access the id prisma return the whole user object
-            },
-        });
+
+await prisma.ticket.create({
+    data: {
+        title,
+        description,
+        priority,
+        status,
+        type,
+        assignedTo: assignedUser ? {
+            connect: { id: assignedUser.id }
+        } : undefined,
+        createdBy: {
+            connect: { id: session.user.id }
+        },
+        group: {
+            connect: { name: "SIR" }
+        }
+    },
+});
+
 
         return NextResponse.json({ message: 'Ticket created successfully' }, { status: 201 });
     } catch (error) {
@@ -68,7 +76,12 @@ export async function GET() {
     // }
 
     try {
-        const tickets = await prisma.ticket.findMany();
+        const tickets = await prisma.ticket.findMany({
+            include: {
+                assignedTo: true,
+                createdBy: true,
+            }
+        });
         return NextResponse.json(tickets, { status: 200 });
     } catch (error) {
         console.error('Error fetching tickets:', error);

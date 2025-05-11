@@ -16,6 +16,7 @@ const Docs = async() => {
   if (!session) redirect("/auth")
   
   const roomDocuments = await getDocuments(session.user?.email ?? "");
+  console.log("testtt :",roomDocuments)
   
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 min-h-screen bg-slate-900 text-slate-200">

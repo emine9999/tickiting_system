@@ -7,7 +7,7 @@ export const userSchema = z.object({
     email: z.string()
         .email({ message: 'Invalid email address' })
         .max(100, { message: 'Email cannot exceed 100 characters' }),
-    role: z.enum(['user', 'admin', 'manager']),
+    role: z.enum(['USER', 'ADMIN', 'MANAGER']),
     group: z.string()
         .min(3, { message: 'Group must be at least 3 characters' })
         .max(50, { message: 'Group cannot exceed 50 characters' }),

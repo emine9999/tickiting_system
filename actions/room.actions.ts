@@ -36,7 +36,6 @@ export const createDocument = async ({userId ,email} :CreateDocumentParams) => {
 export const getDocument = async ({ roomId, userId }: { roomId: string; userId: string }) => {
     try {
         const room = await liveblocks.getRoom(roomId);
-      
         const hasAccess = Object.keys(room.usersAccesses).includes(userId);
       
         if(!hasAccess) {
@@ -68,6 +67,8 @@ export const getDocument = async ({ roomId, userId }: { roomId: string; userId: 
   export const getDocuments = async (email: string ) => {
     try {
         const rooms = await liveblocks.getRooms({ userId: email });
+        console.log("ronnn info from room action :", rooms)
+
         return parseStringify(rooms);
     } catch (error) {
       console.log(`Error happened while getting rooms: ${error}`);

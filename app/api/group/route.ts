@@ -2,7 +2,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { groupSchema } from '@/lib/groupSchema';
-
+import { revalidatePath } from 'next/cache';
 
 // create a new Group
 export async function POST(req: Request) {
@@ -81,11 +81,12 @@ export async function POST(req: Request) {
           },
         },
       });
-  
+      revalidatePath("/groups");
       return NextResponse.json(
         { message: 'Group created successfully', group },
         { status: 201 }
       );
+      
     } catch (error) {
       console.error('Error creating Group:', error);
       return NextResponse.json(

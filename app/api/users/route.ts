@@ -1,7 +1,7 @@
 // this for GET and POST
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { userSchema } from '@/lib/userSchema';
+
 import { auth } from '@/auth';
 import * as bcrypt from "bcryptjs";
 
@@ -55,17 +55,13 @@ export async function POST(req: Request){
         return NextResponse.json({message : 'Unauthorized'}, {status:401});
     }
 
-    if (!session.user.role || session.user.role !== 'admin'){
-        return NextResponse.json({ message: 'Forbidden' }, { status: 403 });
-    }
-
     const body = await req.json();
-    const validation = userSchema.safeParse(body);
-    if (!validation.success) {
-        return NextResponse.json({ message: validation.error.errors[0].message }, { status: 400 });
-    }
+    // const validation = userSchema.safeParse(body);
+    // if (!validation.success) {
+    //     return NextResponse.json({ message: "wafeen" }, { status: 400 });
+    // }
 
-    const { name, email, role, password,groupId } = body;
+    const { name, email, role, password,group } = body;
 
     //check for duplicate users
 
@@ -83,77 +79,79 @@ export async function POST(req: Request){
     const hashedPassword = await bcrypt.hash(password, salt);
     await prisma.user.create({
         data: {
-            name,
+            username: name,
             email,
-            role: role as 'ADMIN' | 'USER' | 'MANAGER', 
+            role: {
+              connect: { name: role }, 
+          },
             password: hashedPassword,
         },
     });
 
     // Add the user to the group
-    if (groupId) {
-        const group = await prisma.group.findUnique({
-            where: { id: groupId },
+    if (group) {
+        const foundGroup = await prisma.group.findUnique({
+            where: { name: group },
         });
 
-        if (!group) {
+        if (!foundGroup) {
             return NextResponse.json({ message: "Group not found" }, { status: 404 });
         }
 
         await prisma.userGroup.create({
             data: {
                 userId: user.id,
-                groupId: groupId,
+                groupId: group,
             },
         });
     }
 
      return NextResponse.json({message:"user Created Successfully"},{status:201})
     } catch (error) {
-        console.error('Error creating ticket:', error);
-        return NextResponse.json({ message: 'Error creating ticket' }, { status: 500 });
+        console.error('Error creating user:', error);
+        return NextResponse.json({ message: 'Error creating User' }, { status: 500 });
     }
 }
 
 
+export async function PATCH(req :Request) {
+  const session = await auth();
+  if (!session || !session.user) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+  }
 
-// PATCH update a user's password
-export async function PATCH(req: Request) {
-    const session = await auth();
-    if (!session || !session.user) {
-        return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
-    }
+  const body = await req.json();
+  const { password ,name,email,image} = body;
+  const id = session.user?.id
 
-    const body = await req.json();
-    const { id, password } = body;
+  try {
+     
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
 
-    if (!id || !password) {
-        return NextResponse.json({ message: 'User ID and password are required' }, { status: 400 });
-    }
+      const user = await prisma.user.update({
+          where: { id },
+          data: { 
+            password: hashedPassword ,
+            username : name,
+            email : email,
+            image : image,
+          
+          },
+      });
 
-    if (password.length < 6) {
-        return NextResponse.json({ message: 'Password must be at least 6 characters long' }, { status: 400 });
-    }
+      if (!user) {
+          return NextResponse.json({ message: 'User not found' }, { status: 404 });
+      }
 
-    try {
-        // Hash the new password
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
-
-        const user = await prisma.user.update({
-            where: { id },
-            data: { password: hashedPassword },
-        });
-
-        if (!user) {
-            return NextResponse.json({ message: 'User not found' }, { status: 404 });
-        }
-
-        return NextResponse.json({ message: 'Password updated successfully' }, { status: 200 });
-    } catch (error) {
-        console.error('Error updating password:', error);
-        return NextResponse.json({ message: 'Error updating password' }, { status: 500 });
-    }
+      return NextResponse.json({ message: 'Profile updated successfully' }, { status: 200 });
+  } catch (error) {
+      console.error('Error updating profile:', error);
+      return NextResponse.json({ message: 'Error updating profile' }, { status: 500 });
+  }
 }
+
+
+
 
 

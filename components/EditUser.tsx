@@ -12,8 +12,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
+import Alert from '@/components/Alert';
 
-export function EditUser({ userid }: { userid: string }) {
+export function EditUser({ id }: { id: string }) {
   const [newPassword, setNewPassword] = useState(""); 
   const [loading, setLoading] = useState(false); 
   const [error, setError] = useState<string | null>(null); 
@@ -27,10 +28,10 @@ export function EditUser({ userid }: { userid: string }) {
     setSuccess(null);
 
     try {
-      const res = await fetch(`/api/users/${userid}`, {
+      const res = await fetch(`/api/users/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password: newPassword ,userid}), 
+        body: JSON.stringify({ password: newPassword }), 
       });
 
       if (!res.ok) {
@@ -52,7 +53,7 @@ export function EditUser({ userid }: { userid: string }) {
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className="border-none shadow-none hover:underline w-fit cursor-pointer bg-gray-50"
+          className="border-none shadow-none hover:underline w-fit cursor-pointer bg-gray-50 dark:bg-dark-200"
         >
           Reset Password
         </Button>
@@ -78,13 +79,14 @@ export function EditUser({ userid }: { userid: string }) {
               required
             />
           </div>
-          {error && <p className="text-red-500">{error}</p>} 
-          {success && <p className="text-green-500">{success}</p>} 
+     
           <DialogFooter>
             <Button type="submit" className="bg-blue-500 hover:bg-blue-700" disabled={loading}>
               {loading ? "Saving..." : "Save Changes"}
             </Button>
           </DialogFooter>
+          {error && <Alert message={error} type="error" />} 
+          {success && <Alert message={success} type="success" />} 
         </form>
       </DialogContent>
     </Dialog>

@@ -10,12 +10,15 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+
+import Alert from "@/components/Alert";
 
 export function Delete({ userid }: { userid: string }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-
+  const router =useRouter()
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -34,10 +37,12 @@ export function Delete({ userid }: { userid: string }) {
       }
 
       setSuccess("User deleted successfully!");
+      router.refresh()
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred");
     } finally {
       setLoading(false);
+      
     }
   };
 
@@ -46,7 +51,7 @@ export function Delete({ userid }: { userid: string }) {
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className="border-none shadow-none hover:underline w-fit cursor-pointer bg-gray-50"
+          className="border-none shadow-none hover:underline w-fit cursor-pointer bg-gray-50 dark:bg-dark-200"
         >
           Delete User
         </Button>
@@ -59,8 +64,7 @@ export function Delete({ userid }: { userid: string }) {
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
-          {error && <p className="text-red-500">{error}</p>} 
-          {success && <p className="text-green-500">{success}</p>} 
+          
           <DialogFooter>
             <Button
               type="submit"
@@ -69,7 +73,10 @@ export function Delete({ userid }: { userid: string }) {
             >
               {loading ? "Deleting..." : "Delete"}
             </Button>
+            
           </DialogFooter>
+          {error && <Alert message={error} type="error" />} 
+          {success && <Alert message={success} type="success"/>}
         </form>
       </DialogContent>
     </Dialog>

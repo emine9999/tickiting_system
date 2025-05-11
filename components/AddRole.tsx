@@ -93,8 +93,9 @@ export default function AddRole() {
               id="name"
               name="name"
               value={formData.name}
-              placeholder="Nom de Role"
               onChange={handleChange}
+              placeholder="Nom de Role"
+              
               autoComplete="off"
               className="col-span-4"
             />
