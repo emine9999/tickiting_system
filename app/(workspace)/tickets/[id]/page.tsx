@@ -6,12 +6,13 @@ import { useParams } from 'next/navigation';
 import Comments from '@/components/comments/Comments';
 import { Ticket } from '@/types/types'; // 
 
+
 const TicketPage = () => {
   // Use useParams hook from Next.js App Router
   const params = useParams();
   const id = params.id;
   
-  const [ticket, setTicket] = useState<Ticket | null>(null);
+    const [ticket, setTicket] = useState<Ticket | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -150,7 +151,7 @@ const TicketPage = () => {
 
           {/* Chat Sidebar */}
           <div className="w-full lg:w-1/4 relative overflow-y-auto max-h-[90vh] ">
-              <Comments ticketId={ticket.id}  userId={ticket.userId}/>
+            <Comments ticketId={ticket.id}  />
           </div>
         </div>
       </div>

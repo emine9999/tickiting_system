@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import {createComment} from '@/actions/comment.actions'
 
 interface CommentFormProps {
   ticketId: string;  // The ID of the ticket to which the comment belongs
@@ -20,16 +21,8 @@ const CommentForm = ({ ticketId, userId, parentId, onCommentAdded }: CommentForm
 
     // Send the comment to the backend
     try {
-      // Create the comment payload
-      const commentData = {
-        ticketId,
-        userId,
-        content: commentContent,
-        parentId: parentId || null, // Set parentId if it's a reply, otherwise set to null
-      };
-
-      // Call the backend server action or API to save the comment
-      await createComment(commentData);
+      
+      await createComment(ticketId, userId, commentContent, parentId || undefined);
 
       // Clear the comment input field after submission
       setCommentContent('');
@@ -41,29 +34,19 @@ const CommentForm = ({ ticketId, userId, parentId, onCommentAdded }: CommentForm
     }
   };
 
-  // This function will handle the API call to create a comment
-  const createComment = async (data: { ticketId: string; userId: string; content: string; parentId: string | null }) => {
-    // Example: Make a POST request to your backend server or server actions
-    await fetch('/api/comments', {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-  };
+
 
   return (
-    <form onSubmit={handleSubmit} className="comment-form">
+    <form onSubmit={handleSubmit} className="space-y-3 flex flex-col mb-4">
       <textarea
         value={commentContent}
         onChange={(e) => setCommentContent(e.target.value)}
         placeholder="Write a comment..."
-        rows={4}
-        className="comment-input"
+        rows={2}
+        className="w-full border rounded-md p-2 bg-white"
         disabled={isSubmitting}
       />
-      <button type="submit" className="submit-button" disabled={isSubmitting}>
+      <button type="submit" className="bg-blue-500 rounded-lg px-2 py-1 text-white text-sm hover:bg-blue-400 cursor-pointer" disabled={isSubmitting}>
         {isSubmitting ? "Submitting..." : parentId ? "Reply" : "Add Comment"}
       </button>
     </form>

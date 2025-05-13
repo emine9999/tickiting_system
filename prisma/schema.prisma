@@ -112,15 +112,14 @@ model Comment {
   ticketId  String   @db.ObjectId
 
   // Relations
-  user      User?    @relation("UserComments", fields: [userId], references: [id], onDelete: SetNull) // If a user is deleted, the comment remains but becomes null
+  user      User?    @relation("UserComments", fields: [userId], references: [id], onDelete: SetNull)
   ticket    Ticket   @relation("TicketComments", fields: [ticketId], references: [id], onDelete: Cascade)
 
-   // Reply logic
-  parentId   String?   // null for top-level comments
-  parent     Comment?  @relation("ReplyTo", fields: [parentId], references: [id])
+  // Reply logic - Modified to handle cyclic references
+  parentId   String?  @db.ObjectId  
+  parent     Comment? @relation("ReplyTo", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   replies    Comment[] @relation("ReplyTo")
 
-  // Optional: Soft delete
   deleted    Boolean   @default(false)
 }
 
