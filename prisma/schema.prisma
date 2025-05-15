@@ -46,6 +46,75 @@ model User {
   roleId         String?      @db.ObjectId // Foreign key to UserRole
   role           UserRole?   @relation(fields: [roleId], references: [id])
   memberships    UserGroup[] // Many-to-Many relationship with Group through UserGroup
+
+  //added this for ticket convo
+  conversationIds String[] @db.ObjectId
+  conversations Conversation[] @relation(fields: [conversationIds],references: [id]) // this represent the convos where the user is part of
+  seenMessagesIds String[] @db.ObjectId
+  seenMessages   Message [] @relation("Seen",fields: [seenMessagesIds],references: [id]) // this represent the messages that the user has seen
+
+  messages Message []   // this represent the messages that the user has sent
+}
+
+model Conversation {
+  id String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  lastMessageAt DateTime @default(now())
+  name String?
+  isGroup Boolean? // a boolean flag to know whether this convo is a group chat
+
+  messagesIds String[] @db.ObjectId
+  messages Message[]
+
+  userIds String[] @db.ObjectId
+  users User[] @relation(fields: [userIds],references: [id])
+
+
+  ticket Ticket? @relation 
+}
+
+  model Message {
+     id String   @id @default(auto()) @map("_id") @db.ObjectId
+     body String?
+     image String?
+     createdAt DateTime @default(now())
+
+     seenIds String[] @db.ObjectId
+     seen User[] @relation("Seen" ,fields: [seenIds],references: [id])
+
+     conversationId String @db.ObjectId
+     conversation Conversation @relation(fields: [conversationId],references: [id],onDelete: Cascade)
+
+     senderId String @db.ObjectId
+     sender User @relation(fields: [senderId],references: [id],onDelete: Cascade)
+  
+    
+}
+
+model Ticket {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String
+  priority    Priority  @default(LOW)
+  status      Status    @default(OPEN)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  type        String    @default("TASK")
+  // Foreign Keys
+  userId      String    @db.ObjectId // Creator of the ticket
+  assignedToId String?  @db.ObjectId // Assigned user (nullable)
+  groupId     String    @db.ObjectId // Foreign key to Group model
+
+  // Relations
+  createdBy   User      @relation("UserTickets", fields: [userId], references: [id])
+  assignedTo  User?     @relation("UserAssignedTickets", fields: [assignedToId], references: [id], onDelete: SetNull) // If an assigned user is deleted, the ticket remains but becomes unassigned.
+  group       Group     @relation(fields: [groupId], references: [id]) // Ticket is attached to a group
+  comments    Comment[] @relation("TicketComments") // A ticket can have many comments
+
+  //added this for ticket convo
+  conversationIds String? @db.ObjectId  // a ticket should have only one conv
+  conversations Conversation? @relation(fields: [conversationIds],references: [id]) 
+  @@unique([conversationIds]) 
 }
 
 model UserRole {
@@ -80,26 +149,7 @@ model UserGroup {
 
 
 
-model Ticket {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  title       String
-  description String
-  priority    Priority  @default(LOW)
-  status      Status    @default(OPEN)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  type        String    @default("TASK")
-  // Foreign Keys
-  userId      String    @db.ObjectId // Creator of the ticket
-  assignedToId String?  @db.ObjectId // Assigned user (nullable)
-  groupId     String    @db.ObjectId // Foreign key to Group model
 
-  // Relations
-  createdBy   User      @relation("UserTickets", fields: [userId], references: [id])
-  assignedTo  User?     @relation("UserAssignedTickets", fields: [assignedToId], references: [id], onDelete: SetNull) // If an assigned user is deleted, the ticket remains but becomes unassigned.
-  group       Group     @relation(fields: [groupId], references: [id]) // Ticket is attached to a group
-  comments    Comment[] @relation("TicketComments") // A ticket can have many comments
-}
 
 model Comment {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId

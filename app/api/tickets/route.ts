@@ -38,6 +38,19 @@ export async function POST(req: Request) {
             }
         }
 
+        const Group = await prisma.group.findUnique({
+            where: { name: "SIR" }
+        });
+    
+        // If group doesn't exist, create it
+        if (!Group) {
+            await prisma.group.create({
+                data: {
+                    name: "SIR",
+                    description: "SIR Group" 
+                }
+            });
+        }
 
 await prisma.ticket.create({
     data: {
@@ -54,7 +67,8 @@ await prisma.ticket.create({
         },
         group: {
             connect: { name: "SIR" }
-        }
+        },
+        
     },
 });
 

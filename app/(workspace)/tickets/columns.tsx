@@ -166,7 +166,7 @@ export const columns: ColumnDef<Ticket>[] = [
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-            onClick={()=> redirect(`/tickets/${ticket.id}`)}
+            onClick={()=> redirect(`/tickets/${ticket.id}/details`)}
             >View ticket details</DropdownMenuItem>
             <DropdownMenuItem>Assign ticket</DropdownMenuItem>
           </DropdownMenuContent>

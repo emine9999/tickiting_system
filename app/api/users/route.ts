@@ -82,7 +82,7 @@ export async function POST(req: Request){
             username: name,
             email,
             role: {
-              connect: { name: role }, 
+              connect: { name: role || "USER" }, 
           },
             password: hashedPassword,
         },

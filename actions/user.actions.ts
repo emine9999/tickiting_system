@@ -2,7 +2,7 @@
 import { prisma } from '@/lib/prisma'
 import { parseStringify } from '@/lib/utils'
 import { liveblocks } from "@/lib/liveblocks";
-
+import { auth } from "@/auth";
 
 export const getUsers = async ({ userIds }: { userIds: string[] }) => {
   try {
@@ -19,10 +19,10 @@ export const getUsers = async ({ userIds }: { userIds: string[] }) => {
         image: true,
       },
     })
-    // Sort users based on the original order of userIds
+    
     const sortedUsers = userIds.map((userId) =>
       users.find((user) => user.email === userId)
-    ).filter(Boolean) // Remove any undefined if not found
+    ).filter(Boolean) 
    return  parseStringify(sortedUsers)
 
   } catch (error) {
@@ -48,5 +48,62 @@ export const getDocumentUsers = async ({ roomId, currentUser, text }: { roomId: 
     return parseStringify(users);
   } catch (error) {
     console.log(`Error fetching document users: ${error}`);
+  }
+}
+
+
+// this for ticket chat
+const getUserss = async ()=>{
+
+  const session = await auth ();
+  if (!session?.user?.email)
+    return []
+
+  try {
+    const users = await prisma.user.findMany({
+      orderBy :{
+        createdAt: "desc",
+      },
+      where :{
+        NOT:{
+          email : session.user.email
+        }
+      }
+    });
+
+    return users;
+  } catch (error) {
+   return []; 
+  }
+
+}
+
+export default getUserss ;
+
+
+export const getCurrentUser = async () => {
+  const session = await auth();
+
+  if (!session?.user?.email) {
+    return null;
+  }
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        email: session.user.email,
+      },
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        image: true,
+      },
+    });
+    
+    return parseStringify(user);
+  } catch (error) {
+    console.error("Error fetching current user:", error);
+    return null;
   }
 }

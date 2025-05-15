@@ -4,9 +4,9 @@ import { loginSchema } from "@/lib/validationSchema";
 import { registerSchema } from "@/lib/validationSchema";
 import { z } from "zod";
 import * as bcrypt from "bcryptjs";
-import { signIn,signOut } from "@/auth";
+import { signIn, signOut } from "@/auth";
 import { AuthError } from "next-auth";
-
+import { Description } from "@radix-ui/react-dialog";
 
 export const loginAction = async (data: z.infer<typeof loginSchema>) => {
   const validation = loginSchema.safeParse(data);
@@ -20,10 +20,10 @@ export const loginAction = async (data: z.infer<typeof loginSchema>) => {
     await signIn("credentials", {
       email,
       password,
-      redirect : false,
+      redirect: false,
     });
   } catch (error) {
-    if (error instanceof AuthError) { 
+    if (error instanceof AuthError) {
       switch (error.type) {
         case "CredentialsSignin":
           return { success: false, message: "Invalid email or password" };
@@ -35,7 +35,6 @@ export const loginAction = async (data: z.infer<typeof loginSchema>) => {
   }
   return { success: true, message: "Logged in successfully" };
 };
-
 
 // ------------------------registerAction------------------------
 export const registerAction = async (data: z.infer<typeof registerSchema>) => {
@@ -60,16 +59,33 @@ export const registerAction = async (data: z.infer<typeof registerSchema>) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    const existingRole = await prisma.userRole.findUnique({
+      where: {
+        name: "USER",
+      },
+    });
+    let userRole;
+    if (!existingRole)
+      userRole = await prisma.userRole.create({
+        data: {
+          name: "USER",
+          portee: "default",
+          description: "Default user role"
+        },
+      });
+
     // Créer l'utilisateur
     await prisma.user.create({
       data: {
         username,
         email,
         password: hashedPassword,
+
         role: {
           connect: {
             name: "USER"
-          }
+            
+          },
         },
       },
     });
@@ -86,20 +102,15 @@ export const registerAction = async (data: z.infer<typeof registerSchema>) => {
     }
 
     // Retourner une indication de succès et rediriger côté client
-    return { success: "Registered and logged in successfully"};
-
+    return { success: "Registered and logged in successfully" };
   } catch (error) {
     console.error("Registration error:", error);
     return { error: "An unexpected error occurred during registration" };
   }
 };
 
-
-
 //---------------------------------logoutAction---------------------------------
 
 export const logoutAction = async () => {
-  
   await signOut();
-
-}
+};

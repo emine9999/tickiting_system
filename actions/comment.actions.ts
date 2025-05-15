@@ -1,7 +1,6 @@
-// app/actions/comments.ts
 "use server";
 
-import { prisma } from "@/lib/prisma"; // Import your Prisma client
+import { prisma } from "@/lib/prisma"; 
 
 export async function createComment(ticketId: string, userId: string, content: string, parentId?: string) {
   try {
@@ -28,7 +27,7 @@ export async function createComment(ticketId: string, userId: string, content: s
 }
 
 
-export async function getComments(ticketId:string,userId:string){
+export async function getComments(ticketId:string){
   try{
 
     const comments =  await prisma.comment.findMany({

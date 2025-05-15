@@ -1,3 +1,5 @@
+import { Conversation, Message, User as PrismaUser } from "@prisma/client";
+
 export type Ticket = {
     id: string;
     clientName: string;
@@ -43,3 +45,13 @@ export type Ticket = {
 //   status: "Active" | "Inactive" | "Pending";  // Adding Pending as part of the possible statuses
 //   actions: Actions;
 // }
+
+export type FullMessageType = Message & {
+  sender : User,
+  seen : User[]
+};
+
+export type FullConversationType = Conversation & {
+  users : User []
+  messages : FullMessageType[],
+}
