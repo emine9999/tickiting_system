@@ -56,7 +56,7 @@ export default function ChatLayout({ children  }: { children: React.ReactNode })
         <div className="p-4 border-b bg-white sticky top-0 z-10">
           <h2 className="text-lg font-semibold text-gray-800">Chat</h2>
         </div>
-        <div className="flex-1 overflow-y-auto p-4">
+        <div className="flex-1 overflow-y-auto ">
         {children}
         </div>
       </div>

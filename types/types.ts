@@ -1,36 +1,41 @@
 import { Conversation, Message, User as PrismaUser } from "@prisma/client";
 
 export type Ticket = {
-    id: string;
-    clientName: string;
-    category: "Billing" | "Technical Support" | "General Inquiry" | "Account Management" | "Bug Report" | "Feature Request";
-    status: "open" | "in progress" | "pending" | "resolved" | "closed";
-    priority: "low" | "medium" | "high" | "critical";
-    description: string;
-    requestDate: string; 
-    createdAt: string;
-    updatedAt: string;
-    userId: string;
-    assignedToId: string;
-    title: string;
-    type: string;
-    comments: Comment[];
+  id: string;
+  clientName: string;
+  category:
+    | "Billing"
+    | "Technical Support"
+    | "General Inquiry"
+    | "Account Management"
+    | "Bug Report"
+    | "Feature Request";
+  status: "open" | "in progress" | "pending" | "resolved" | "closed";
+  priority: "low" | "medium" | "high" | "critical";
+  description: string;
+  requestDate: string;
+  createdAt: string;
+  updatedAt: string;
+  userId: string;
+  assignedToId: string;
+  title: string;
+  type: string;
+  comments: Comment[];
+};
+
+export type User = {
+  id: number;
+  username: string;
+  email: string;
+  role: string;
+  group: string;
+  status: string;
+  image: string;
+  actions: {
+    reset_password: string;
+    delete: string;
   };
-
-
-  export type User ={
-    id : number;
-    username : string;
-    email : string;
-    role : string;
-    group : string;
-    status : string;
-    actions : {
-      reset_password: string;
-      delete: string;
-    }
-  };
-
+};
 
 // interface Actions {
 //   reset_password: string;
@@ -47,11 +52,15 @@ export type Ticket = {
 // }
 
 export type FullMessageType = Message & {
-  sender : User,
-  seen : User[]
+  sender: User;
+  seen: User[];
 };
 
 export type FullConversationType = Conversation & {
-  users : User []
-  messages : FullMessageType[],
+  users: User[];
+  messages: FullMessageType[];
+};
+
+export interface BodyProps {
+  initialMessages: FullMessageType[];
 }
