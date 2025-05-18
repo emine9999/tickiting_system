@@ -31,6 +31,7 @@ export type User = {
   group: string;
   status: string;
   image: string;
+  createdAt : Date;
   actions: {
     reset_password: string;
     delete: string;

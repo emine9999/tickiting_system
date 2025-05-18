@@ -4,11 +4,12 @@ import Image from "next/image";
 import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-
+import { useParams } from 'next/navigation'
 const UserList = ({ users }: { users: User[] }) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-
+  const params = useParams();
+  const ticketId = params.id;
   const handleClick = useCallback(async (userId: string) => {
     if (isLoading) return;
     
@@ -17,7 +18,7 @@ const UserList = ({ users }: { users: User[] }) => {
       const response = await axios.post("/api/conversations", {
         userId: userId,
       });
-      router.push(`/conversations/${response.data.id}`);
+      router.push(`/tickets/${ticketId}/conversation/${response.data.id}`);
     } catch (error) {
       console.error("Error creating conversation:", error);
     } finally {

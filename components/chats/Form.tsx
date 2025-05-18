@@ -24,7 +24,7 @@ const Form = () => {
       conversationId,
     });
   };
-// TODO : need to be fixed
+// TODO : need to be fixed to upalod the image onSuccess
   const handleUpload =(result: any)=>{
     axios.post('api/messages',{
       image : result?.info?.secure_url,

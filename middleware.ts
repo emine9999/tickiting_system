@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
-const protectedRoutes = ["/dashboard","/ticket",];
+const protectedRoutes = ["/dashboard","/ticket/:path*",];
 
 export async function middleware(request: NextRequest) {
   const { nextUrl } = request;

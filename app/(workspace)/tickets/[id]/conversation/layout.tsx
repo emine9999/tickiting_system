@@ -5,6 +5,7 @@ import getUserss  from "@/actions/user.actions";
 import ConversationList from '@/components/chats/ConversationList';
 import UserList from '@/components/chats/UserList';
 import getConversations from "@/actions/getConversations";
+import CreateGroup  from "@/components/chats/CreateGroup";
 
 
 export default function ChatLayout({ children  }: { children: React.ReactNode }){
@@ -32,9 +33,9 @@ export default function ChatLayout({ children  }: { children: React.ReactNode })
     <div className="flex h-[calc(100vh-4rem)] bg-white">
       {/* Sidebar */}
       <div className="w-80 border-r border-gray-200 flex flex-col">
-        <div className="p-4 border-b border-gray-200 bg-white sticky top-0 z-10">
+        <div className="p-4 border-b border-gray-200 bg-white sticky top-0 z-10 flex items-center gap-3">
           <Select value={select} onValueChange={setSelect}>
-            <SelectTrigger className="w-full border-none outline-none shadow-none">
+            <SelectTrigger className="w-full border-dotted outline-none shadow-none">
               <SelectValue placeholder="Users" />
             </SelectTrigger>
             <SelectContent>
@@ -44,18 +45,18 @@ export default function ChatLayout({ children  }: { children: React.ReactNode })
               </SelectGroup>
             </SelectContent>
           </Select>
+          <CreateGroup users={users}/>
         </div>
+        
         <div className="flex-1 overflow-y-auto">
           
-          {select === "users" ? <UserList users={users} /> : <ConversationList conversations={conversations}/> }
+          {select === "users" ? <UserList users={users} /> : <ConversationList conversations={conversations} users={users} /> }
         </div>
       </div>
 
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col bg-gray-50">
-        <div className="p-4 border-b bg-white sticky top-0 z-10">
-          <h2 className="text-lg font-semibold text-gray-800">Chat</h2>
-        </div>
+      
         <div className="flex-1 overflow-y-auto ">
         {children}
         </div>

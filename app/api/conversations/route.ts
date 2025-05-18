@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import { NextResponse } from 'next/server'
 import { getCurrentUser } from '@/actions/user.actions'
+import { pusherServer } from '@/lib/pusher';
 
 // this to create a conversation 1 to 1, or a group chat
 export async function POST (request:Request){
@@ -23,29 +24,43 @@ export async function POST (request:Request){
             return new NextResponse("Invalid data" ,{status: 400})
         }
 
-        if (isGroup){
-            const newConveration = await prisma.conversation.create({
-                data : {
+        if (isGroup) {
+            const validMembers = members
+                .filter((member: {value: string}) => member.value)
+                .map((member: {value: string}) => ({
+                    id: member.value
+                }));
+        
+            
+            if (validMembers.length < 2) {
+                return new NextResponse("At least 2 valid members are required", {status: 400});
+            }
+        
+            const newConversation = await prisma.conversation.create({
+                data: {
                     name,
                     isGroup,
-                    users : {
+                    users: {
                         connect: [
-                            ...members.map((member: {value: string}) => ({
-                                    id : member.value
-                            })),
+                            ...validMembers,
                             {
-                                id : currentUser.id // this used to add ourselfs if we are the one who created the group chat
+                                id: currentUser.id
                             }
                         ]
                     }
                 },
-
-                include : {
-                    users : true
+                include: {
+                    users: true
                 }
-            })
+            });
+            
+                 newConversation.users.forEach((user)=>{
+            if (user.email){
+                pusherServer.trigger(user.email,'conversation:new',newConversation)
+            }
+        })
 
-            return NextResponse.json(newConveration)
+            return NextResponse.json(newConversation);
         }
 
         const existingConversations = await prisma.conversation.findMany({
@@ -72,7 +87,7 @@ export async function POST (request:Request){
             return NextResponse.json(singleConversation)
         }
 
-        const newConveration = await prisma.conversation.create({
+        const newConversation = await prisma.conversation.create({
             data : {
                 users : {
                     connect : [
@@ -89,10 +104,17 @@ export async function POST (request:Request){
                 users : true
             }
         })
-         return NextResponse.json(newConveration)
+
+         newConversation.users.map((user)=>{
+            if (user.email){
+                pusherServer.trigger(user.email,'conversation:new',newConversation)
+            }
+        })
+
+         return NextResponse.json(newConversation)
 
     } catch (error) {
         console.log("eroor creating the conver", error)
-        return new NextResponse("Internal Error", {status:500})
+        return new NextResponse("Internal Errooor", {status:500})
     }
 }

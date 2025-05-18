@@ -10,20 +10,71 @@ import { useCallback, useMemo } from "react";
 import useConversation from "@/hooks/useConversation";
 import useOtherUser from "@/hooks/useOtherUser";
 import { useParams } from 'next/navigation'
-
+import AvatarGroup from './AvatarGroup'
+import { pusherClient } from "@/lib/pusher";
+import {find} from 'lodash'
 interface ConversationListProps {
   conversations: FullConversationType[];
+  users: User[];
 }
 
+
 const ConversationList: React.FC<ConversationListProps> = ({
-  conversations,
-}) => {
+  conversations}) => {
   const [items, setItems] = useState(conversations);
   const router = useRouter();
   const session = useSession();
-  const { conversationId, isOpen } = useConversation();
+  const { conversationId} = useConversation();
   const params = useParams();
   const ticketId = params.id;
+  
+  const pusherKey = useMemo(()=>{
+    return session.data?.user?.email
+  },[session.data?.user?.email])
+
+  useEffect(()=>{
+    if (!pusherKey){
+      return;
+    }
+    pusherClient.subscribe(pusherKey)
+    const newHandler= (conversation:FullConversationType)=>{
+        setItems ((current)=>{
+          if (find(current,{id: conversation.id})){
+            return current
+          }
+          return [conversation, ...current]
+        })
+    }
+    const updateHandler = (conversation: FullConversationType) => {
+      setItems((current) => current.map((currentConversation) => {
+      if (currentConversation.id === conversation.id) {
+        return {
+        ...currentConversation,
+        messages: conversation.messages
+        };
+      }
+      return currentConversation;
+      }));
+    };
+
+    const removeHandler = (conversation:FullConversationType)=>{
+        setItems((current)=>{
+          return [...current.filter((convo)=> convo.id !== conversation.id)]
+        })
+        if (conversationId === conversation.id){
+          router.push('/conversations')
+        }
+    }
+    pusherClient.bind('conversation:new',newHandler)
+    pusherClient.bind('conversation:update',updateHandler)
+    pusherClient.bind('conversation:remove',removeHandler)
+    return ()=>{
+      pusherClient.unsubscribe(pusherKey)
+      pusherClient.unbind('conversation:new',newHandler)
+      pusherClient.unbind('conversation:update',updateHandler)
+       pusherClient.unbind('conversation:remove',removeHandler)
+    }
+  },[pusherKey,conversationId,router])
 
   return (
     <>
@@ -81,20 +132,22 @@ const ConversationList: React.FC<ConversationListProps> = ({
               ${isSelected ? "bg-gray-100" : ""}
             `}
           >
-            <div className="relative w-10 h-10 flex-shrink-0 ">
-              <Image
-                src={otherUser?.image || "/data/glx.jpg"}
-                alt={items?.name || otherUser?.username}
-                fill
-                className="rounded-full object-cover ring-2 ring-amber-600"
-              />
-              <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full" />
-            </div>
+            {item.isGroup ? <AvatarGroup users={item.users}/> : (
+              <div className="relative w-10 h-10 flex-shrink-0 ">
+                <Image
+                  src={otherUser?.image || "/data/glx.jpg"}
+                  alt={otherUser?.username || "user"}
+                  fill
+                  className="rounded-full object-cover ring-2 ring-amber-600"
+                />
+                <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full" />
+              </div>
+            )}
             <div className="flex-1 min-w-0 ">
 
               <div className=" flex items-center justify-between">
                 <p className="font-medium text-gray-900 truncate">
-                  {otherUser?.username || "User"}
+                  {item.isGroup ?item.name :otherUser?.username }
                   </p>
 
                   <p className="text-sm text-green-600">
@@ -105,7 +158,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
                 
 
               </div>
-              <p className="text-sm text-slate-500">{lastMessageText}</p>
+              <p className={`text-sm text-slate-900 ${hasSeen ? 'text-slate-500' : ''}`}>{lastMessageText}</p>
             </div>
           </div>
         );
