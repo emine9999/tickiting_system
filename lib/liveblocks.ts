@@ -6,4 +6,5 @@ if (!process.env.LIVEBLOCKS_SECRET_KEY) {
 
 export const liveblocks = new Liveblocks({
   secret: process.env.LIVEBLOCKS_SECRET_KEY,
+  
 });

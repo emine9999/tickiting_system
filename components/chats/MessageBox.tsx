@@ -22,7 +22,7 @@ const MessageBox: React.FC<MessageBoxProps> = ({ data, isLast }) => {
   const message = `text-sm w-fit overflow-hidden ${
     isOwn ? " bg-sky-500 text-white" : "bg-gray-100"
   } ${data.image ? "rounded-md p-0" : "rounded-full py-2 px-3"} `;
-  console.log("islasst ", isLast);
+  console.log("sender data ", data);
 
   return (
     <div className={container}>
@@ -31,8 +31,8 @@ const MessageBox: React.FC<MessageBoxProps> = ({ data, isLast }) => {
           <div className={avatar}>
             <div className="relative w-10 h-10 flex-shrink-0 ">
               <Image
-                src={data.sender.image || "/data/glx.jpg"}
-                alt={data.sender.username || "User"}
+                src={data?.sender?.image || "/data/glx.jpg"}
+                alt={data?.sender?.username || "User"}
                 fill
                 className="rounded-full object-cover ring-2 ring-amber-600"
               />
@@ -43,37 +43,34 @@ const MessageBox: React.FC<MessageBoxProps> = ({ data, isLast }) => {
           <div className={body}>
             <div className="flex items-center gap-1 justify-center">
               <div className="text-sm text-gray-500">
-                {data.sender.username}
+                { data?.sender?.username || 'User'}
               </div>
               <div className="text-xs text-gray-400">
-                {format(new Date(data.createdAt), "p")}
+                {format(new Date(data?.createdAt || new Date()), "p")}
               </div>
             </div>
           </div>
         </div>
 
-   <div className="flex-1 flex justify-center">
-   <div className={message}>
-          {data.image ? (
-            <Image
-              src={data.image}
-              alt="image"
-              height={288}
-              width={288}
-              className="object-cover cursor-pointer hover:scale-110 transition translate"
-            />
-          ) : (
-            <div >{data.body}</div>
-          )}
-          
+        <div className="flex-1 flex justify-center">
+          <div className={message}>
+            {data?.image ? (
+              <Image
+                src={data?.image || "/data/glx.jpg"}
+                alt="image"
+                height={288}
+                width={288}
+                className="object-cover cursor-pointer hover:scale-110 transition translate"
+              />
+            ) : (
+              <div>{data?.body || ""}</div>
+            )}
+          </div>
         </div>
-   </div>
         {isLast && isOwn && seenList.length > 0 && (
-        <div className="text-xs font-extralight text-gray-500">{`Seen by ${seenList}`}</div>
-      )}
+          <div className="text-xs font-extralight text-gray-500">{`Seen by ${seenList}`}</div>
+        )}
       </div>
-
-      
     </div>
   );
 };

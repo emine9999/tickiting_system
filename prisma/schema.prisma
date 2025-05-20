@@ -231,3 +231,23 @@ model Account {
  
 //   @@unique([userId, credentialID])
 // }
+
+model Embedding {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  resourceId String   @map("resource_id") @db.ObjectId
+  content    String
+  embedding  Float[]  // Store vector as array of floats
+  resource   Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+
+  @@map("embeddings")
+}
+
+model Resource {
+  id         String     @id @default(auto()) @map("_id") @db.ObjectId
+  content    String
+  createdAt  DateTime   @default(now()) @map("created_at")
+  updatedAt  DateTime   @updatedAt @map("updated_at")
+  embeddings Embedding[]
+
+  @@map("resources")
+}

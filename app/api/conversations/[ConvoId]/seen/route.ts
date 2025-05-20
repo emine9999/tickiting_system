@@ -7,7 +7,11 @@ interface Iparams {
   id: string;
 }
 
-export async function POST(request: Request, { params }: { params: Iparams }) {
+export async function POST(
+  request: Request,
+  props: { params: Promise<Iparams> }
+) {
+  const params = await props.params;
   try {
     const currentUser = await getCurrentUser();
     const { ConvoId } = params;
@@ -51,15 +55,28 @@ export async function POST(request: Request, { params }: { params: Iparams }) {
         },
       },
     });
+
+
+    const fullUpdatedMessage = await prisma.message.findUnique({
+      where :{
+        id : updatedMessage.id,
+      },
+      include :{
+        sender: true,
+        seen : true,
+      }
+    })
+
     await pusherServer.trigger(currentUser.email, "conversation:update", {
       id: ConvoId,
-      messages: [updatedMessage],
+      messages: [fullUpdatedMessage],
     });
 
-    if (lastMessage.seenIds.indexOf(currentUser.id )!== -1){
-        return NextResponse.json(conversation)
+    if (!lastMessage.seenIds.includes(currentUser.id)){
+      return NextResponse.json(conversation);
     }
-    await pusherServer.trigger(ConvoId!,'message:update',updatedMessage)
+
+    await pusherServer.trigger(ConvoId!, "message:update", fullUpdatedMessage);
 
     return NextResponse.json(updatedMessage, { status: 200 });
   } catch (error) {

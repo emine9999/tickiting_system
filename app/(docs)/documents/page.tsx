@@ -15,8 +15,17 @@ const Docs = async() => {
   const session = await auth();
   if (!session) redirect("/auth")
   
-  const roomDocuments = await getDocuments(session.user?.email ?? "");
-  console.log("testtt :",roomDocuments)
+    let roomDocuments;
+  try {
+    roomDocuments = await getDocuments(session.user?.email ?? "");
+    console.log("Documents retrieved:", roomDocuments);
+  } catch (error) {
+    console.error("Error fetching documents:", error);
+    roomDocuments = { data: [] }; // Provide default empty data
+  }
+
+  // Ensure roomDocuments.data exists, default to empty array if undefined
+  const documents = roomDocuments?.data || [];
   
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 min-h-screen bg-slate-900 text-slate-200">
@@ -42,7 +51,7 @@ const Docs = async() => {
       </Header>
       
       <div className="mt-8 sm:mt-12">
-        {roomDocuments.data.length > 0 ? (
+        {documents.length > 0 ? (
           <div className="document-list-container">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-2xl font-semibold">All documents</h3>

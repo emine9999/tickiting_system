@@ -45,7 +45,7 @@ const items = [
   // },
   {
     title: 'Documentation',
-    url: '/documentation',
+    url: '/documents',
     icon: FileSearch,
   },
   // {

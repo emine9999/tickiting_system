@@ -3,9 +3,10 @@ import { prisma } from '@/lib/prisma';
 import { ticketSchema } from '@/lib/ticketSchema';
 
 // Define params type for better type safety
-type RouteParams = { params: { id: string } };
+type RouteParams = { params: Promise<{ id: string }> };
 
-export async function GET(req: NextRequest, { params }: RouteParams) {
+export async function GET(req: NextRequest, props: RouteParams) {
+  const params = await props.params;
   const id = await  params.id;
 
   try {
@@ -24,7 +25,8 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
   }
 }
 
-export async function PATCH(request: NextRequest, { params }: RouteParams) {
+export async function PATCH(request: NextRequest, props: RouteParams) {
+  const params = await props.params;
   const id = params.id;
 
   try {

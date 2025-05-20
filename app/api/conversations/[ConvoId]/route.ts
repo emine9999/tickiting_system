@@ -7,10 +7,8 @@ interface IParams {
     ConvoId: string;  
 }
 
-export async function DELETE(
-    request: Request,
-    { params }: { params: IParams }
-) {
+export async function DELETE(request: Request, props: { params: Promise<IParams> }) {
+    const params = await props.params;
     try {
         const currentUser = await getCurrentUser();
         
@@ -44,7 +42,7 @@ export async function DELETE(
 
         existingConversation.users.forEach((user)=>{
             if (user.email){
-                pusherServer.trigger(user.email,'comversation:remove',existingConversation)
+                pusherServer.trigger(user.email,'conversation:remove',existingConversation)
             }
         })
 

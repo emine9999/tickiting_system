@@ -7,7 +7,7 @@ export const pusherServer = new PusherServerLib({
   key: process.env.NEXT_PUBLIC_PUSHER_APP_KEY!,
   secret: process.env.PUSHER_SECRET!,
   cluster: 'us3',
-  useTLS: true,
+  useTLS: false,
 });
 
 // Client-side Pusher instance

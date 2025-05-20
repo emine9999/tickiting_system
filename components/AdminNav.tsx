@@ -26,7 +26,7 @@ export default function AdminNav() {
          <Link href="/users" passHref legacyBehavior>
          <NavigationMenuLink className={navigationMenuTriggerStyle()}>Users</NavigationMenuLink>
          </Link>
-         <Link href="/Roles" passHref legacyBehavior>
+         <Link href="/roles" passHref legacyBehavior>
          <NavigationMenuLink className={navigationMenuTriggerStyle()}>Roles & Permissions</NavigationMenuLink>
             </Link>
         </NavigationMenuContent>

@@ -39,7 +39,8 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
 // GET a specific user by id
 
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const { id } = params; // Extract the user ID from the URL
 
   try {
