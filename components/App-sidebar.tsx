@@ -38,11 +38,11 @@ const items = [
     url: '/tickets',
     icon: TicketCheck,
   },
-  // {
-  //   title: 'Notification',
-  //   url: '#',
-  //   icon: BellRing,
-  // },
+  {
+    title: 'meetings',
+    url: '/meeting',
+    icon: BellRing,
+  },
   {
     title: 'Documentation',
     url: '/documents',
