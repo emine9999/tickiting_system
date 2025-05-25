@@ -2,7 +2,7 @@
 
 import { ReactNode, useEffect, useState } from 'react';
 import { StreamVideoClient, StreamVideo } from '@stream-io/video-react-sdk';
-import  useUser  from '@/hooks/useUser';
+import useUser from '@/hooks/useUser';
 
 import { tokenProvider } from '@/actions/stream.actions';
 import Loader from '@/components/meet/Loader';
@@ -16,13 +16,14 @@ const StreamVideoProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (!isLoaded || !user) return;
     if (!API_KEY) throw new Error('Stream API key is missing');
-
+    console.log("isLoaded:", isLoaded);
+  console.log("user:", user);
     const client = new StreamVideoClient({
       apiKey: API_KEY,
       user: {
-        id: user?.id,
-        name: user?.name || user?.id,
-        image: user?.image,
+        id: user?.id || "", 
+        name: user?.name || undefined,
+        image: user?.image || undefined,
       },
       tokenProvider,
     });

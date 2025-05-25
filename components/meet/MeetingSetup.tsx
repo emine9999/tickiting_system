@@ -15,7 +15,7 @@ const MeetingSetup = ({
 }: {
   setIsSetupComplete: (value: boolean) => void;
 }) => {
-  // https://getstream.io/video/docs/react/guides/call-and-participant-state/#call-state
+ 
   const { useCallEndedAt, useCallStartsAt } = useCallStateHooks();
   const callStartsAt = useCallStartsAt();
   const callEndedAt = useCallEndedAt();
@@ -31,7 +31,7 @@ const MeetingSetup = ({
     );
   }
 
-  // https://getstream.io/video/docs/react/ui-cookbook/replacing-call-controls/
+
   const [isMicCamToggled, setIsMicCamToggled] = useState(false);
 
   useEffect(() => {
@@ -55,12 +55,12 @@ const MeetingSetup = ({
     return (
       <Alert
         title="The call has been ended by the host"
-        iconUrl="/icons/call-ended.svg"
+        iconUrl="/assets/icons/call-ended.svg"
       />
     );
 
   return (
-    <div className="flex h-screen w-full flex-col items-center justify-center gap-3 text-white">
+    <div className="flex h-screen w-full flex-col items-center justify-center gap-3 dark:text-white text-slate-700 dark:bg-gray-900 bg-slate-100">
       <h1 className="text-center text-2xl font-bold">Setup</h1>
       <VideoPreview />
       <div className="flex h-16 items-center justify-center gap-3">

@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { FullConversationType } from "@/types/types";
-import { Conversation, Message, User } from "@prisma/client";
+import {  User } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { format } from "date-fns";
 import { useCallback, useMemo } from "react";

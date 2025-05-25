@@ -32,14 +32,14 @@ const Collaborator = ({ roomId, creatorId, collaborator, email, user }: Collabor
     <li className="flex items-center justify-between gap-2 py-3">
       <div className="flex gap-2  rounded-lg p-2">
         <Image 
-          src={collaborator.image } 
+          src={collaborator.image || '/assets/user.jpeg' } 
           alt={collaborator.username}
           width={36}
           height={36}
-          className="size-9 rounded-full"
+          className="size-9 rounded-full ring-2 ring-green-600 dark:ring-slate-700 light:ring-slate-200"
         />
         <div>
-          <p className="line-clamp-1 text-sm font-semibold leading-4 text-foreground text-white">
+          <p className="line-clamp-1 text-sm font-semibold leading-4  text-white">
             {collaborator.username}
             <span className="text-10-regular pl-2 text-muted-foreground">
               {loading && 'updating...'}
@@ -52,7 +52,7 @@ const Collaborator = ({ roomId, creatorId, collaborator, email, user }: Collabor
       </div>
 
       {creatorId === collaborator.id ? (
-        <p className="text-sm text-primary">Owner</p>
+        <p className="text-sm text-white dark:text-slate-700">Owner</p>
       ): (
         <div className="flex items-center gap-2">
           <UserTypeSelector 

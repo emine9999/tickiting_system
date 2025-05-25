@@ -71,10 +71,10 @@ const CallList = ({ type }: { type: 'ended' | 'upcoming' | 'recordings' }) => {
             key={(meeting as Call).id}
             icon={
               type === 'ended'
-                ? '/icons/previous.svg'
+                ? '/assets/icons/previous.svg'
                 : type === 'upcoming'
-                  ? '/icons/upcoming.svg'
-                  : '/icons/recordings.svg'
+                  ? '/assets/icons/upcoming.svg'
+                  : '/assets/icons/recordings.svg'
             }
             title={
               (meeting as Call).state?.custom?.description ||
@@ -91,7 +91,7 @@ const CallList = ({ type }: { type: 'ended' | 'upcoming' | 'recordings' }) => {
                 ? (meeting as CallRecording).url
                 : `${process.env.NEXT_PUBLIC_BASE_URL}/meeting/${(meeting as Call).id}`
             }
-            buttonIcon1={type === 'recordings' ? '/icons/play.svg' : undefined}
+            buttonIcon1={type === 'recordings' ? '/assets/icons/play.svg' : undefined}
             buttonText={type === 'recordings' ? 'Play' : 'Start'}
             handleClick={
               type === 'recordings'
@@ -101,7 +101,7 @@ const CallList = ({ type }: { type: 'ended' | 'upcoming' | 'recordings' }) => {
           />
         ))
       ) : (
-        <h1 className="text-2xl font-bold text-white">{noCallsMessage}</h1>
+        <h1 className="text-2xl font-bold  dark:text-white text-slate-800">{noCallsMessage}</h1>
       )}
     </div>
   );

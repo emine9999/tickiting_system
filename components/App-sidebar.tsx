@@ -1,7 +1,7 @@
 'use client'
 import { Home, Bot, TicketCheck } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Search ,UsersRound,Pin,BellRing,FileSearch,LogOut  } from 'lucide-react';
+import { Search ,UsersRound,Pin,BellRing,FileSearch,LogOut ,MonitorDown } from 'lucide-react';
 import ModeToggle  from './ModeToggle';
 import Ticket from '@/components/Ticket'
 import Link from 'next/link'
@@ -39,9 +39,9 @@ const items = [
     icon: TicketCheck,
   },
   {
-    title: 'meetings',
-    url: '/meeting',
-    icon: BellRing,
+    title: 'Meetings',
+    url: '/home',
+    icon: MonitorDown,
   },
   {
     title: 'Documentation',
@@ -216,10 +216,15 @@ export function AppSidebar({ onButtonClick }: { onButtonClick: () => void }) {
               
             </SidebarGroupContent>
           </SidebarGroup>
-      <SidebarFooter className=" flex justify-center  border-t items-center ">
-        <div className="flex flex-row justify-center items-center">
-          <h1 className="font-bold text-2xl ">TICK</h1> <span>hub</span>
-        </div>
+      <SidebarFooter className=" flex justify-center flex-row border-t items-center ">
+      
+
+           <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-sm">T</span>
+            </div>
+            <span className="font-semibold text-gray-900 dark:text-white text-lg">
+              TickHub
+            </span>
        
       </SidebarFooter>
     </Sidebar>

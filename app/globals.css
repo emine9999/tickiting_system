@@ -1,10 +1,13 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-
 @import '@liveblocks/react-ui/styles.css';
 @import '@liveblocks/react-lexical/styles.css';
 @import '../styles/dark-theme.css';
+@import 'react-datepicker/dist/react-datepicker.css';
 @custom-variant dark (&:is(.dark *));
+
+@import "@stream-io/video-react-sdk/dist/css/styles.css";
+
 
 @theme inline {
   --bg-doc: url('/assets/images/doc.png');
@@ -52,6 +55,29 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+  /* metting */
+  /* Dark Shades */
+  --color-dark-1: #1C1F2E;
+  --color-dark-2: #161925;
+  --color-dark-3: #252A41;
+
+  /* Blue */
+  --color-blue-1: #0E78F9;
+
+  /* Sky */
+  --color-sky-1: #C9DDFF;
+  --color-sky-2: #ECF0FF;
+  --color-sky-3: #F5FCFF;
+
+  /* Orange */
+  --color-orange-1: #FF742E;
+
+  /* Purple */
+  --color-purple-1: #830EF9;
+
+  /* Yellow */
+  --color-yellow-1: #F9A90E;
 
 }
 
@@ -199,4 +225,63 @@
     @apply w-[460px] border-none bg-dark-200 shadow-lg ;
   } */
 
+}
+
+
+/* meeting */
+
+/* ======== stream css overrides ======== */
+
+@layer utilities {
+  .flex-center {
+    @apply flex justify-center items-center;
+  }
+
+  .flex-between {
+    @apply flex justify-between items-center;
+  }
+}
+
+.str-video__call-stats {
+  max-width: 500px;
+  position: relative;
+}
+
+.str-video__speaker-layout__wrapper {
+  max-height: 700px;
+}
+
+.str-video__participant-details {
+  color: white;
+}
+
+.str-video__menu-container {
+  color: white;
+}
+
+.str-video__notification {
+  color: white;
+}
+
+.str-video__participant-list {
+  background-color: #1c1f2e;
+  padding: 10px;
+  border-radius: 10px;
+  color: white;
+  height: 100%;
+}
+
+.str-video__call-controls__button {
+  height: 40px;
+}
+
+.glassmorphism {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+.glassmorphism2 {
+  background: rgba(18, 17, 17, 0.25);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }

@@ -2,7 +2,7 @@ import { Inter as FontSans } from "next/font/google"
 import { cn } from "@/lib/utils"
 import { Metadata } from "next"
 import Provider from "@/app/Provider"
-
+import { ThemeProvider } from 'next-themes';
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -10,8 +10,8 @@ const fontSans = FontSans({
 })
 
 export const metadata: Metadata = {
-  title: 'LiveDocs',
-  description: 'Your go-to collaborative editor',
+  title: 'TickHub',
+  description: 'Your Team Collaboration Hub',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -26,7 +26,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           )}
         >
      <Provider>
-     {children}
+      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+       {children}
+     </ThemeProvider>
       </Provider>
             
       

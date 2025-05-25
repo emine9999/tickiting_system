@@ -20,7 +20,7 @@ import Comments from '@/components/editor/Comments';
 // try to recover gracefully without losing user data.
 
 function Placeholder() {
-  return <div className="editor-placeholder">Enter some rich text...</div>;
+  return <div className="editor-placeholder ">Enter some rich text...</div>;
 }
 
 export function Editor({ roomId, currentUserType }: { roomId: string, currentUserType: UserType }) {
@@ -39,8 +39,8 @@ export function Editor({ roomId, currentUserType }: { roomId: string, currentUse
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <div className="editor-container size-full">
-        <div className='toolbar-wrapper flex min-w-full justify-between items-center'>
+      <div className="  size-full">
+        <div className='toolbar-wrapper flex min-w-full justify-between items-center '>
           <ToolbarPlugin />
           {/* {currentUserType === 'editor' && <DeleteModal roomId={roomId} />} */}
         </div>
@@ -50,7 +50,7 @@ export function Editor({ roomId, currentUserType }: { roomId: string, currentUse
             <div className="editor-inner min-h-[1100px] relative mb-5 h-fit w-full max-w-[800px] shadow-md lg:mb-10">
               <RichTextPlugin
                 contentEditable={
-                  <ContentEditable className="editor-input h-full" />
+                  <ContentEditable className="editor-input h-full " />
                 }
                 placeholder={<Placeholder />}
                 ErrorBoundary={LexicalErrorBoundary}
