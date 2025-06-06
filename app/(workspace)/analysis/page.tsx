@@ -1,183 +1,156 @@
 "use client";
-
 import { Input } from "@/components/ui/input";
-import { Message } from "ai";
-import { useChat } from '@ai-sdk/react';
-import { useEffect, useMemo, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { useState, useTransition } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import ReactMarkdown, { Options } from "react-markdown";
+import MessageComponent from "@/components/ai/MessageComponent";
+import LoadingComponent from "@/components/ai/LoadingComponent";
 import React from "react";
 import ProjectOverview from "@/components/ai/project-overview";
-import { LoadingIcon } from "@/components/ai/icons";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { Send } from "lucide-react";
+import { analyzeIncident } from "@/actions/agent.action"; 
+import { ExtendedMessage } from '@/types/agno-response';
 
 export default function Chat() {
-  const [toolCall, setToolCall] = useState<string>();
-  const { messages, input, handleInputChange, handleSubmit, isLoading } =
-    useChat({
-      maxSteps: 4,
-      onToolCall({ toolCall }) {
-        setToolCall(toolCall.toolName);
-      },
-      onError: (error) => {
-        toast.error("You've been rate limited, please try again later!");
-      },
+  const [messages, setMessages] = useState<ExtendedMessage[]>([]);
+  const [input, setInput] = useState("");
+  const [isPending, startTransition] = useTransition();
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => 
+    setInput(e.target.value);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (input.trim().length < 10) {
+      toast.error("La description doit contenir au moins 10 caractères");
+      return;
+    }
+
+    // Ajoute le message utilisateur
+    const userMessage: ExtendedMessage = {
+      id: Date.now().toString(),
+      role: "user",
+      content: input,
+      timestamp: new Date().toISOString()
+    };
+    
+    setMessages((msgs) => [...msgs, userMessage]);
+    const currentInput = input;
+    setInput("");
+
+    startTransition(async () => {
+      try {
+        const data = await analyzeIncident(currentInput);
+
+        // Construire le message assistant à partir de la réponse
+        const assistantMessage: ExtendedMessage = {
+          id: (Date.now() + 1).toString(),
+          role: "assistant",
+          content: data.content,
+          timestamp: data.timestamp,
+          references: data.references,
+          reportFile: data.report_file,
+          summary: data.summary,
+          incident_type: data.incident_type,
+          severity: data.severity,
+          recommendations: data.recommendations,
+          metadata: data.metadata
+        };
+
+        setMessages((msgs) => [...msgs, assistantMessage]);
+        toast.success("Analyse terminée avec succès");
+
+      } catch (error: any) {
+        console.error("Erreur lors de l'analyse:", error);
+        
+        const errorMessage: ExtendedMessage = {
+          id: (Date.now() + 2).toString(),
+          role: "assistant",
+          content: `❌ **Erreur lors de l'analyse**\n\n${error.message}\n\nVeuillez vérifier que l'API est démarrée sur le port 8000.`,
+          timestamp: new Date().toISOString()
+        };
+        
+        setMessages((msgs) => [...msgs, errorMessage]);
+        toast.error(error.message || "Une erreur est survenue");
+      }
     });
+  };
 
-  const [isExpanded, setIsExpanded] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (messages.length > 0) setIsExpanded(true);
-  }, [messages]);
-
-  const currentToolCall = useMemo(() => {
-    const tools = messages?.slice(-1)[0]?.toolInvocations;
-    if (tools && toolCall === tools[0].toolName) {
-      return tools[0].toolName;
-    } else {
-      return undefined;
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit(e as any);
     }
-  }, [toolCall, messages]);
-
-  const awaitingResponse = useMemo(() => {
-    if (
-      isLoading &&
-      currentToolCall === undefined &&
-      messages.slice(-1)[0].role === "user"
-    ) {
-      return true;
-    } else {
-      return false;
-    }
-  }, [isLoading, currentToolCall, messages]);
-
-  const userQuery: Message | undefined = messages
-    .filter((m) => m.role === "user")
-    .slice(-1)[0];
-
-  const lastAssistantMessage: Message | undefined = messages
-    .filter((m) => m.role !== "user")
-    .slice(-1)[0];
+  };
 
   return (
-    <div className="flex justify-center items-start sm:pt-16 min-h-screen w-full dark:bg-neutral-900 px-4 md:px-0 py-4">
-      <div className="flex flex-col items-center w-full max-w-[500px]">
-      <ProjectOverview />
-      <motion.div
+    <div className="flex justify-center items-start sm:pt-8 min-h-screen w-full  px-4 md:px-0 py-4 ">
+      <div className="flex flex-col items-center w-full max-w-[800px]">
+        <ProjectOverview />
+        
+        <motion.div
           animate={{
-            minHeight: isExpanded ? 200 : 0,
-            padding: isExpanded ? 12 : 0,
+            minHeight: messages.length > 0 ? 300 : 0,
+            padding: messages.length > 0 ? 16 : 0,
           }}
           transition={{
             type: "spring",
-            bounce: 0.5,
+            bounce: 0.3,
           }}
           className={cn(
-            "rounded-lg w-full ",
-            isExpanded
-              ? "bg-neutral-200 dark:bg-neutral-800"
+            "rounded-lg w-full transition-all duration-300",
+            messages.length > 0
+              ? "bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700"
               : "bg-transparent",
           )}
         >
-          <div className="flex flex-col w-full justify-between gap-2">
-            <form onSubmit={handleSubmit} className="flex space-x-2">
-              <Input
-                className={`bg-neutral-100 text-base w-full text-neutral-700 dark:bg-neutral-700 dark:placeholder:text-neutral-400 dark:text-neutral-300`}
-                minLength={3}
-                required
-                value={input}
-                placeholder={"Ask me anything..."}
-                onChange={handleInputChange}
-              />
-            </form>
+          <div className=" w-full  gap-4">
+              {/* Messages */}
             <motion.div
-              transition={{
-                type: "spring",
-              }}
-              className="min-h-fit flex flex-col gap-2"
+              transition={{ type: "spring" }}
+              className="min-h-fit flex flex-col gap-4 max-h-[600px] overflow-y-auto"
             >
               <AnimatePresence>
-                {awaitingResponse || currentToolCall ? (
-                  <div className="px-2 min-h-12">
-                    <div className="dark:text-neutral-400 text-neutral-500 text-sm w-fit mb-1">
-                      {userQuery.content}
-                    </div>
-                    <Loading tool={currentToolCall} />
-                  </div>
-                ) : lastAssistantMessage ? (
-                  <div className="px-2 min-h-12">
-                    <div className="dark:text-neutral-400 text-neutral-500 text-sm w-fit mb-1">
-                      {userQuery.content}
-                    </div>
-                    <AssistantMessage message={lastAssistantMessage} />
-                  </div>
-                ) : null}
+                {messages.map((message, index) => (
+                  <MessageComponent key={message.id} message={message} />
+                ))}
+                
+                {isPending && (
+                  <LoadingComponent userMessage={messages.filter(m => m.role === "user").slice(-1)[0]} />
+                )}
               </AnimatePresence>
             </motion.div>
+            {/* Form de saisie */}
+            <form onSubmit={handleSubmit} className="flex space-x-2 items-center justify-center p-2">
+              <div className=" flex justify-between items-center w-full max-w-[600px] h-auto gap-4">
+                <Input
+                  className="bg-white dark:bg-gray-100 text-base w-full text-slate-700 dark:text-slate-600 p-6 border-neutral-300 dark:border-neutral-600 focus:border-blue-500 dark:focus:border-blue-400"
+                  minLength={10}
+                  required
+                  value={input}
+                  placeholder="Décrivez l'incident en détail (minimum 10 caractères)..."
+                  onChange={handleInputChange}
+                  onKeyPress={handleKeyPress}
+                  disabled={isPending}
+                />
+                <Button
+                  type="submit"
+                  size="sm"
+                  disabled={isPending || input.trim().length < 10}
+                  className=" h-10 w-10  bg-blue-500 hover:bg-blue-600 cursor-pointer"
+                >
+                  <Send className="h-6 w-6 dark:text-white text-black" />
+                </Button>
+              </div>
+            </form>
+
+          
           </div>
         </motion.div>
       </div>
     </div>
   );
 }
-
-const AssistantMessage = ({ message }: { message: Message | undefined }) => {
-  if (message === undefined) return "HELLO";
-
-  return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={message.id}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="whitespace-pre-wrap font-mono anti text-sm text-neutral-800 dark:text-neutral-200 overflow-hidden"
-        id="markdown"
-      >
-        <MemoizedReactMarkdown
-          className={"max-h-72 overflow-y-scroll no-scrollbar-gutter"}
-        >
-          {message.content}
-        </MemoizedReactMarkdown>
-      </motion.div>
-    </AnimatePresence>
-  );
-};
-
-const Loading = ({ tool }: { tool?: string }) => {
-  const toolName =
-    tool === "getInformation"
-      ? "Getting information"
-      : tool === "addResource"
-        ? "Adding information"
-        : "Thinking";
-
-  return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ type: "spring" }}
-        className="overflow-hidden flex justify-start items-center"
-      >
-        <div className="flex flex-row gap-2 items-center">
-          <div className="animate-spin dark:text-neutral-400 text-neutral-500">
-            <LoadingIcon />
-          </div>
-          <div className="text-neutral-500 dark:text-neutral-400 text-sm">
-            {toolName}...
-          </div>
-        </div>
-      </motion.div>
-    </AnimatePresence>
-  );
-};
-
-const MemoizedReactMarkdown: React.FC<Options> = React.memo(
-  ReactMarkdown,
-  (prevProps, nextProps) =>
-    prevProps.children === nextProps.children &&
-    prevProps.className === nextProps.className,
-);

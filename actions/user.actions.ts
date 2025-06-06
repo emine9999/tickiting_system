@@ -19,11 +19,11 @@ export const getUsers = async ({ userIds }: { userIds: string[] }) => {
         image: true,
       },
     })
-    
+
     const sortedUsers = userIds.map((userId) =>
       users.find((user) => user.email === userId)
-    ).filter(Boolean) 
-   return  parseStringify(sortedUsers)
+    ).filter(Boolean)
+    return parseStringify(sortedUsers)
 
   } catch (error) {
     console.error("Error fetching users:", error)
@@ -37,11 +37,11 @@ export const getDocumentUsers = async ({ roomId, currentUser, text }: { roomId: 
 
     const users = Object.keys(room.usersAccesses).filter((email) => email !== currentUser);
 
-    if(text.length) {
+    if (text.length) {
       const lowerCaseText = text.toLowerCase();
 
       const filteredUsers = users.filter((email: string) => email.toLowerCase().includes(lowerCaseText))
-      
+
       return parseStringify(filteredUsers);
     }
     console.log(" users from getUsers action: ", users);
@@ -53,57 +53,72 @@ export const getDocumentUsers = async ({ roomId, currentUser, text }: { roomId: 
 
 
 // this for ticket chat
-const getUserss = async ()=>{
+const getUserss = async () => {
 
-  const session = await auth ();
+  const session = await auth();
   if (!session?.user?.email)
     return []
 
   try {
     const users = await prisma.user.findMany({
-      orderBy :{
+      orderBy: {
         createdAt: "desc",
       },
-      where :{
-        NOT:{
-          email : session.user.email
+      where: {
+        NOT: {
+          email: session.user.email
         }
       }
     });
 
     return users;
   } catch (error) {
-   return []; 
+    return [];
   }
 
 }
 
-export default getUserss ;
+export default getUserss;
 
 
 export const getCurrentUser = async () => {
   const session = await auth();
-
   if (!session?.user?.email) {
     return null;
   }
 
   try {
     const user = await prisma.user.findUnique({
-      where: {
-        email: session.user.email,
-      },
+      where: { email: session.user.email },
       select: {
         id: true,
         username: true,
         email: true,
         image: true,
+        memberships: {
+          select: {
+            group: {
+              select: { name: true },
+            },
+          },
+        },
       },
     });
+
+    if (!user) return null;
+
+    const groupNames = user.memberships.map(m => m.group.name);
     
-    return parseStringify(user);
+    return {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      image: user.image,
+      groups: groupNames,
+    };
   } catch (error) {
     console.error("Error fetching current user:", error);
     return null;
   }
-}
+};
+

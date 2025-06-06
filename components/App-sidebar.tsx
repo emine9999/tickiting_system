@@ -170,7 +170,7 @@ export function AppSidebar({ onButtonClick }: { onButtonClick: () => void }) {
             <div className='flex justify-around    w-full py-7 '>
               <h1 className='font-bold text-slate-500 text-xs underline'> PINNED TICKETS</h1><button className='font-bold text-xs'>Unpin All</button>
             </div>
-            <SidebarGroupContent className='max-h-[16rem] overflow-auto' >
+            <SidebarGroupContent className='max-h-[16rem] overflow-auto hide-scrollbar' >
               <SidebarMenu className="space-y-2 ">
                 {tickets.map((ticket) => (
                   <SidebarMenuItem key={ticket.id}>

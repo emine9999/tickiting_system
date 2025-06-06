@@ -1,6 +1,6 @@
 'use server'
 import { prisma } from '@/lib/prisma'
-import { auth } from "@/auth";
+
 import { getCurrentUser } from './user.actions';
 
 const getConversations = async()=>{

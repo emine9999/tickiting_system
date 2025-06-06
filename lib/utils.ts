@@ -127,3 +127,49 @@ export const formatDate = (dateString) => {
   const date = new Date(dateString);
   return date.toLocaleString();
 };
+
+
+export const renderMarkdown = (text: string) => {
+  return text
+    .replace(/### (.*$)/gim, '<h3 class="text-lg font-semibold text-cyan-400 dark:text-cyan-300 mt-6 mb-3 border-b border-slate-200 dark:border-slate-700 pb-2">$1</h3>')
+    .replace(/## (.*$)/gim, '<h2 class="text-xl font-semibold text-emerald-500 dark:text-emerald-400 mt-6 mb-4">$1</h2>')
+    .replace(/# (.*$)/gim, '<h1 class="text-2xl font-bold text-violet-600 dark:text-violet-400 mt-6 mb-4">$1</h1>')
+    .replace(/\*\*(.*?)\*\*/gim, '<strong class="font-semibold text-slate-900 dark:text-slate-100">$1</strong>')
+    .replace(/\*(.*?)\*/gim, '<em class="italic">$1</em>')
+    .replace(/`(.*?)`/gim, '<code class="bg-slate-200 dark:bg-slate-700 px-1 py-0.5 rounded text-sm font-mono text-slate-800 dark:text-slate-200">$1</code>')
+    .replace(/^\d+\.\s+(.*$)/gim, '<li class="ml-4 mb-2 text-gree-500 text-violet-600">$1</li>')
+    .replace(/^-\s+(.*$)/gim, '<li class="ml-4 mb-2 text-slate-800 dark:text-slate-600 list-disc">$1</li>')
+    .replace(/\n\n/gim, '<br><br>')
+    .replace(/\n/gim, '<br>');
+};
+
+ export const getSeverityColor = (severity: string) => {
+    switch (severity.toLowerCase()) {
+      case 'high':
+      case 'élevé':
+        return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400 border-red-200 dark:border-red-800';
+      case 'medium':
+      case 'moyen':
+        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800';
+      case 'low':
+      case 'faible':
+        return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400 border-green-200 dark:border-green-800';
+      default:
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400 border-gray-200 dark:border-gray-800';
+    }
+  };
+
+   export const getIncidentTypeColor = (type: string) => {
+    switch (type.toLowerCase()) {
+      case 'réseau':
+      case 'network':
+        return 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400 border-blue-200 dark:border-blue-800';
+      case 'système':
+      case 'system':
+        return 'bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-400 border-purple-200 dark:border-purple-800';
+      case 'application':
+        return 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/20 dark:text-indigo-400 border-indigo-200 dark:border-indigo-800';
+      default:
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400 border-gray-200 dark:border-gray-800';
+    }
+  };

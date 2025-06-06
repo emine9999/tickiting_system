@@ -237,6 +237,17 @@
     @apply flex justify-center items-center;
   }
 
+  .hide-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+
+  /* Chrome, Safari, Opera */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
   .flex-between {
     @apply flex justify-between items-center;
   }
