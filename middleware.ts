@@ -56,6 +56,14 @@ export const config = {
     '/roles/:path*',
     '/groups/:path*',
     '/analysis/:path*',
+    '/tickets',
+    '/meetings',
+    '/documents',
+    '/users',
+    '/roles',
+    '/groups',
+    '/analysis',
     
+
   ]
 };
