@@ -131,14 +131,14 @@ export const formatDate = (dateString) => {
 
 export const renderMarkdown = (text: string) => {
   return text
-    .replace(/### (.*$)/gim, '<h3 class="text-lg font-semibold text-cyan-400 dark:text-cyan-300 mt-6 mb-3 border-b border-slate-200 dark:border-slate-700 pb-2">$1</h3>')
-    .replace(/## (.*$)/gim, '<h2 class="text-xl font-semibold text-emerald-500 dark:text-emerald-400 mt-6 mb-4">$1</h2>')
-    .replace(/# (.*$)/gim, '<h1 class="text-2xl font-bold text-violet-600 dark:text-violet-400 mt-6 mb-4">$1</h1>')
+    .replace(/### (.*$)/gim, '<h3 class="text-lg font-semibold text-cyan-400 dark:text-cyan-300 mt-3 mb-3 border-b border-slate-200 dark:border-slate-700 pb-2">$1</h3>')
+    .replace(/## (.*$)/gim, '<h2 class="text-xl font-semibold text-emerald-500 dark:text-emerald-400 mt-3 mb-2">$1</h2>')
+    .replace(/# (.*$)/gim, '<h1 class="text-2xl font-bold text-violet-600 dark:text-violet-400 mt-3 mb-2">$1</h1>')
     .replace(/\*\*(.*?)\*\*/gim, '<strong class="font-semibold text-slate-900 dark:text-slate-100">$1</strong>')
     .replace(/\*(.*?)\*/gim, '<em class="italic">$1</em>')
     .replace(/`(.*?)`/gim, '<code class="bg-slate-200 dark:bg-slate-700 px-1 py-0.5 rounded text-sm font-mono text-slate-800 dark:text-slate-200">$1</code>')
     .replace(/^\d+\.\s+(.*$)/gim, '<li class="ml-4 mb-2 text-gree-500 text-violet-600">$1</li>')
-    .replace(/^-\s+(.*$)/gim, '<li class="ml-4 mb-2 text-slate-800 dark:text-slate-600 list-disc">$1</li>')
+    .replace(/^-\s+(.*$)/gim, '<li class="ml-4 mb-2 text-slate-800 dark:text-slate-200 list-disc">$1</li>')
     .replace(/\n\n/gim, '<br><br>')
     .replace(/\n/gim, '<br>');
 };

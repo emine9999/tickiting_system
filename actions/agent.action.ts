@@ -82,7 +82,7 @@ export async function analyzeIncident(description: string) {
   }
 
   try {
-    const res = await fetch("http://localhost:8000/analyze", {
+    const res = await fetch("https://amineelh-agentapi.hf.space/analyze", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

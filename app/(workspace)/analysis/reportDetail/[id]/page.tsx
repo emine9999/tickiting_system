@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 import { getReportDetails } from '@/actions/agent.action';
 import { getCurrentUser } from '@/actions/user.actions';
 import { useEffect, useState } from 'react';
-import {  AlertTriangle, FileText, User, Calendar, Tag, Lightbulb, Shield } from 'lucide-react';
+import { FileText, User, Calendar, Tag, Lightbulb, Shield } from 'lucide-react';
 import {renderMarkdown,getSeverityColor,getIncidentTypeColor } from '@/lib/utils';
 import {ReportDetails} from '@/types/agno-response'; 
 import Loader from '@/components/Loader';

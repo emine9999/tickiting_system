@@ -1,12 +1,11 @@
 'use client'
 
-import { Users, Wrench, PlusCircle, Settings, ArrowLeft, LayoutDashboard, LogOut,Boxes } from 'lucide-react';
+import { Users, Wrench, PlusCircle, ArrowLeft, LayoutDashboard, LogOut,Boxes } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useSession,signOut } from "next-auth/react";
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
-import ModeToggle  from './ModeToggle';
 import { useRouter } from 'next/navigation';
 const mainNavItems = [
   {
@@ -155,3 +154,4 @@ return (
   }
   </>
 );
+}

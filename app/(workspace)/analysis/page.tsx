@@ -49,15 +49,14 @@ export default function Chat() {
         const assistantMessage: ExtendedMessage = {
           id: (Date.now() + 1).toString(),
           role: "assistant",
-          content: data.content,
-          timestamp: data.timestamp,
-          references: data.references,
-          reportFile: data.report_file,
-          summary: data.summary,
-          incident_type: data.incident_type,
-          severity: data.severity,
-          recommendations: data.recommendations,
-          metadata: data.metadata
+          content: data.ticketAnalysis.rawContent,
+          timestamp: new Date(data.ticketAnalysis.timestamp).toISOString(),
+          // references: data.ticketAnalysis.references,
+          // reportFile: data.ticketAnalysis.report_file,
+          summary: data.ticketAnalysis.summary,
+          incident_type: data.ticketAnalysis.incidentType,
+          severity: data.ticketAnalysis.severity,
+          recommendations: data.ticketAnalysis.recommendations,
         };
 
         setMessages((msgs) => [...msgs, assistantMessage]);
@@ -114,7 +113,7 @@ export default function Chat() {
               className="min-h-fit flex flex-col gap-4 max-h-[600px] overflow-y-auto"
             >
               <AnimatePresence>
-                {messages.map((message, index) => (
+                {messages.map((message) => (
                   <MessageComponent key={message.id} message={message} />
                 ))}
                 
