@@ -1,7 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
-const protectedRoutes = ["/dashboard",'meetings','analysis','tickets','documents','users','roles','groups'];
+// Toutes les routes doivent commencer par "/"
+const protectedRoutes = [
+  "/dashboard",
+  "/meetings", 
+  "/analysis",
+  "/tickets",
+  "/documents",
+  "/users",
+  "/roles",
+  "/groups"
+];
 
 export async function middleware(request: NextRequest) {
   const { nextUrl } = request;
@@ -15,13 +25,20 @@ export async function middleware(request: NextRequest) {
     const token = await getToken({ 
       req: request, 
       secret: process.env.NEXTAUTH_SECRET,
-      secureCookie: process.env.NODE_ENV === 'production' // Use secure cookies in production
+      secureCookie: process.env.NODE_ENV === 'production'
     });
     
     const isAuthenticated = !!token;
+    
+    // Vérification améliorée des routes protégées
     const isProtectedPath = protectedRoutes.some(route => 
       nextUrl.pathname === route || nextUrl.pathname.startsWith(`${route}/`)
     );
+    
+    // Debug - vous pouvez supprimer ces logs après
+    console.log('Current path:', nextUrl.pathname);
+    console.log('Is protected:', isProtectedPath);
+    console.log('Is authenticated:', isAuthenticated);
     
     // If authenticated and on login page, redirect to dashboard
     if (isAuthenticated && nextUrl.pathname === "/auth") {
@@ -30,7 +47,6 @@ export async function middleware(request: NextRequest) {
     
     // If not authenticated and trying to access protected route, redirect to login
     if (!isAuthenticated && isProtectedPath) {
-      // Store the original URL to redirect back after login
       const callbackUrl = encodeURIComponent(request.nextUrl.pathname);
       return NextResponse.redirect(new URL(`/auth?callbackUrl=${callbackUrl}`, request.url));
     }
@@ -38,16 +54,15 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   } catch (error) {
     console.error("Authentication middleware error:", error);
-    // On error, redirect to auth page as a fallback
     return NextResponse.redirect(new URL("/auth", request.url));
   }
 }
 
 export const config = {
   matcher: [
-    // Match specific routes we want to protect or handle auth redirects for
+    // Routes d'authentification
     '/auth',
-    '/dashboard',
+    // Routes protégées - exact match et sous-routes
     '/dashboard/:path*',
     '/tickets/:path*',
     '/meetings/:path*',
@@ -56,14 +71,14 @@ export const config = {
     '/roles/:path*',
     '/groups/:path*',
     '/analysis/:path*',
+    // Routes exactes (sans sous-routes)
+    '/dashboard',
     '/tickets',
     '/meetings',
     '/documents',
     '/users',
     '/roles',
     '/groups',
-    '/analysis',
-    
-
-  ]
+    '/analysis'
+  ]
 };
