@@ -53,5 +53,9 @@ export const config = {
     '/meetings/:path*',
     '/documents/:path*',
     '/users/:path*',
+    '/roles/:path*',
+    '/groups/:path*',
+    '/analysis/:path*',
+    
   ]
 };
