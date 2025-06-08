@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
-const protectedRoutes = ["/dashboard"];
+const protectedRoutes = ["/dashboard",'meetings','analysis','tickets','documents','users','roles','groups'];
 
 export async function middleware(request: NextRequest) {
   const { nextUrl } = request;
@@ -48,6 +48,10 @@ export const config = {
     // Match specific routes we want to protect or handle auth redirects for
     '/auth',
     '/dashboard',
-    '/dashboard/:path*'
+    '/dashboard/:path*',
+    '/tickets/:path*',
+    '/meetings/:path*',
+    '/documents/:path*',
+    '/users/:path*',
   ]
 };

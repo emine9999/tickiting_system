@@ -40,7 +40,7 @@ const items = [
   },
   {
     title: 'Meetings',
-    url: '/home',
+    url: '/meetings',
     icon: MonitorDown,
   },
   {
