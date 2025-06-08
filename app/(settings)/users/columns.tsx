@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Delete } from "@/components/Delete";
+import { Delete } from "@/components/delete";
 import { EditUser } from "@/components/EditUser";
 import {
   DropdownMenu,
