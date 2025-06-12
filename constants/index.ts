@@ -1,28 +1,28 @@
 export const sidebarLinks = [
   {
     imgURL: '/assets/icons/Home.svg',
-    route: '/home',
+    route: '/meetings',
     label: 'Home',
   },
 
   {
     imgURL: '/assets/icons/upcoming.svg',
-    route: '/home/upcoming',
+    route: '/meetings/upcoming',
     label: 'Upcoming',
   },
   {
     imgURL: '/assets/icons/previous.svg',
-    route: '/home/previous',
+    route: '/meetings/previous',
     label: 'Previous',
   },
   {
     imgURL: '/assets/icons/Video.svg',
-    route: '/home/recordings',
+    route: '/meetings/recordings',
     label: 'Recordings',
   },
   {
     imgURL: '/assets/icons/add-personal.svg',
-    route: '/home/personal-room',
+    route: '/meetings/personal-room',
     label: 'Personal Room',
   },
 ];
