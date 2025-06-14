@@ -77,7 +77,7 @@ export async function analyzeIncident(description: string) {
   const user_id = currentUser.id;
   const user_name = currentUser.username;
   const user_email = currentUser.email;
-  const group_id = currentUser.groups?.[0] || null;
+  const group_id = currentUser.groups?.[0] || "SIR";
 
   try {
     const res = await fetch(
