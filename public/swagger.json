@@ -1,0 +1,144 @@
+{
+  "openapi": "3.0.3",
+    "info": {
+        "title": "Incident Analysis API",
+        "version": "1.0.0",
+        "description": "API for analyzing incident descriptions and generating actionable reports.",
+      
+    },
+  "paths": {
+    "/api/chat": {
+      "post": {
+        "tags": ["Incident Analysis"],
+        "summary": "Analyze incident description",
+        "description": "Send an incident description to the AI analysis system and receive an analysis report.",
+        "requestBody": {
+          "description": "Incident description to analyze",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["description"],
+                "properties": {
+                  "description": {
+                    "type": "string",
+                    "minLength": 10,
+                    "description": "A detailed description of the incident (minimum 10 characters)."
+                  }
+                }
+              },
+              "example": {
+                "description": "The system crashed when uploading a large file, error code 503."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful incident analysis",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "report": {
+                      "type": "string",
+                      "description": "Generated incident analysis report",
+                      "example": "Step 1: Identify the cause...\nStep 2: Apply the fix..."
+                    },
+                    "steps": {
+                      "type": "array",
+                      "items": { "type": "string" },
+                      "description": "Extracted actionable steps from the report",
+                      "example": ["Identify the cause", "Apply the fix", "Verify resolution"]
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Timestamp of the analysis",
+                      "example": "2025-06-09T12:00:00Z"
+                    },
+                    "references": {
+                      "type": "array",
+                      "items": { "type": "string" },
+                      "description": "Reference links or documents related to the analysis",
+                      "example": ["http://example.com/manual", "http://example.com/incident-123"]
+                    },
+                    "reportFile": {
+                      "type": ["string", "null"],
+                      "description": "URL or path to the report file if available",
+                      "example": "http://localhost:8000/files/report123.pdf"
+                    },
+                    "raw": {
+                      "type": "object",
+                      "description": "Raw response data from the Agno API for debugging"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or missing description in request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": { "type": "string", "example": "Description manquante ou invalide" },
+                    "success": { "type": "boolean", "example": false }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error or analysis failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": { "type": "string", "example": "L'analyse a échoué côté serveur" },
+                    "success": { "type": "boolean", "example": false },
+                    "details": { "type": "object", "nullable": true }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable (Agno API connection error)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": { "type": "string", "example": "Impossible de se connecter à l'API Agno. Vérifiez qu'elle est démarrée sur le port 8000." },
+                    "success": { "type": "boolean", "example": false }
+                  }
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "Timeout error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": { "type": "string", "example": "Timeout - L'analyse prend trop de temps" },
+                    "success": { "type": "boolean", "example": false }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

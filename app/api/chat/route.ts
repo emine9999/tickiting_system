@@ -1,8 +1,8 @@
-// app/api/chat/route.ts
 
 import { NextRequest, NextResponse } from 'next/server';
 
 const AGNO_API_URL = process.env.AGNO_API_URL || 'http://localhost:8000';
+// this file is used to handle the chat API requests for the Agno incident analysis system (analyse d'incidents) , 
 
 export async function POST(request: NextRequest) {
   try {
@@ -157,8 +157,8 @@ function extractStepsFromReport(report: string): string[] {
   
   return steps.slice(0, 10); // Limiter à 10 étapes max
 }
-
 // Gestion des autres méthodes HTTP
+
 export async function GET() {
   return NextResponse.json(
     { 
