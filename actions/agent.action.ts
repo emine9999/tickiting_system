@@ -71,37 +71,35 @@ export async function analyzeIncident(description: string) {
     !currentUser.username ||
     !currentUser.email
   ) {
-    throw new Error("erreur d'authentification, veuillez vous reconnecter");
+    return { error: "Erreur d'authentification, veuillez vous reconnecter" };
   }
+
   const user_id = currentUser.id;
   const user_name = currentUser.username;
   const user_email = currentUser.email;
   const group_id = currentUser.groups?.[0] || null;
-  if (!user_id || !user_name || !user_email) {
-    throw new Error("Erreur d'authentification, veuillez vous reconnecter");
-  }
 
   try {
-    const res = await fetch(`${process.env.AGENT_API_URL}/analyze`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ description, user_id, user_name, user_email, group_id }),
-    });
+    const res = await fetch(
+      `${process.env.AGENT_API_URL}/analyze`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ description, user_id, user_name, user_email, group_id }),
+      }
+    );
 
     if (!res.ok) {
-      const errorData = await res.json().catch(() => ({}));
-      throw new Error(errorData.detail || `Erreur ${res.status}: ${res.statusText}`);
+      const errJson = await res.json().catch(() => {});
+      return { error: errJson?.detail || `Erreur ${res.status}: ${res.statusText}` };
     }
 
     const data: AgnoResponse = await res.json();
 
     if (!data.success || data.error) {
-      throw new Error(data.error || "L'analyse a échoué");
+      return { error: data.error || "L'analyse a échoué" };
     }
 
-    //Create Ticket first
     const ticket = await prisma.ticket.create({
       data: {
         title: data.data.summary.substring(0, 50),
@@ -109,17 +107,11 @@ export async function analyzeIncident(description: string) {
         priority: data.data.severity || "MEDIUM",
         status: "OPEN",
         type: "TASK",
-        createdBy: {
-          connect: { id: user_id }
-        },
-        group: {
-          connect: { name: group_id || "SIR" }
-        },
-
+        createdBy: { connect: { id: user_id } },
+        group: { connect: { name: group_id || "SIR" } },
       },
     });
 
-    // Create TicketAnalysis linked to the new Ticket and User
     const ticketAnalysis = await prisma.ticketAnalysis.create({
       data: {
         title: ticket.title,
@@ -137,17 +129,18 @@ export async function analyzeIncident(description: string) {
       },
     });
 
-    console.log("Ticket and analysis saved:", { ticket, ticketAnalysis });
-
-    return { ticket, ticketAnalysis };
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      throw new Error(error.message || "Une erreur est survenue lors de l'analyse");
-    } else {
-      throw new Error("Une erreur est survenue lors de l'analyse");
-    }
+    return { ticket, ticketAnalysis, success: true };
+  } catch (err: unknown) {
+    console.error("Erreur analyzeIncident:", err);
+    return {
+      error:
+        err instanceof Error
+          ? err.message
+          : "Une erreur inattendue est survenue lors de l'analyse",
+    };
   }
 }
+
 
 
 export async function getReports() {
