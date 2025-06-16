@@ -92,7 +92,7 @@ return (
       <div className="flex justify-center mb-8">
       <Link href='/profile'>
       <Avatar className="w-12 h-12 border-2 border-white shadow-sm">
-          <AvatarImage src={session?.user?.image || "https://github.com/shadcn.png"} />
+          <AvatarImage src={session?.user?.image || "/data/u.png"} />
           <AvatarFallback>{session?.user?.name?.charAt(0) || "U"}</AvatarFallback>
         </Avatar>
         </Link>

@@ -104,8 +104,8 @@ export function AppSidebar({ onButtonClick }: { onButtonClick: () => void }) {
      <SidebarHeader>
     <Link href='/profile'>
     <div className="flex items-center w-fit gap-3 justify-start ml-3 py-3">
-        <Avatar className="lg:w-14 lg:h-14 rounded-full">
-          <AvatarImage src={session?.user?.image || "https://github.com/shadcn.png"} />
+        <Avatar className="lg:w-14 lg:h-14 rounded-full ring-1 ring-gray-300 dark:ring-gray-700">
+          <AvatarImage src={session?.user?.image || "/data/u.png" } />
           <AvatarFallback>{session?.user?.name?.charAt(0) || "CN"}</AvatarFallback>
         </Avatar>
         <div>
@@ -113,7 +113,7 @@ export function AppSidebar({ onButtonClick }: { onButtonClick: () => void }) {
             
             {session?.user?.name}
           </p>
-          <h2 className="text-sm text-gray-400">{session?.user?.role?.name || "Agent Admin"}</h2>
+          <h2 className="text-sm text-gray-400">{session?.user?.role?.name || "USER"}</h2>
         </div>
       </div>
     </Link>

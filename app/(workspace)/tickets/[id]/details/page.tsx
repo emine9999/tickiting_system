@@ -22,7 +22,7 @@ const TicketPage = () => {
       if (!id) return;
       
       try {
-        const response = await fetch(`http://localhost:3000/api/tickets/${id}`);
+        const response = await fetch(`https://tickiting-system-lac.vercel.app/tickets/${id}`);
         if (!response.ok) {
           throw new Error('Failed to fetch ticket');
         }

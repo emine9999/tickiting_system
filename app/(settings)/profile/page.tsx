@@ -29,7 +29,7 @@ const AccountSettingsPage = async () => {
             <div className="flex flex-col sm:flex-row items-center gap-4 pb-4 border-b border-gray-100 dark:border-slate-700">
               <Avatar className="w-20 h-20 rounded-full border-4 border-white dark:border-slate-700 ring-2 ring-blue-400 dark:ring-blue-500">
                 <AvatarImage
-                  src={session?.user?.image || "/default-avatar.png"}
+                  src={session?.user?.name?.charAt(0) || "/data/u.png"}
                   alt="User Avatar"
                 />
               </Avatar>

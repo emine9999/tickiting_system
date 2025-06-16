@@ -31,7 +31,7 @@ const MessageBox: React.FC<MessageBoxProps> = ({ data, isLast }) => {
           <div className={avatar}>
             <div className="relative w-10 h-10 flex-shrink-0 ">
               <Image
-                src={data?.sender?.image || "/data/glx.jpg"}
+                src={data?.sender?.image || "/data/u.png"}
                 alt={data?.sender?.username || "User"}
                 fill
                 className="rounded-full object-cover ring-2 ring-amber-600"

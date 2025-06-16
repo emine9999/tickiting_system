@@ -19,7 +19,7 @@ console.log("slice uses",users)
           }`}
         >
           <Image
-            src={user?.image || "/data/glx.jpg"}
+            src={user?.image || "/data/u.png"}
             alt={user?.username || "user"}
             fill
             className="object-cover"

@@ -6,8 +6,8 @@ import { useSession} from "next-auth/react";
 const UserAvatar = () => {
     const { data: session } = useSession();
   return (
-    <Avatar className="lg:w-12 lg:h-12 rounded-full">
-    <AvatarImage src={session?.user?.image || "https://github.com/shadcn.png"} />
+    <Avatar className="lg:w-12 lg:h-12 rounded-full ">
+    <AvatarImage src={session?.user?.image || "/data/u.png"} />
     <AvatarFallback>{session?.user?.name?.charAt(0) || "CN"}</AvatarFallback>
   </Avatar>
   )
