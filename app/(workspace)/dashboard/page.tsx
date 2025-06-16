@@ -37,7 +37,7 @@ export default async function Dashboard() {
     <div className=" w-full flex flex-col bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700 items-center gap-3 bg-gray-50 dark:bg-gray-800 shadow-sm">
-        <h1 className="font-semibold text-lg sm:text-xl">Hello, {session?.user?.name || ""}</h1>
+        <h1 className="font-semibold text-lg sm:text-xl">Hello, {session?.user?.name || "Dear"}</h1>
         <div className="flex">
           <button className="flex items-center gap-2 justify-center px-4 py-2.5 bg-emerald-600 dark:bg-emerald-500 rounded-lg text-sm font-medium text-white hover:bg-emerald-700 dark:hover:bg-emerald-600 transition-colors shadow-sm">
             Export CSV

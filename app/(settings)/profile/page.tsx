@@ -8,12 +8,12 @@ const AccountSettingsPage = async () => {
 
   // Extract profile details into an array for mapping
   const profileDetails = [
-    { label: "Name", value: session?.user?.name || "N/A" },
+    { label: "Name", value: session?.user?.name || "Agent" },
     { label: "Email", value: session?.user?.email || "N/A" },
-    { label: "Role", value: session?.user?.role?.name || "N/A" },
+    { label: "Role", value: session?.user?.role?.name || "USER" },
     {
       label: "Role Description",
-      value: session?.user?.role?.description || "N/A",
+      value: session?.user?.role?.description || "No description available",
     },
   ];
 
@@ -35,10 +35,10 @@ const AccountSettingsPage = async () => {
               </Avatar>
               <div className="text-center sm:text-left">
                 <h1 className="text-xl font-semibold text-slate-800 dark:text-white">
-                  {session?.user?.name || ""}
+                  {session?.user?.name || "Agent"}
                 </h1>
                 <p className="text-sm text-slate-500 dark:text-gray-400">
-                  {session?.user?.role?.name}
+                  {session?.user?.role?.name || "USER"}
                 </p>
               </div>
             </div>

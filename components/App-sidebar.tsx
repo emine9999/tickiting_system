@@ -111,7 +111,7 @@ export function AppSidebar({ onButtonClick }: { onButtonClick: () => void }) {
         <div>
           <p className="w-full">
             
-            {session?.user?.name}
+            {session?.user?.name || "Agent"}
           </p>
           <h2 className="text-sm text-gray-400">{session?.user?.role?.name || "USER"}</h2>
         </div>
