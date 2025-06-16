@@ -20,13 +20,14 @@ export default  function Tickets() {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
           });
-  
-          if (!res.ok) {
-            const data = await res.json();
-            throw new Error(data.message || 'Failed to fetch tickets');
-          }
+          
+          // if (!res.ok) {
+          //   const data = await res.json();
+          //   throw new Error(data.message || 'Failed to fetch tickets');
+          // }
   
           const data = await res.json();
+          console.log ("tickets",  data);
           setTickets(data); 
         } catch (err: any) {
           setError(err.message || 'An unexpected error occurred');

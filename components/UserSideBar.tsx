@@ -5,8 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useSession,signOut } from "next-auth/react";
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
-import { usePathname } from 'next/navigation';
-import { useRouter } from 'next/navigation';
+import { redirect, usePathname } from 'next/navigation';
 const mainNavItems = [
   {
     url: '/dashboard',
@@ -52,7 +51,7 @@ const settingsNavItems = [
 export default function UserSideBar() {
   const { data: session } = useSession();
   const pathname = usePathname();
-  const router = useRouter( )
+  
   const NavItem = ({ item, count }: { item: {url: string, icon: any, label: string}, count?: number }) => {
     const isActive = pathname === item.url;
     return (
@@ -91,7 +90,7 @@ return (
       
       {/* User Avatar */}
       <div className="flex justify-center mb-8">
-      <Link href="/profile">
+      <Link href='/profile'>
       <Avatar className="w-12 h-12 border-2 border-white shadow-sm">
           <AvatarImage src={session?.user?.image || "https://github.com/shadcn.png"} />
           <AvatarFallback>{session?.user?.name?.charAt(0) || "U"}</AvatarFallback>
@@ -127,7 +126,7 @@ return (
              <div className='px-4 flex items-center justify-center flex-col gap-5  bg-gray-100 dark:bg-slate-700 rounded-xl p-2 max-w-16 mt-2'>
       <button onClick={() => {
         signOut() 
-        router.push('/auth')
+        redirect('/auth')
       }
       } className="   cursor-pointer ">
          <LogOut size={23} 

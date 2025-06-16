@@ -57,7 +57,7 @@ const ChatHeader = ({tickets}:Props) => {
                         <div className="flex items-center gap-2">
                             <p className="text-xl font-bold">TC-293</p>
                             <h3 className="bg-slate-200 px-2 rounded-full dark:bg-slate-600">
-                                SQL ERROR
+                                {tickets.find(ticket => ticket.id === ticketId)?.title || "Ticket Title"}
                             </h3>
                             <Pin size={20} />
                         </div>

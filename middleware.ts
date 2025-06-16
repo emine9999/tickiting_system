@@ -4,53 +4,74 @@ import { getToken } from "next-auth/jwt";
 // Toutes les routes doivent commencer par "/"
 const protectedRoutes = [
   "/dashboard",
-  "/meetings", 
+  "/meetings",
   "/analysis",
   "/tickets",
   "/documents",
   "/users",
   "/roles",
-  "/groups"
+  "/groups",
+  "/profile",
+];
+
+// Routes that require admin access
+const adminOnlyRoutes = [
+  "/users",
+  "/roles",
+  "/groups",
 ];
 
 export async function middleware(request: NextRequest) {
   const { nextUrl } = request;
-  
+ 
   // Skip middleware for auth API routes
   if (nextUrl.pathname.startsWith('/api/auth')) {
     return NextResponse.next();
   }
-  
+ 
   try {
-    const token = await getToken({ 
-      req: request, 
+    const token = await getToken({
+      req: request,
       secret: process.env.NEXTAUTH_SECRET,
       secureCookie: process.env.NODE_ENV === 'production'
     });
-    
+   
     const isAuthenticated = !!token;
-    
+   
     // Vérification améliorée des routes protégées
-    const isProtectedPath = protectedRoutes.some(route => 
+    const isProtectedPath = protectedRoutes.some(route =>
       nextUrl.pathname === route || nextUrl.pathname.startsWith(`${route}/`)
     );
-    
+
+    // Check if current path is admin-only
+    const isAdminOnlyPath = adminOnlyRoutes.some(route =>
+      nextUrl.pathname === route || nextUrl.pathname.startsWith(`${route}/`)
+    );
+   
     // Debug - vous pouvez supprimer ces logs après
     console.log('Current path:', nextUrl.pathname);
     console.log('Is protected:', isProtectedPath);
     console.log('Is authenticated:', isAuthenticated);
-    
+    console.log('Is admin only path:', isAdminOnlyPath);
+    console.log('User role:', token?.role);
+   
     // If authenticated and on login page, redirect to dashboard
     if (isAuthenticated && nextUrl.pathname === "/auth") {
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
-    
+   
     // If not authenticated and trying to access protected route, redirect to login
     if (!isAuthenticated && isProtectedPath) {
       const callbackUrl = encodeURIComponent(request.nextUrl.pathname);
       return NextResponse.redirect(new URL(`/auth?callbackUrl=${callbackUrl}`, request.url));
     }
-    
+
+    // If authenticated but not admin trying to access admin-only routes, redirect to dashboard
+    if (isAuthenticated && isAdminOnlyPath && token?.role !== 'admin') {
+      console.log('Non-admin user trying to access admin route, redirecting to dashboard');
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
+   
     return NextResponse.next();
   } catch (error) {
     console.error("Authentication middleware error:", error);
@@ -79,6 +100,7 @@ export const config = {
     '/users',
     '/roles',
     '/groups',
-    '/analysis'
+    '/analysis',
+    '/profile',
   ]
 };

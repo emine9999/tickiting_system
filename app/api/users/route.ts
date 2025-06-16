@@ -114,30 +114,84 @@ export async function POST(req: Request){
 }
 
 
-export async function PATCH(req :Request) {
+// export async function PATCH(req :Request) {
+//   const session = await auth();
+//   if (!session || !session.user) {
+//       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+//   }
+
+//   const body = await req.json();
+//   const { password ,name,email,image} = body;
+//   const id = session.user?.id
+
+//   try {
+     
+//       const salt = await bcrypt.genSalt(10);
+//       const hashedPassword = await bcrypt.hash(password, salt);
+
+//       const user = await prisma.user.update({
+//           where: { id },
+//           data: { 
+//             password: hashedPassword ,
+//             username : name,
+//             email : email,
+//             image : image,
+          
+//           },
+//       });
+
+//       if (!user) {
+//           return NextResponse.json({ message: 'User not found' }, { status: 404 });
+//       }
+
+//       return NextResponse.json({ message: 'Profile updated successfully' }, { status: 200 });
+//   } catch (error) {
+//       console.error('Error updating profile:', error);
+//       return NextResponse.json({ message: 'Error updating profile' }, { status: 500 });
+//   }
+// }
+
+
+export async function PATCH(req: Request) {
   const session = await auth();
   if (!session || !session.user) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
 
   const body = await req.json();
-  const { password ,name,email,image} = body;
-  const id = session.user?.id
+  const { password, name, email, image } = body;
+  const id = session.user?.id;
 
   try {
-     
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(password, salt);
+      // Build the update data object dynamically
+      const updateData: any = {};
+
+      // Only add fields to update if they have values
+      if (password && password.trim() !== '') {
+          const salt = await bcrypt.genSalt(10);
+          updateData.password = await bcrypt.hash(password, salt);
+      }
+
+      if (name && name.trim() !== '') {
+          updateData.username = name;
+      }
+
+      if (email && email.trim() !== '') {
+          updateData.email = email;
+      }
+
+      if (image && image.trim() !== '') {
+          updateData.image = image;
+      }
+
+      // If no fields to update, return early
+      if (Object.keys(updateData).length === 0) {
+          return NextResponse.json({ message: 'No valid fields to update' }, { status: 400 });
+      }
 
       const user = await prisma.user.update({
           where: { id },
-          data: { 
-            password: hashedPassword ,
-            username : name,
-            email : email,
-            image : image,
-          
-          },
+          data: updateData,
       });
 
       if (!user) {
@@ -150,8 +204,5 @@ export async function PATCH(req :Request) {
       return NextResponse.json({ message: 'Error updating profile' }, { status: 500 });
   }
 }
-
-
-
 
 

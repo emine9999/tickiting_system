@@ -55,7 +55,14 @@ export const columns: ColumnDef<Ticket>[] = [
         )}
       </Button>
     ),
-    cell: ({ row }) => <div className="bg-slate-200 rounded-full px-2 text-center dark:text-red-900">{row.getValue("title")}</div>,
+    cell: ({ row }) => {
+      const title = row.getValue("title") as string;
+      return (
+        <div className="bg-slate-200 rounded-full px-2 text-center dark:text-red-900">
+          {title?.slice(0, 10)}...
+        </div>
+      );
+    },
   },
   {
     accessorKey: "createdBy.username", 
@@ -141,7 +148,10 @@ export const columns: ColumnDef<Ticket>[] = [
   {
     accessorKey: "description",
     header: "Description",
-    cell: ({ row }) => <div>{row.getValue("description")}</div>,
+    cell: ({ row }) => {
+      const desc = row.getValue("description") as string;
+      return <div>{desc?.slice(0, 20)}...</div>;
+    },
   },
   {
     id: "actions",

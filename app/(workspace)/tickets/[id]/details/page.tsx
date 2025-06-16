@@ -27,6 +27,7 @@ const TicketPage = () => {
           throw new Error('Failed to fetch ticket');
         }
         const data = await response.json();
+        console.log("Ticket data:", data);
         setTicket(data);
         setLoading(false);
       } catch (err) {
@@ -114,8 +115,8 @@ const TicketPage = () => {
                 <div>
                   <h2 className="text-xl font-semibold mb-3">Assignment Info</h2>
                   <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-                    <p><span className="font-medium">User ID:</span> {ticket.userId}</p>
-                    <p><span className="font-medium">Assigned To:</span> {ticket.assignedToId}</p>
+                    <p><span className="font-medium text-red-800">CreatedBy :</span > {ticket.createdBy?.username}</p>
+                    <p><span className="font-medium text-red-800">Assigned To :</span> {ticket.assignedTo.username || "no body"} </p>
                   </div>
                 </div>
                 <div>

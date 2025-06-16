@@ -15,7 +15,7 @@ const AccountSettingsPage = () => {
       {/* Sidebar profile card */}
       <div className="w-full lg:w-auto lg:min-w-[350px]">
         <h1 className="text-2xl md:text-3xl font-bold mb-4 text-slate-800 dark:text-white">
-          Account Settings
+          Account Setting
         </h1>
         <div className="p-6 bg-white dark:bg-slate-800 shadow-md rounded-xl border border-gray-50 dark:border-slate-700 transition-all duration-200">
           <div className="space-y-4">

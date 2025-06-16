@@ -21,6 +21,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { redirect } from "next/navigation";
 
 export const columns = (): ColumnDef<User>[] => [
   {
@@ -151,7 +152,7 @@ export const columns = (): ColumnDef<User>[] => [
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={() => {
-                window.location.href = "/profile";
+                redirect(`/users/${user.id.toString()}`);
               }}
             >
               View User details

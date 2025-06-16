@@ -10,10 +10,25 @@ export async function GET(req: NextRequest, props: RouteParams) {
   const id = await  params.id;
 
   try {
+    // const ticket = await prisma.ticket.findUnique({
+    //   where: { id },
+    // });
     const ticket = await prisma.ticket.findUnique({
-      where: { id },
-    });
+  where: { id },
+  include: {
+    createdBy: {
+      select: { username: true },
+    },
+    assignedTo: {
+      select: { username: true },
+    },
+    group: {
+      select: { name: true },
+    },
+  },
+});
 
+    console.log("Ticket fetched:", ticket);
     if (!ticket) {
       return NextResponse.json({ message: 'Ticket not found' }, { status: 404 });
     }

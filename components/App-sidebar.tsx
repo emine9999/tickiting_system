@@ -153,12 +153,12 @@ export function AppSidebar({ onButtonClick }: { onButtonClick: () => void }) {
                   </SidebarMenuItem>
                 ))}
              
-                 <div className='w-full  gap-2 flex justify-start px-2 py-1 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg items-center'>
+                 {/* <div className='w-full  gap-2 flex justify-start px-2 py-1 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg items-center'>
                       <BellRing/>
                     <button className='cursor-pointer' onClick={ onButtonClick }>
                       Notification
                     </button>
-                    </div>
+                    </div> */}
                    
                    {session?.user?.role?.name === "ADMIN" && <AdminNav />}
                    
@@ -190,7 +190,7 @@ export function AppSidebar({ onButtonClick }: { onButtonClick: () => void }) {
             </SidebarGroupContent>
           </SidebarGroup>
           {/* end of grp 2 */}
-      <Ticket/>
+      {/* <Ticket/> */}
         </SidebarGroup>
       </SidebarContent>
 

@@ -26,6 +26,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ticketSchema } from '@/lib/ticketSchema';
+
 export default function AddNewTicket() {
     const [formData, setFormData] = useState({
         title: '',
@@ -50,20 +51,12 @@ export default function AddNewTicket() {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   }; 
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setSuccess(null);
     setLoading(true);
-
- 
-           
-
-    // if (!formData.title || !formData.description || !formData.priority || !formData.status || !formData.type) {
-    //   setError("Please add title, description, priority, status and type");
-    //   setLoading(false);
-    //   return;
-    // }
 
     const validationResult = ticketSchema.safeParse({ ...formData, assignee: assing });   
     if (!validationResult.success) {
@@ -74,8 +67,6 @@ export default function AddNewTicket() {
     }
 
     try {
-
-  
       const res = await fetch("/api/tickets", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -91,14 +82,13 @@ export default function AddNewTicket() {
        // Reset form
        setFormData({
         title: '',
-        priority: 'medium',
-        status: 'open',
-        type: 'bug',
+        priority: 'MEDIUM',
+        status: 'OPEN',
+        type: 'BUG',
         assignee: '',
         description: ''
       });
 
-      // setTimeout(() => setSuccess(null), 2000);
     } catch (error) {
       setError((error as Error).message || "An unexpected error occurred while creating the ticket");
     } finally {
@@ -106,135 +96,173 @@ export default function AddNewTicket() {
     }
   };
 
-
   return (
     <Dialog>
       <DialogTrigger asChild>
-      
-      <Button
+        <Button
           variant="outline"
-          className="bg-green-400 dark:bg-green-400 cursor-pointer hover:bg-green-300 dark:hover:bg-green-300 dark:text-gray-900"
+          className="bg-green-400 dark:bg-green-400 cursor-pointer hover:bg-green-300 dark:hover:bg-green-300 dark:text-gray-900 text-sm sm:text-base px-3 py-2 sm:px-4 sm:py-2"
         >
-          Add New Ticket<Plus size={24} className="text-gray-500  dark:text-gray-900" />
+          <span className="hidden sm:inline">Add New Ticket</span>
+          <span className="sm:hidden">Add Ticket</span>
+          <Plus size={20} className="ml-1 sm:ml-2 text-gray-500 dark:text-gray-900" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] max-h-[96vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Add New Ticket</DialogTitle>
-          <DialogDescription>Ticket info</DialogDescription>
+      
+      <DialogContent className="w-[95vw] max-w-[500px] max-h-[95vh] sm:max-h-[90vh] overflow-y-auto p-4 sm:p-6">
+        <DialogHeader className="space-y-2 sm:space-y-3">
+          <DialogTitle className="text-lg sm:text-xl">Add New Ticket</DialogTitle>
+          <DialogDescription className="text-sm sm:text-base">
+            Fill in the ticket information below
+          </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="grid gap-4 py-4  ">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-            Ticket Name
+        
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6 py-2 sm:py-4">
+          {/* Title Field */}
+          <div className="space-y-2">
+            <Label htmlFor="title" className="text-sm sm:text-base font-medium">
+              Ticket Name *
             </Label>
             <Input
-                id="title"
-                name="title"
-                type="text"
-                placeholder="Enter ticket title"
-                value={formData.title}
-                onChange={handleChange}
+              id="title"
+              name="title"
+              type="text"
+              placeholder="Enter ticket title"
+              value={formData.title}
+              onChange={handleChange}
               autoComplete="off"
-              className="col-span-4"
+              className="w-full text-sm sm:text-base"
             />
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
-                Priority
+
+          {/* Priority and Type Row */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label className="text-sm sm:text-base font-medium">
+                Priority *
               </Label>
               <Select
+                value={formData.priority}
                 onValueChange={(value) =>
                   setFormData((prev) => ({ ...prev, priority: value }))
                 }
               >
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Select a priority" />
+                <SelectTrigger className="w-full text-sm sm:text-base">
+                  <SelectValue placeholder="Select priority" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
                     <SelectLabel>Priority</SelectLabel>
-                    <SelectItem value="MEDIUM">MEDIUM</SelectItem>
-                    <SelectItem value="HIGH">HIGH</SelectItem>
-                    <SelectItem value="URGENT">URGENT</SelectItem>
+                    <SelectItem value="MEDIUM">Medium</SelectItem>
+                    <SelectItem value="HIGH">High</SelectItem>
+                    <SelectItem value="URGENT">Urgent</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
             </div>
 
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
-                type
+            <div className="space-y-2">
+              <Label className="text-sm sm:text-base font-medium">
+                Type *
               </Label>
               <Select
+                value={formData.type}
                 onValueChange={(value) =>
                   setFormData((prev) => ({ ...prev, type: value }))
                 }
               >
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Select a type" />
+                <SelectTrigger className="w-full text-sm sm:text-base">
+                  <SelectValue placeholder="Select type" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectLabel>TYPE</SelectLabel>
-                    <SelectItem value="BUG">BUG</SelectItem>
-                    <SelectItem value="FEATURE">FEATURE</SelectItem>
-                    <SelectItem value="TASK">TASK</SelectItem>
+                    <SelectLabel>Type</SelectLabel>
+                    <SelectItem value="BUG">Bug</SelectItem>
+                    <SelectItem value="FEATURE">Feature</SelectItem>
+                    <SelectItem value="TASK">Task</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
             </div>
+          </div>
 
-          
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
-                Status
-              </Label>
-              <Select
-                onValueChange={(value) =>
-                  setFormData((prev) => ({ ...prev, status: value }))
-                }
-              >
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Select a status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Status</SelectLabel>
-                    <SelectItem value="OPEN">OPEN</SelectItem>
-                    <SelectItem value="CLOSED">CLOSED</SelectItem>
-                    <SelectItem value="REJECTED">REJECTED</SelectItem>
-                    <SelectItem value="PENDING">PENDING</SelectItem>
-                    <SelectItem value="INPROGRESS">IN PROGRESS</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
+          {/* Status Field */}
+          <div className="space-y-2">
+            <Label className="text-sm sm:text-base font-medium">
+              Status *
+            </Label>
+            <Select
+              value={formData.status}
+              onValueChange={(value) =>
+                setFormData((prev) => ({ ...prev, status: value }))
+              }
+            >
+              <SelectTrigger className="w-full text-sm sm:text-base">
+                <SelectValue placeholder="Select status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Status</SelectLabel>
+                  <SelectItem value="OPEN">Open</SelectItem>
+                  <SelectItem value="CLOSED">Closed</SelectItem>
+                  <SelectItem value="REJECTED">Rejected</SelectItem>
+                  <SelectItem value="PENDING">Pending</SelectItem>
+                  <SelectItem value="INPROGRESS">In Progress</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Assign User Component */}
+          <div className="space-y-2">
             <AssignUser onDataChange={handleDataFromChild}/>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Description
+          </div>
+
+          {/* Description Field */}
+          <div className="space-y-2">
+            <Label htmlFor="description" className="text-sm sm:text-base font-medium">
+              Description *
             </Label>
             <Textarea
               id="description"
               name="description"
               value={formData.description}
-              placeholder="Add Description"
+              placeholder="Enter ticket description"
               onChange={handleChange}
               autoComplete="off"
-              className="col-span-4"
+              className="w-full min-h-[80px] sm:min-h-[100px] text-sm sm:text-base resize-vertical"
+              rows={3}
             />
-          
           </div>
-          {error && <Alert type="error" message={error} />}
-          {success && <Alert type="success" message={success} />}
-           <Button type="submit" className="bg-blue-500 hover:bg-blue-700">
-          {loading ? <Spinner /> : 'Create Ticket'}
+
+          {/* Alert Messages */}
+          {error && (
+            <div className="mt-4">
+              <Alert type="error" message={error} />
+            </div>
+          )}
+          {success && (
+            <div className="mt-4">
+              <Alert type="success" message={success} />
+            </div>
+          )}
+
+          {/* Submit Button */}
+          <Button 
+            type="submit" 
+            className="w-full bg-blue-500 hover:bg-blue-700 text-white py-2 sm:py-3 text-sm sm:text-base font-medium transition-colors duration-200"
+            disabled={loading}
+          >
+            {loading ? (
+              <div className="flex items-center justify-center space-x-2">
+                <Spinner />
+                <span>Creating...</span>
+              </div>
+            ) : (
+              'Create Ticket'
+            )}
           </Button>
-        
         </form>
-      
-      
       </DialogContent>
     </Dialog>
   );
