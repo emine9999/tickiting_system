@@ -10,7 +10,7 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { User } from "@prisma/client";
-import { Users, UserRoundPlus } from "lucide-react";
+import { Users, UserRoundPlus, X, Check } from "lucide-react";
 import { useRouter } from "next/navigation";
 import useConversation from "@/hooks/useConversation";
 import { useState } from "react";
@@ -20,7 +20,6 @@ import { useParams } from "next/navigation";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { X } from "lucide-react";
 
 interface ConversationListProps {
   users: User[];
@@ -57,9 +56,9 @@ const CreateGroup: React.FC<ConversationListProps> = ({ users }) => {
       })
       .then(() => {
         router.refresh();
-        toast.success("Group created");
+        toast.success("Group created successfully");
       })
-      .catch(() => toast.error("Something went wrong"))
+      .catch(() => toast.error("Failed to create group"))
       .finally(() => setIsLoading(false));
   };
 
@@ -71,81 +70,149 @@ const CreateGroup: React.FC<ConversationListProps> = ({ users }) => {
     setValue("members", updatedMembers, { shouldValidate: true });
   };
 
+  const isUserSelected = (userId: string) => {
+    return members?.some((member: any) => member.value === userId);
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Users className="cursor-pointer hover:text-blue-500" />
+        <div className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer group">
+          <Users className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
+        </div>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <div className="w-9 h-9 bg-slate-200 rounded-full flex items-center justify-center">
-                <UserRoundPlus className="text-blue-500" />
+      
+      <DialogContent className="w-[95vw] max-w-md mx-auto p-0 gap-0 rounded-xl border-0 shadow-2xl">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col h-full">
+          {/* Header */}
+          <DialogHeader className="px-6 py-5 border-b bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/50 dark:to-indigo-950/50 rounded-t-xl">
+            <DialogTitle className="flex items-center gap-3 text-lg font-semibold">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-sm">
+                <UserRoundPlus className="w-5 h-5 text-white" />
               </div>
-              Create a group chat
+              <span className="text-gray-900 dark:text-gray-100">Create Group Chat</span>
             </DialogTitle>
-            <DialogDescription>
-              Create a chat with more than 2 people
+            <DialogDescription className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+              Start a conversation with multiple people
             </DialogDescription>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
-                Group Name
+
+          {/* Content */}
+          <div className="flex-1 px-6 py-5 space-y-6">
+            {/* Group Name Input */}
+            <div className="space-y-2">
+              <Label htmlFor="name" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                Group Name *
               </Label>
               <Input
                 id="name"
-                {...register("name", { required: true })}
-                placeholder="Group name"
+                {...register("name", { required: "Group name is required" })}
+                placeholder="Enter group name..."
                 autoComplete="off"
-                className="col-span-3"
+                className={`h-11 rounded-lg border-gray-200 dark:border-gray-700 focus:border-blue-500 focus:ring-blue-500/20 transition-all ${
+                  errors.name ? "border-red-300 focus:border-red-500 focus:ring-red-500/20" : ""
+                }`}
                 disabled={isLoading}
               />
+              {errors.name && (
+                <p className="text-xs text-red-500 mt-1">{errors.name.message as string}</p>
+              )}
             </div>
-            <div>
-              <Label className="text-sm font-medium">Select Users</Label>
-              <div className="mt-2 space-y-2 flex gap-2 max-h-40 overflow-y-auto border p-2 rounded-md">
-                {users.map((user) => (
-                  <div
-                    key={user.id}
-                    onClick={() => handleMemberToggle(user.id)}
-                    className={`cursor-pointer h-fit p-2 rounded-md ${
-                      members?.some((member: any) => member.value === user.id)
-                        ? `bg-blue-100 text-blue-700 text-sm`
-                        : "hover:bg-gray-100 text-sm"
-                    }`}
-                  >
-                    <div className="flex items-center gap-2">
-                      {user.username}
-                      {members?.some(
-                        (member: any) => member.value === user.id
-                      ) ? (
-                        <X className="w-4 h-4 text-red-500" />
-                      ) : (
-                        ""
-                      )}
+
+            {/* Members Selection */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Add Members
+                </Label>
+                <span className="text-xs text-gray-500 dark:text-gray-400">
+                  {members?.length || 0} selected
+                </span>
+              </div>
+
+              {/* Members List */}
+              <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                <div className="max-h-48 overflow-y-auto">
+                  {users.length > 0 ? (
+                    users.map((user, index) => (
+                      <div
+                        key={user.id}
+                        onClick={() => handleMemberToggle(user.id)}
+                        className={`flex items-center justify-between p-3 cursor-pointer transition-all duration-200 ${
+                          index !== users.length - 1 ? "border-b border-gray-100 dark:border-gray-800" : ""
+                        } ${
+                          isUserSelected(user.id)
+                            ? "bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800"
+                            : "hover:bg-gray-50 dark:hover:bg-gray-800/50"
+                        }`}
+                      >
+                        <div className="flex items-center space-x-3">
+                          {/* User Avatar */}
+                          <div className="w-8 h-8 bg-gradient-to-br from-gray-400 to-gray-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
+                            {user.username?.charAt(0).toUpperCase() || "U"}
+                          </div>
+                          
+                          {/* User Info */}
+                          <div>
+                            <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                              {user.username || "Unknown User"}
+                            </p>
+                            {user.email && (
+                              <p className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[180px] sm:max-w-[200px]">
+                                {user.email}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Selection Indicator */}
+                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
+                          isUserSelected(user.id)
+                            ? "bg-blue-500 border-blue-500"
+                            : "border-gray-300 dark:border-gray-600"
+                        }`}>
+                          {isUserSelected(user.id) && (
+                            <Check className="w-3 h-3 text-white" />
+                          )}
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="p-6 text-center text-gray-500 dark:text-gray-400">
+                      <Users className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                      <p className="text-sm">No users available</p>
                     </div>
-                  </div>
-                ))}
+                  )}
+                </div>
               </div>
             </div>
           </div>
-          <DialogFooter className="justify-end mt-4">
+
+          {/* Footer */}
+          <DialogFooter className="flex flex-col sm:flex-row gap-2 sm:gap-3 px-6 py-4 bg-gray-50 dark:bg-gray-900/50 rounded-b-xl border-t">
             <DialogClose asChild>
               <Button
                 type="button"
-                className="bg-transparent shadow-none text-slate-700 hover:bg-transparent"
+                variant="outline"
+                className="w-full sm:w-auto order-2 sm:order-1 h-10 rounded-lg border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
+                disabled={isLoading}
               >
                 Cancel
               </Button>
             </DialogClose>
             <Button
               type="submit"
-              disabled={isLoading}
-              className="bg-blue-600 hover:bg-blue-500"
+              disabled={isLoading || !watch("name")?.trim()}
+              className="w-full sm:w-auto order-1 sm:order-2 h-10 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-sm disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
             >
-              {isLoading ? "Creating..." : "Create"}
+              {isLoading ? (
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  Creating...
+                </div>
+              ) : (
+                "Create Group"
+              )}
             </Button>
           </DialogFooter>
         </form>
