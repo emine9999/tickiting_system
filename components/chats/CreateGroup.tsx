@@ -10,12 +10,11 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { User } from "@prisma/client";
-import { Users, UserRoundPlus, X, Check } from "lucide-react";
+import { Users, UserRoundPlus, X, Check, CheckCircle, XCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import useConversation from "@/hooks/useConversation";
 import { useState } from "react";
 import axios from "axios";
-import { toast } from "react-hot-toast";
 import { useParams } from "next/navigation";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
@@ -29,6 +28,7 @@ const CreateGroup: React.FC<ConversationListProps> = ({ users }) => {
   const router = useRouter();
   const { conversationId } = useConversation();
   const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const params = useParams();
   const ticketId = params.id;
 
@@ -49,11 +49,7 @@ const CreateGroup: React.FC<ConversationListProps> = ({ users }) => {
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true);
-    
-    // Show loading toast
-    const loadingToast = toast.loading("Creating group...", {
-      duration: Infinity,
-    });
+    setMessage(null);
 
     axios
       .post("/api/conversations", {
@@ -61,29 +57,21 @@ const CreateGroup: React.FC<ConversationListProps> = ({ users }) => {
         isGroup: true,
       })
       .then((response) => {
-        // Dismiss loading toast
-        toast.dismiss(loadingToast);
-        
-        // Show success toast with group name
-        toast.success(`Group "${data.name}" created successfully!`, {
-          duration: 4000,
-          icon: "🎉",
+        setMessage({
+          type: 'success',
+          text: `Group "${data.name}" created successfully!`
         });
         
-        router.refresh();
+        setTimeout(() => {
+          router.refresh();
+        }, 2000);
       })
       .catch((error) => {
-        // Dismiss loading toast
-        toast.dismiss(loadingToast);
-        
-        // Show detailed error message
         const errorMessage = error?.response?.data?.message || "Something went wrong while creating the group";
-        toast.error(errorMessage, {
-          duration: 5000,
-          icon: "❌",
+        setMessage({
+          type: 'error',
+          text: errorMessage
         });
-        
-        console.error("Group creation error:", error);
       })
       .finally(() => setIsLoading(false));
   };
@@ -97,22 +85,6 @@ const CreateGroup: React.FC<ConversationListProps> = ({ users }) => {
       : [...currentMembers, { value: userId }];
     
     setValue("members", updatedMembers, { shouldValidate: true });
-    
-    // Show feedback toast for member selection
-    const selectedUser = users.find(user => user.id === userId);
-    if (selectedUser) {
-      if (isCurrentlySelected) {
-        toast(`${selectedUser.username} removed from group`, {
-          duration: 2000,
-          icon: "➖",
-        });
-      } else {
-        toast(`${selectedUser.username} added to group`, {
-          duration: 2000,
-          icon: "➕",
-        });
-      }
-    }
   };
 
   const isUserSelected = (userId: string) => {
@@ -144,6 +116,22 @@ const CreateGroup: React.FC<ConversationListProps> = ({ users }) => {
 
           {/* Content */}
           <div className="flex-1 px-6 py-5 space-y-6">
+            {/* Message Alert */}
+            {message && (
+              <div className={`flex items-center gap-3 p-4 rounded-lg border ${
+                message.type === 'success' 
+                  ? 'bg-green-50 border-green-200 text-green-800 dark:bg-green-950/30 dark:border-green-800 dark:text-green-400'
+                  : 'bg-red-50 border-red-200 text-red-800 dark:bg-red-950/30 dark:border-red-800 dark:text-red-400'
+              }`}>
+                {message.type === 'success' ? (
+                  <CheckCircle className="w-5 h-5 flex-shrink-0" />
+                ) : (
+                  <XCircle className="w-5 h-5 flex-shrink-0" />
+                )}
+                <p className="text-sm font-medium">{message.text}</p>
+              </div>
+            )}
+
             {/* Group Name Input */}
             <div className="space-y-2">
               <Label htmlFor="name" className="text-sm font-medium text-gray-700 dark:text-gray-300">

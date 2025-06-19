@@ -22,7 +22,7 @@ useEffect(() => {
     if (!id) return;
 
     try {
-      const response = await fetch(`https://tickiting-system-lac.vercel.app/tickets/${id}`);
+      const response = await fetch(`https://tickiting-system-lac.vercel.app/api/tickets/${id}`);
       
       if (!response.ok) {
         setError(`Error fetching ticket: ${response.statusText}`);
@@ -40,6 +40,7 @@ useEffect(() => {
 
   fetchTicket();
 }, [id]);
+
 
 
 
