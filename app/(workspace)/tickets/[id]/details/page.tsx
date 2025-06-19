@@ -119,8 +119,8 @@ useEffect(() => {
                 <div>
                   <h2 className="text-xl font-semibold mb-3">Assignment Info</h2>
                   <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-                    <p><span className="font-medium text-red-800">CreatedBy :</span > {ticket.createdBy?.username}</p>
-                    <p><span className="font-medium text-red-800">Assigned To :</span> {ticket.assignedTo.username || "no body"} </p>
+<p><span className="font-medium text-red-800">CreatedBy :</span> {ticket.createdBy?.username ?? "Unknown"} </p>
+<p><span className="font-medium text-red-800">Assigned To :</span> {ticket.assignedTo?.username ?? "no body"} </p>
                   </div>
                 </div>
                 <div>
