@@ -17,27 +17,30 @@ const TicketPage = () => {
   const [error, setError] = useState<string | null>(null);
 
 
-  useEffect(() => {
-    const fetchTicket = async () => {
-      if (!id) return;
+useEffect(() => {
+  const fetchTicket = async () => {
+    if (!id) return;
+
+    try {
+      const response = await fetch(`https://tickiting-system-lac.vercel.app/tickets/${id}`);
       
-      try {
-        const response = await fetch(`https://tickiting-system-lac.vercel.app/tickets/${id}`);
-        if (!response.ok) {
-          setError(`Error fetching ticket: ${response.statusText}`);
-        }
+      if (!response.ok) {
+        setError(`Error fetching ticket: ${response.statusText}`);
+      } else {
         const data = await response.json();
         console.log("Ticket data:", data);
         setTicket(data);
-        setLoading(false);
-      } catch (err) {
-        setError(err.message);
-        setLoading(false);
       }
-    };
+    } catch (err: any) {
+      setError(err?.message || "An unknown error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchTicket();
-  }, [id]);
+  fetchTicket();
+}, [id]);
+
 
 
 

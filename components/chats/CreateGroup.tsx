@@ -49,25 +49,70 @@ const CreateGroup: React.FC<ConversationListProps> = ({ users }) => {
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true);
+    
+    // Show loading toast
+    const loadingToast = toast.loading("Creating group...", {
+      duration: Infinity,
+    });
+
     axios
       .post("/api/conversations", {
         ...data,
         isGroup: true,
       })
-      .then(() => {
+      .then((response) => {
+        // Dismiss loading toast
+        toast.dismiss(loadingToast);
+        
+        // Show success toast with group name
+        toast.success(`Group "${data.name}" created successfully!`, {
+          duration: 4000,
+          icon: "🎉",
+        });
+        
         router.refresh();
-        toast.success("Group created successfully");
       })
-      .catch(() => toast.error("Failed to create group"))
+      .catch((error) => {
+        // Dismiss loading toast
+        toast.dismiss(loadingToast);
+        
+        // Show detailed error message
+        const errorMessage = error?.response?.data?.message || "Something went wrong while creating the group";
+        toast.error(errorMessage, {
+          duration: 5000,
+          icon: "❌",
+        });
+        
+        console.error("Group creation error:", error);
+      })
       .finally(() => setIsLoading(false));
   };
 
   const handleMemberToggle = (userId: string) => {
     const currentMembers = watch("members") || [];
-    const updatedMembers = currentMembers.includes(userId)
-      ? currentMembers.filter((id: string) => id !== userId)
+    const isCurrentlySelected = currentMembers.some((member: any) => member.value === userId);
+    
+    const updatedMembers = isCurrentlySelected
+      ? currentMembers.filter((member: any) => member.value !== userId)
       : [...currentMembers, { value: userId }];
+    
     setValue("members", updatedMembers, { shouldValidate: true });
+    
+    // Show feedback toast for member selection
+    const selectedUser = users.find(user => user.id === userId);
+    if (selectedUser) {
+      if (isCurrentlySelected) {
+        toast(`${selectedUser.username} removed from group`, {
+          duration: 2000,
+          icon: "➖",
+        });
+      } else {
+        toast(`${selectedUser.username} added to group`, {
+          duration: 2000,
+          icon: "➕",
+        });
+      }
+    }
   };
 
   const isUserSelected = (userId: string) => {
