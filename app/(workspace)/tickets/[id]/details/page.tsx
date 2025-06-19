@@ -24,7 +24,7 @@ const TicketPage = () => {
       try {
         const response = await fetch(`https://tickiting-system-lac.vercel.app/tickets/${id}`);
         if (!response.ok) {
-          throw new Error('Failed to fetch ticket');
+          setError(`Error fetching ticket: ${response.statusText}`);
         }
         const data = await response.json();
         console.log("Ticket data:", data);
