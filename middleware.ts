@@ -44,16 +44,16 @@ export async function middleware(request: NextRequest) {
     );
 
     // Check if current path is admin-only
-    const isAdminOnlyPath = adminOnlyRoutes.some(route =>
-      nextUrl.pathname === route || nextUrl.pathname.startsWith(`${route}/`)
-    );
+    // const isAdminOnlyPath = adminOnlyRoutes.some(route =>
+    //   nextUrl.pathname === route || nextUrl.pathname.startsWith(`${route}/`)
+    // );
    
     // Debug - vous pouvez supprimer ces logs après
-    console.log('Current path:', nextUrl.pathname);
-    console.log('Is protected:', isProtectedPath);
-    console.log('Is authenticated:', isAuthenticated);
-    console.log('Is admin only path:', isAdminOnlyPath);
-    console.log('User role:', token?.role);
+    // console.log('Current path:', nextUrl.pathname);
+    // console.log('Is protected:', isProtectedPath);
+    // console.log('Is authenticated:', isAuthenticated);
+    // console.log('Is admin only path:', isAdminOnlyPath);
+    // console.log('User role:', token?.role);
    
     // If authenticated and on login page, redirect to dashboard
     if (isAuthenticated && nextUrl.pathname === "/auth") {
@@ -67,10 +67,10 @@ export async function middleware(request: NextRequest) {
     }
 
     // If authenticated but not admin trying to access admin-only routes, redirect to dashboard
-    if (isAuthenticated && isAdminOnlyPath && token?.role !== 'admin') {
-      console.log('Non-admin user trying to access admin route, redirecting to dashboard');
-      return NextResponse.redirect(new URL("/dashboard", request.url));
-    }
+    // if (isAuthenticated && isAdminOnlyPath && token?.role !== 'admin') {
+    //   console.log('Non-admin user trying to access admin route, redirecting to dashboard');
+    //   return NextResponse.redirect(new URL("/dashboard", request.url));
+    // }
    
     return NextResponse.next();
   } catch (error) {
